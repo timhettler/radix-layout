@@ -14,11 +14,10 @@ covers two different problems.
 
 ## 1. A value that varies by viewport
 
-A column span, a gap, a column count. The Grid plan's mechanism is the
-candidate general answer: **publish a custom property, layer its default
-(ADR 0003), and let the consumer set it in their own media or container
-query.** The library never publishes breakpoints, and the static case stays a
-prop.
+A column span, a gap, a column count. The Grid plan's mechanism is the candidate
+general answer: **publish a custom property, layer its default (ADR 0003), and
+let the consumer set it in their own media or container query.** The library
+never publishes breakpoints, and the static case stays a prop.
 
 For `Stack` and `Cluster` that would mean `data-space` rules reading an
 overridable property — `gap: var(--el-stack-space, var(--el-space-4))` or
@@ -37,13 +36,13 @@ a familiar name. Candidates:
 - **Every Layout's `Switcher`.** Items sit in a row until the _container_ is
   narrower than a threshold, then all switch to a column at once, with no media
   query (`flex-basis: calc((var(--threshold) - 100%) * 999)`). Intrinsic, so it
-  responds to the space it is given rather than the viewport. Needs its own
-  ADR 0001 § 1 test; it likely passes, on the `999` mechanism and the item-count
+  responds to the space it is given rather than the viewport. Needs its own ADR
+  0001 § 1 test; it likely passes, on the `999` mechanism and the item-count
   limit a caller would not think of.
-- **A container-query variant.** An element that is a cluster above a
-  container width and a stack below it, with the threshold as a public custom
-  property. Container queries cannot read a custom property in the condition,
-  which constrains how the threshold could be published.
+- **A container-query variant.** An element that is a cluster above a container
+  width and a stack below it, with the threshold as a public custom property.
+  Container queries cannot read a custom property in the condition, which
+  constrains how the threshold could be published.
 - **The consumer owns it.** They write the switch in their own CSS, perhaps on
   top of the mixins if those were ever published.
 

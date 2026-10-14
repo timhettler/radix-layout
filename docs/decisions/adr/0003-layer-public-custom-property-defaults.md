@@ -16,11 +16,11 @@ inside their own media query.
 The library also assigns each property a default, and that assignment has to
 lose to the consumer's. **Specificity cannot guarantee it.** The defaults for
 the scale sit on `:root`, which ties a consumer's `:root`; a tie is broken by
-source order, and the library does not control the order a consumer imports
-CSS in. A default assigned from a `data-*` vocabulary
+source order, and the library does not control the order a consumer imports CSS
+in. A default assigned from a `data-*` vocabulary
 (`.el-grid__item[data-span="4"]`, 0-2-0) is worse: it _out-ranks_ a consumer's
-single class, silently — both declarations are valid and the element renders
-at the library's default with nothing reporting it.
+single class, silently — both declarations are valid and the element renders at
+the library's default with nothing reporting it.
 
 ## Decision
 
@@ -46,8 +46,8 @@ For a knob default it is the whole point. For a layout declaration it is not.
 
 A product's plain `div { display: block }` or `p { margin: 1em 0 }` reset must
 still lose to `.el-stack` and its child-margin reset. Layering those would make
-them erasable by any unlayered product rule, which is the failure each
-primitive exists to prevent.
+them erasable by any unlayered product rule, which is the failure each primitive
+exists to prevent.
 
 ### 3. Every artifact declares the order
 
@@ -84,7 +84,7 @@ loaded first.
 
 ## Revisit when
 
-- A second kind of declaration is proposed for `el.defaults`. That is the
-  signal § 1 is being stretched rather than applied.
+- A second kind of declaration is proposed for `el.defaults`. That is the signal
+  § 1 is being stretched rather than applied.
 - A product reset is observed assigning an `--el-` custom property, which would
   falsify the safety argument for layering.
