@@ -15,7 +15,7 @@ export default defineConfig({
       tsconfigPath: resolvePath("tsconfig.app.json"),
       // Roll declarations into a single self-contained entry so the published
       // types resolve under bundler and node16/nodenext.
-      rollupTypes: true,
+      bundleTypes: true,
       exclude: ["**/*.test.*", "**/*.spec.*"],
     }),
   ],
