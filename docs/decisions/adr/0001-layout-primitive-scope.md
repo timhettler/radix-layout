@@ -1,11 +1,8 @@
-# ADR 0001 — A layout primitive needs a multi-declaration layout and a failure mode; padding, radius, border and fill are not layouts
+# ADR 0001 — A layout primitive needs several declarations and a failure mode
 
 **Status:** accepted **Date:** 2026-10-13 **Deciders:** Tim Hettler
 
-Ported from EJDS (`307455_ejds_core`) ADR 0012, 2026-09-17, and re-examined for
-this library, which is React-only and has no design-token package or static-HTML
-consumer tier behind it. § Re-examination records which of the original
-arguments survived the move.
+Adapted from EJDS ADR 0012.
 
 ## Context
 
@@ -22,8 +19,7 @@ alone, because a column's inline axis is its cross axis and
 `margin-inline: auto` centring a width-constrained child is a use worth keeping.
 The reset is the part a caller would not think to write, and it is why each is a
 primitive rather than a note recommending four declarations. Each also pins
-`flex-wrap` and carries `safe` alignment so an over-wide child cannot be pushed
-out of reach.
+`flex-wrap`.
 
 Padding has no such part. It is one declaration, and nothing inherited corrupts
 it.
@@ -57,44 +53,22 @@ The visible box — a border, a corner radius, a fill — is the other half of t
 Box pattern. It is component appearance, and the component that draws one holds
 the declarations on its own class.
 
-**Clipping does not ride along with the radius.** `overflow: hidden` is needed
-only where a child paints to the container's own edge; a primitive applying it
-wherever it applied a radius would be wrong for the padded case and unsafe in
-general, because an ancestor's `overflow` clips a _descendant's_ focus ring.
-
 ### 4. Full bleed is structural, and the inset goes on an inner element
 
 A region reaching the edge of a container is a sibling of that container's
 padded content, never a child cancelling the padding with a negative margin.
-That would make the inset public API, couple every bleeding child to its current
-value, and break the first time it stopped being symmetrical. Every Layout
-reaches the same arrangement the same way, by nesting boxes; its Box has no
-full-bleed mechanism either.
 
-## Re-examination (2026-10-13)
+## The strongest case for Box
 
-The move to a standalone React library removed three of the original supporting
-arguments:
-
-- **The static-HTML tier's cost.** EJDS committed every public class to a
-  hand-authored HTML recipe with its own review and coverage. That consumer does
-  not exist here.
-- **The token-family conflict.** EJDS had two spacing families (gap steps and
-  density steps), and a `padding` prop would have had to pick one before design
-  had. This library has one scale, so `padding="4"` would at least be coherent.
-- **The Card measurement.** The evidence that no real component needed a Box's
-  full-bleed came from an EJDS component.
-
-And one argument _for_ Box is stronger than the original ADR credited: Every
-Layout's Box carries a genuine failure guard — a transparent outline, so a
+Every Layout's Box carries a genuine failure guard — a transparent outline, so a
 filled box stays visible in forced-colours mode, where backgrounds are removed.
 That is exactly the kind of thing § 1 asks for.
 
-**The decision holds anyway.** § 1's test never depended on the removed
-arguments: padding alone is still one declaration with nothing to protect. The
-forced-colours guard is real, but it belongs to a _surface_ — it exists because
-the box has a fill — and § 3 keeps surfaces out of a layout library. A consumer
-drawing a filled box owns its forced-colours behaviour along with its fill.
+**The decision holds anyway.** Padding alone is still one declaration with
+nothing to protect. The forced-colours guard is real, but it belongs to a
+_surface_ — it exists because the box has a fill — and § 3 keeps surfaces out of
+a layout library. A consumer drawing a filled box owns its forced-colours
+behaviour along with its fill.
 
 ## Consequences
 
@@ -125,8 +99,6 @@ one declaration, no reset, no ordering requirement, nothing out of reach.
 
 ## Revisit when
 
-- Two layouts in this library would otherwise retype the same
-  several-declaration treatment. That is the trigger that produced the shared
-  layout mixins, and it applies unchanged.
+- Two layouts here would otherwise retype the same declarations.
 - A consumer's measured difficulty with insets outweighs the commitment § 1
   describes.

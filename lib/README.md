@@ -37,11 +37,11 @@ import { Stack } from "@timhettler/radix-layout";
 </Stack>;
 ```
 
-| Prop      | Values                                           | Default   |
-| --------- | ------------------------------------------------ | --------- |
-| `space`   | `1` `2` `3` `4` `6` `8` `12` `16` `20` `24` `30` | required  |
-| `align`   | `start` `center` `end` `stretch`                 | `stretch` |
-| `asChild` | `boolean`                                        | `false`   |
+| Prop      | Values                                   | Default   |
+| --------- | ---------------------------------------- | --------- |
+| `space`   | a step from [`spaces`](#the-space-scale) | required  |
+| `align`   | `start` `center` `end` `stretch`         | `stretch` |
+| `asChild` | `boolean`                                | `false`   |
 
 Children's block margins are zeroed, so a `<p>`'s UA margin does not add to the
 gap. Inline margins are left alone, so `margin-inline: auto` still centres a
@@ -61,13 +61,13 @@ import { Cluster } from "@timhettler/radix-layout";
 </Cluster>;
 ```
 
-| Prop      | Values                                           | Default  |
-| --------- | ------------------------------------------------ | -------- |
-| `space`   | `1` `2` `3` `4` `6` `8` `12` `16` `20` `24` `30` | required |
-| `justify` | `start` `center` `end` `between`                 | `start`  |
-| `align`   | `start` `center` `end` `stretch`                 | `center` |
-| `display` | `block` `inline`                                 | `block`  |
-| `asChild` | `boolean`                                        | `false`  |
+| Prop      | Values                                   | Default  |
+| --------- | ---------------------------------------- | -------- |
+| `space`   | a step from [`spaces`](#the-space-scale) | required |
+| `justify` | `start` `center` `end` `between`         | `start`  |
+| `align`   | `start` `center` `end` `stretch`         | `center` |
+| `display` | `block` `inline`                         | `block`  |
+| `asChild` | `boolean`                                | `false`  |
 
 Children's margins are zeroed on both axes.
 
@@ -86,13 +86,12 @@ attributes onto it — the same contract as every Radix primitive.
 
 ## The space scale
 
-> **FPO (for placement only).** The current steps are a naive linear stepping
-> (multiples of `0.25rem`) so the layouts have something to render. A
-> responsive, rhythmic scale will replace them before 1.0, and the step names
-> are likely to change with it.
+> **FPO (for placement only).** The current steps are a naive linear stepping so
+> the layouts have something to render. A responsive, rhythmic scale will
+> replace them before 1.0, and the step names are likely to change with it.
 
-Each step is a custom property, `--el-space-<step>`, with a `rem` default (`1` =
-`0.25rem` … `30` = `7.5rem`). Remap any of them to your own tokens:
+The accepted steps are exported as `spaces`. Each is a custom property,
+`--el-space-<step>`, with a `rem` default. Remap any of them to your own tokens:
 
 ```css
 :root {

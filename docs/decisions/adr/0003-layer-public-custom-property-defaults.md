@@ -2,10 +2,6 @@
 
 **Status:** accepted **Date:** 2026-10-13 **Deciders:** Tim Hettler
 
-Ported from EJDS ADR 0013, 2026-09-30. The argument is unchanged; what is new is
-that the first public custom properties here are the space scale's, which in
-EJDS came from a separate token package.
-
 ## Context
 
 The library publishes CSS custom properties as the knobs a consumer turns:

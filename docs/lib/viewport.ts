@@ -1,14 +1,6 @@
-/**
- * Waits for the preview iframe to reach a usable width.
- *
- * Several stories measure rendered boxes, and the Storybook manager (and the
- * Vitest browser runner) can mount the preview iframe far narrower than the
- * width those measurements assume — a wrapping assertion made at 0px is
- * meaningless. CSS re-lays out on resize, so no story needs the final width at
- * render time; it only has to wait before measuring.
- */
 const MIN_PREVIEW_WIDTH = 320;
 
+/** Waits for the preview iframe to reach MIN_PREVIEW_WIDTH; Storybook and the Vitest runner can mount it near 0px. */
 export async function previewSettled(timeoutMs = 3000): Promise<void> {
   const deadline = performance.now() + timeoutMs;
   for (;;) {
