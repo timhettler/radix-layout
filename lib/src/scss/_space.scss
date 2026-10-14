@@ -8,6 +8,13 @@
 // a story scrapes the compiled CSS and asserts the two agree. They are the steps
 // that exist, gaps included — there is no `5`.
 //
+// **FPO (for placement only).** The steps and values are a naive linear
+// stepping — multiples of 0.25rem, named by multiplier — carried over so the
+// layouts have something to render. They are not a rhythmic scale, they do not
+// respond to the viewport, and both the values and the step names are expected
+// to change before 1.0. See
+// `docs/decisions/planning/responsive-rhythmic-scale/tech-plan.md`.
+//
 // The values are only the defaults. A consumer remaps a step by assigning
 // `--el-space-<step>` in their own stylesheet, which wins because the defaults
 // are layered; see `defaults.scss`.

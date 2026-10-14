@@ -1,4 +1,6 @@
 // Keys mirror _space.scss; the vocabulary story fails if they disagree.
+// FPO: a naive linear stepping, not the final scale — the step names are
+// expected to change before 1.0 (docs/decisions/planning/responsive-rhythmic-scale).
 const SPACE_PROPERTY = {
   "1": "--el-space-1",
   "2": "--el-space-2",
