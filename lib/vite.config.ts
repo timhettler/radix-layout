@@ -2,6 +2,7 @@ import path from "path";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import dts from "vite-plugin-dts";
+import browserslistToEsbuild from "browserslist-to-esbuild";
 
 const resolvePath = (str: string) => path.resolve(import.meta.dirname, str);
 
@@ -20,7 +21,8 @@ export default defineConfig({
     }),
   ],
   build: {
-    target: "es2022",
+    // The repo-root .browserslistrc.
+    target: browserslistToEsbuild(),
     lib: {
       entry: resolvePath("src/main.ts"),
       formats: ["es"],
