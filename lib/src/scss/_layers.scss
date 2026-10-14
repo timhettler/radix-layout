@@ -1,0 +1,12 @@
+// The design system's cascade layer order.
+//
+// Every compiled stylesheet starts with this statement, because each is
+// published for selective loading: a layer first seen *without* the statement
+// is appended to the order rather than placed in it. The statement is
+// idempotent and the first one the browser sees fixes the order, so emitting it
+// everywhere costs a line and removes the dependency on which file loaded first.
+//
+// One layer, and it holds exactly one kind of declaration: the default of a
+// documented public custom property — see ADR 0003. Every layout declaration
+// stays unlayered so a product's generic `div { … }` reset cannot erase it.
+@layer el.defaults;
