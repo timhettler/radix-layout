@@ -1,0 +1,18 @@
+// defaults.css — the default value of every public custom property.
+//
+// Layered, so that a consumer's own unlayered rule wins whatever the load order
+// or specificity: `:root { --el-space-4: var(--my-token) }` remaps the step even
+// if it loads before this file. Nothing but a public custom property's default
+// belongs in `el.defaults` (ADR 0003 § 1); a layout declaration placed here
+// would become erasable by any product reset, silently.
+
+@use "layers";
+@use "space";
+
+@layer el.defaults {
+  :root {
+    @each $step, $value in space.$spaces {
+      #{space.property($step)}: #{$value};
+    }
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "name": "@timhettler/radix-layout",
+  "version": "0.0.0",
+  "description": "Every Layout's layout primitives as Radix-style React components, styled by static CSS.",
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist"
+  ],
+  "module": "./dist/radix-layout.js",
+  "exports": {
+    ".": {
+      "types": "./dist/main.d.ts",
+      "default": "./dist/radix-layout.js"
+    },
+    "./styles.css": "./dist/styles.css",
+    "./defaults.css": "./dist/defaults.css",
+    "./stack.css": "./dist/stack.css",
+    "./cluster.css": "./dist/cluster.css"
+  },
+  "license": "MIT",
+  "keywords": [
+    "ui",
+    "react",
+    "layout",
+    "every-layout",
+    "radix"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/timhettler/radix-layout.git"
+  },
+  "scripts": {
+    "build": "vite build && node scripts/build-css.mjs",
+    "lint": "eslint",
+    "typecheck": "tsc -b",
+    "format": "prettier --write .",
+    "check:package": "publint && attw --pack --profile esm-only --entrypoints ."
+  },
+  "dependencies": {
+    "@radix-ui/react-primitive": "^2.1.10"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.2",
+    "@microsoft/api-extractor": "^7.52.8",
+    "@timhettler/config": "workspace:*",
+    "@types/node": "^24.13.3",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "@vitejs/plugin-react": "^6.0.5",
+    "eslint": "^10.8.0",
+    "prettier": "^3.9.6",
+    "publint": "^0.3.5",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "sass-embedded": "^1.100.0",
+    "typescript": "^5.9.3",
+    "vite": "^8.2.0",
+    "vite-plugin-dts": "^4.5.4"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  }
+}

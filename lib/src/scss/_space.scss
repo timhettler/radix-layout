@@ -1,0 +1,38 @@
+// The space scale: the single definition of every step.
+//
+// `defaults.scss` emits each entry as a public custom property, and every layout
+// stylesheet emits one `data-space` rule per key that reads it. So a step lives
+// here once rather than once per consumer of the scale.
+//
+// The keys are the *public* `data-space` values and must match `src/space.ts`;
+// a story scrapes the compiled CSS and asserts the two agree. They are the steps
+// that exist, gaps included — there is no `5`.
+//
+// The values are only the defaults. A consumer remaps a step by assigning
+// `--el-space-<step>` in their own stylesheet, which wins because the defaults
+// are layered; see `defaults.scss`.
+
+$spaces: (
+  "1": 0.25rem,
+  "2": 0.5rem,
+  "3": 0.75rem,
+  "4": 1rem,
+  "6": 1.5rem,
+  "8": 2rem,
+  "12": 3rem,
+  "16": 4rem,
+  "20": 5rem,
+  "24": 6rem,
+  "30": 7.5rem,
+);
+
+/// The custom property a step resolves through. The one place the
+/// `--el-space-*` name is spelled.
+@function property($step) {
+  @return --el-space-#{$step};
+}
+
+/// The step as a value, for a `gap` declaration.
+@function value($step) {
+  @return var(#{property($step)});
+}

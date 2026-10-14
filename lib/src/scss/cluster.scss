@@ -1,0 +1,89 @@
+// cluster.css — a one-dimensional layout: items in a row, spaced by a step on
+// the space scale, wrapping when they run out of room.
+//
+// Unlayered on purpose, so a product's generic reset cannot erase it; only the
+// space scale's defaults are layered (`defaults.css`). That file has to be
+// loaded too — `styles.css` carries both.
+//
+// No media queries. Responsiveness is the consumer's, through the public custom
+// properties; see `docs/decisions/planning/responsive-layouts`.
+
+@use "sass:map";
+@use "layers";
+@use "layout";
+@use "space";
+
+// The public keyword is not always the CSS value: these maps hold the
+// documented vocabulary on the left and the implementation on the right, which
+// is what lets the CSS change without renaming a value consumers have
+// hardcoded. Read the map rather than assuming the two coincide.
+//
+// `safe` is carried on the `center` and `end` of both axes — the values that can
+// place a child bigger than the container past its *start* edge, where no scroll
+// position can reach it.
+$justify: (
+  "start": flex-start,
+  "center": safe center,
+  "end": safe flex-end,
+  "between": space-between,
+);
+
+// `safe` is inert on this axis: a cluster always wraps, and a line's cross size
+// is the maximum of its items', so an item cannot overflow its own line. It is
+// kept so that one keyword means one thing across both layout primitives — on
+// `stack.scss`'s cross axis the fallback is live. If you are here to remove it,
+// check first whether `flex-wrap` is still pinned.
+$align: (
+  "start": flex-start,
+  "center": safe center,
+  "end": safe flex-end,
+  "stretch": stretch,
+);
+
+// The keyword names the **box level, not the display value**: `block` is
+// `display: flex`, and emphatically not `display: block`. `data-display="flex"`
+// would become a lie the moment this layout used anything but flexbox.
+$display: (
+  "block": flex,
+  "inline": inline-flex,
+);
+
+// The class opts an element into the layout and carries the three defaults. It
+// holds no spacing: `data-space` supplies the gap, and an element without one
+// lays out as a cluster with no gap at all.
+//
+// `$align` is read from the map rather than left to the mixin's default, so the
+// class's default and `data-align="center"` cannot disagree about `safe`.
+.el-cluster {
+  @include layout.cluster($space: null, $align: map.get($align, "center"));
+}
+
+// One rule per accepted value, emitted from the maps. An unrecognised value
+// matches nothing and renders as the default, which is why a story scrapes the
+// accepted set back out of this stylesheet.
+@each $step, $_ in space.$spaces {
+  .el-cluster[data-space="#{$step}"] {
+    gap: space.value($step);
+  }
+}
+
+@each $keyword, $value in $justify {
+  .el-cluster[data-justify="#{$keyword}"] {
+    justify-content: $value;
+  }
+}
+
+@each $keyword, $value in $align {
+  .el-cluster[data-align="#{$keyword}"] {
+    align-items: $value;
+  }
+}
+
+// `block` is emitted even though it restates the class's own default, as
+// `start` is on both other axes: an axis whose default value has no rule is an
+// axis half of which cannot be scraped back out.
+@each $keyword, $value in $display {
+  .el-cluster[data-display="#{$keyword}"] {
+    display: $value;
+  }
+}
