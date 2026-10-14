@@ -51,21 +51,28 @@ jobs:
 
       - name: Resolve Playwright version
         id: playwright
-        run: echo "version=$(yarn workspace @timhettler/radix-layout-docs exec playwright --version | awk '{print $2}')" >> "$GITHUB_OUTPUT"
+        run:
+          echo "version=$(yarn workspace @timhettler/radix-layout-docs exec
+          playwright --version | awk '{print $2}')" >> "$GITHUB_OUTPUT"
 
       - name: Cache Playwright browsers
         id: playwright-cache
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ steps.playwright.outputs.version }}
+          key:
+            ${{ runner.os }}-playwright-${{ steps.playwright.outputs.version }}
 
       - name: Install Playwright browser
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: yarn workspace @timhettler/radix-layout-docs exec playwright install chromium
+        run:
+          yarn workspace @timhettler/radix-layout-docs exec playwright install
+          chromium
 
       - name: Install Playwright system dependencies
-        run: yarn workspace @timhettler/radix-layout-docs exec playwright install-deps chromium
+        run:
+          yarn workspace @timhettler/radix-layout-docs exec playwright
+          install-deps chromium
 
       - name: Test
         run: yarn test

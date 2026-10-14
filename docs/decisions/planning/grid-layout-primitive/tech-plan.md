@@ -11,15 +11,15 @@ questions become this library's own open choices.
 
 ## Problem
 
-`Cluster` and `Stack` cover a row and a column; nothing covers two dimensions.
-A product laying content out on a column grid reinvents it — and gets the two
+`Cluster` and `Stack` cover a row and a column; nothing covers two dimensions. A
+product laying content out on a column grid reinvents it — and gets the two
 failure modes below wrong.
 
 The hard half is not the tracks, it is that **an item's span varies by viewport
 and the viewports are not ours.** Product teams define their own breakpoints and
-their own column count per breakpoint. A library that publishes 768px and
-1180px as the boundaries of its item vocabulary has decided that question on
-every consumer's behalf.
+their own column count per breakpoint. A library that publishes 768px and 1180px
+as the boundaries of its item vocabulary has decided that question on every
+consumer's behalf.
 
 ## Approach
 
@@ -64,10 +64,10 @@ own class still wins (ADR 0003 § 1).
 This is also the general answer for any responsive _value_; see
 `../responsive-layouts/questions.md`.
 
-**Rejected: an enumerated `data-span-tablet` / `data-span-desktop`
-vocabulary.** Bakes our breakpoints into the consumer's vocabulary, costs a rule
-per value per tier, and its safety benefit (no span wider than the grid) guards
-a failure that is already visible as a horizontal scrollbar.
+**Rejected: an enumerated `data-span-tablet` / `data-span-desktop` vocabulary.**
+Bakes our breakpoints into the consumer's vocabulary, costs a rule per value per
+tier, and its safety benefit (no span wider than the grid) guards a failure that
+is already visible as a horizontal scrollbar.
 
 **Rejected: `repeat(auto-fit, minmax(min(X, 100%), 1fr))`**, the Every Layout
 intrinsic grid. `auto-fit` yields a track count known only at layout time, so a
@@ -179,8 +179,8 @@ whoever wrote it.
     Takes no position on viewports, which is the plan's own premise, but a bare
     12-column grid on a phone is rarely right.
   - **Three default media queries at stated widths.** Correct out of the box for
-    most products, and the only place the library would publish breakpoints.
-    The consumer replaces it wholesale by setting the property themselves, which
+    most products, and the only place the library would publish breakpoints. The
+    consumer replaces it wholesale by setting the property themselves, which
     wins because the defaults are layered.
 - **Should `--el-grid-span` inherit?** Unregistered, it does — so a nested
   grid's items pick up an ancestor item's span unless they set their own.

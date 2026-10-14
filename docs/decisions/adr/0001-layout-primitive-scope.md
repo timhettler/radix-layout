@@ -2,10 +2,10 @@
 
 **Status:** accepted **Date:** 2026-10-13 **Deciders:** Tim Hettler
 
-Ported from EJDS (`307455_ejds_core`) ADR 0012, 2026-09-17, and re-examined
-for this library, which is React-only and has no design-token package or
-static-HTML consumer tier behind it. § Re-examination records which of the
-original arguments survived the move.
+Ported from EJDS (`307455_ejds_core`) ADR 0012, 2026-09-17, and re-examined for
+this library, which is React-only and has no design-token package or static-HTML
+consumer tier behind it. § Re-examination records which of the original
+arguments survived the move.
 
 ## Context
 
@@ -19,11 +19,11 @@ would be wrong without: a cluster zeroes its children's `margin` on both axes,
 because an inline margin is additive to the `gap` and a block margin makes every
 `align-items` value resolve against the wrong box; a stack zeroes `margin-block`
 alone, because a column's inline axis is its cross axis and
-`margin-inline: auto` centring a width-constrained child is a use worth
-keeping. The reset is the part a caller would not think to write, and it is why
-each is a primitive rather than a note recommending four declarations. Each also
-pins `flex-wrap` and carries `safe` alignment so an over-wide child cannot be
-pushed out of reach.
+`margin-inline: auto` centring a width-constrained child is a use worth keeping.
+The reset is the part a caller would not think to write, and it is why each is a
+primitive rather than a note recommending four declarations. Each also pins
+`flex-wrap` and carries `safe` alignment so an over-wide child cannot be pushed
+out of reach.
 
 Padding has no such part. It is one declaration, and nothing inherited corrupts
 it.
@@ -33,10 +33,10 @@ it.
 ### 1. A layout primitive ships only for a layout of several declarations that carries a failure mode
 
 Two tests, and both existing primitives pass both. The layout is more than one
-declaration, so there is something for the primitive to be the single
-definition of. And it carries a failure a caller would otherwise hit — a reset,
-an ordering requirement, an alignment value that would push content out of
-reach — so the primitive is protection rather than an abbreviation.
+declaration, so there is something for the primitive to be the single definition
+of. And it carries a failure a caller would otherwise hit — a reset, an ordering
+requirement, an alignment value that would push content out of reach — so the
+primitive is protection rather than an abbreviation.
 
 A layout that fails either test is documented, not shipped. The cost of shipping
 one anyway is not the code: a public class, its `data-*` values and any public
@@ -73,8 +73,8 @@ full-bleed mechanism either.
 
 ## Re-examination (2026-10-13)
 
-The move to a standalone React library removed three of the original
-supporting arguments:
+The move to a standalone React library removed three of the original supporting
+arguments:
 
 - **The static-HTML tier's cost.** EJDS committed every public class to a
   hand-authored HTML recipe with its own review and coverage. That consumer does
@@ -125,8 +125,8 @@ one declaration, no reset, no ordering requirement, nothing out of reach.
 
 ## Revisit when
 
-- Two layouts in this library would otherwise retype the same several-declaration
-  treatment. That is the trigger that produced the shared layout mixins, and it
-  applies unchanged.
+- Two layouts in this library would otherwise retype the same
+  several-declaration treatment. That is the trigger that produced the shared
+  layout mixins, and it applies unchanged.
 - A consumer's measured difficulty with insets outweighs the commitment § 1
   describes.

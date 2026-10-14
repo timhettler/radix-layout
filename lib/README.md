@@ -1,9 +1,9 @@
 # @timhettler/radix-layout
 
 [Every Layout](https://every-layout.dev)'s layout primitives as Radix-style
-React components. Each is a `div` (or, with `asChild`, your own element) carrying
-a class and `data-*` attributes; the layout itself is a static stylesheet you
-load once.
+React components. Each is a `div` (or, with `asChild`, your own element)
+carrying a class and `data-*` attributes; the layout itself is a static
+stylesheet you load once.
 
 ```sh
 yarn add @timhettler/radix-layout
@@ -86,8 +86,8 @@ attributes onto it — the same contract as every Radix primitive.
 
 ## The space scale
 
-Each step is a custom property, `--el-space-<step>`, with a `rem` default
-(`1` = `0.25rem` … `30` = `7.5rem`). Remap any of them to your own tokens:
+Each step is a custom property, `--el-space-<step>`, with a `rem` default (`1` =
+`0.25rem` … `30` = `7.5rem`). Remap any of them to your own tokens:
 
 ```css
 :root {
@@ -100,7 +100,6 @@ specificity or the order your stylesheets load in.
 
 ## Design notes
 
-The reasoning behind the API lives in
-[`docs/decisions`](../docs/decisions): what earns a layout a component
-(and why there is no `Box`), why the styling is static CSS, and how the
-overridable defaults work.
+The reasoning behind the API lives in [`docs/decisions`](../docs/decisions):
+what earns a layout a component (and why there is no `Box`), why the styling is
+static CSS, and how the overridable defaults work.

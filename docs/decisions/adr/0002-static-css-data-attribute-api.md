@@ -25,8 +25,8 @@ The mechanism survives on its own merits:
   `'unsafe-inline'`, which enterprise consumers commonly ship. A runtime
   `<style>` element needs a nonce threaded through every render. A static
   stylesheet needs neither.
-- **No runtime.** Nothing to hydrate, no style recalculation per render, and
-  the server-rendered markup is already styled.
+- **No runtime.** Nothing to hydrate, no style recalculation per render, and the
+  server-rendered markup is already styled.
 - **Overridable on the consumer's terms.** A class and an attribute are 0-2-0,
   which a consumer can out-rank deliberately; an inline style beats everything
   but `!important`, so a consumer's media query could never win. The public
