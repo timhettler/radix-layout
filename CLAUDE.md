@@ -66,6 +66,11 @@ violations fail the run.
 
 Every consumer-facing change needs a changeset (`yarn changeset`).
 
+The repo is in Changesets **prerelease mode** (`.changeset/pre.json`, tag
+`alpha`): versions come out as `0.1.0-alpha.N` and publish under the `alpha`
+dist-tag. Breaking changes (for example, renaming the FPO space scale) are
+expected until `yarn changeset pre exit` before 1.0.
+
 ## Writing
 
 For what a teammate or consumer reads (docs, comments, commits, PRs, changesets,
