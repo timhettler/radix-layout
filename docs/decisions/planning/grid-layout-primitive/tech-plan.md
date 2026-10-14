@@ -1,13 +1,8 @@
 # Grid layout primitive — tech plan
 
-**Status:** not started **Owner:** unassigned **Started:** 2026-09-24 (in EJDS),
-ported 2026-10-13
+**Status:** not started **Owner:** unassigned **Started:** 2026-09-24
 
-Ported from EJDS `docs/planning/active/grid-layout-primitive/tech-plan.md`. The
-mechanism is unchanged. What the move changed: there is no token package (so no
-breakpoint or gutter tokens, and the token-lint dependency is gone), no
-static-HTML tier, and no Figma source for the column counts — the EJDS Figma
-questions become this library's own open choices.
+Adapted from the EJDS plan.
 
 ## Problem
 
@@ -124,7 +119,7 @@ Returns the breakpoints to the library and adds a runtime (ADR 0002).
 - [ ] **Author `lib/src/scss/grid.scss`** emitting `.el-grid`, the `data-space`
       row-gap rules (from `_space.scss`), the layered `data-span` rules that set
       `--el-grid-span`, and the single unlayered `.el-grid__item` declaration.
-      Add `grid` to `ENTRIES` in `scripts/build-css.mjs` and to `exports`.
+      Add `grid` to `ENTRIES` in `lib/scripts/build-css.mjs` and to `exports`.
 - [ ] **Add `lib/src/Grid.tsx`** in the Radix compound shape radix-card uses:
       `Grid` / `GridItem` with `Root` / `Item` aliases, both on `Primitive.div`
       so both take `asChild` and a `ref`. `GridItem` takes `span`, typed from a
@@ -172,9 +167,7 @@ whoever wrote it.
 
 ## Open questions
 
-- **What is the default column count?** The EJDS plan shipped 4 / 8 / 12 at the
-  EJDS tablet and desktop breakpoints, from the Figma page grid. Without that
-  source the choice is the library's:
+- **What is the default column count?**
   - **A breakpoint-free default** — `--el-grid-columns: 12` (or 4) set once.
     Takes no position on viewports, which is the plan's own premise, but a bare
     12-column grid on a phone is rarely right.
@@ -188,9 +181,9 @@ whoever wrote it.
   letting the property be _absent_ so the `var()` fallback fires. **Verify in
   Chromium, Gecko and WebKit before relying on it** — the full-width default
   depends on it.
-- **What is the default gutter?** EJDS had an unresolved 16px vs 24px question
-  from Figma. Here it is a choice of space step, and it does not block the
-  mechanism.
+- **What is the default gutter?** A step on the space scale, ideally the
+  rhythmic one (`../responsive-rhythmic-scale/tech-plan.md`). It does not block
+  the mechanism.
 
 ## Deferred / follow-ups
 

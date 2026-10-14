@@ -1,23 +1,7 @@
-// The space scale: the single definition of every step.
+// Keys are the public data-space values and must match src/space.ts (checked by
+// the vocabulary stories).
 //
-// `defaults.scss` emits each entry as a public custom property, and every layout
-// stylesheet emits one `data-space` rule per key that reads it. So a step lives
-// here once rather than once per consumer of the scale.
-//
-// The keys are the *public* `data-space` values and must match `src/space.ts`;
-// a story scrapes the compiled CSS and asserts the two agree. They are the steps
-// that exist, gaps included — there is no `5`.
-//
-// **FPO (for placement only).** The steps and values are a naive linear
-// stepping — multiples of 0.25rem, named by multiplier — carried over so the
-// layouts have something to render. They are not a rhythmic scale, they do not
-// respond to the viewport, and both the values and the step names are expected
-// to change before 1.0. See
-// `docs/decisions/planning/responsive-rhythmic-scale/tech-plan.md`.
-//
-// The values are only the defaults. A consumer remaps a step by assigning
-// `--el-space-<step>` in their own stylesheet, which wins because the defaults
-// are layered; see `defaults.scss`.
+// FPO: values and names change before 1.0; see planning/responsive-rhythmic-scale.
 
 $spaces: (
   "1": 0.25rem,
@@ -33,13 +17,10 @@ $spaces: (
   "30": 7.5rem,
 );
 
-/// The custom property a step resolves through. The one place the
-/// `--el-space-*` name is spelled.
 @function property($step) {
   @return --el-space-#{$step};
 }
 
-/// The step as a value, for a `gap` declaration.
 @function value($step) {
   @return var(#{property($step)});
 }

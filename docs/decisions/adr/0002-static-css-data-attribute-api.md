@@ -4,14 +4,8 @@
 
 ## Context
 
-In EJDS the layout primitives' appearance lived in a framework-neutral
-stylesheet package, and the React components only wrote a class and `data-*`
-attributes. The reason given was a static-HTML consumer tier: hand-authored
-markup had to be the same markup React rendered.
-
-This library is React-only, so that reason is gone. The question is whether the
-delivery mechanism should go with it — whether a React layout library should
-instead write inline styles, inject rules at runtime, or ship CSS modules.
+React-only, so: does static CSS still beat inline styles, runtime injection or
+CSS modules?
 
 ## Decision
 
@@ -27,19 +21,18 @@ The mechanism survives on its own merits:
   stylesheet needs neither.
 - **No runtime.** Nothing to hydrate, no style recalculation per render, and the
   server-rendered markup is already styled.
-- **Overridable on the consumer's terms.** A class and an attribute are 0-2-0,
-  which a consumer can out-rank deliberately; an inline style beats everything
-  but `!important`, so a consumer's media query could never win. The public
-  custom properties (ADR 0003) are the intended override path and work only
-  because nothing is inline.
+- **Overridable on the consumer's terms.** Nothing is inline, so a consumer's
+  media query can win; the public custom properties (ADR 0003) are the intended
+  override path.
 - **A closed, checkable vocabulary.** One rule per accepted value means the
   accepted set can be scraped back out of the compiled CSS and asserted against
   the TypeScript lists the props derive from — the stories do exactly that.
 
 Sass is authoring-only. Each keyword → CSS-value map is the public vocabulary in
-one table, and the space scale is defined once and read by every layout.
-Consumers receive plain CSS: `styles.css`, or one file per layout plus
-`defaults.css` for selective loading.
+one table; the keyword is the contract, not the CSS value, so the implementation
+can change without renaming what consumers write. The scale is defined once and
+read by every layout. Consumers receive plain CSS: `styles.css`, or one file per
+layout plus `defaults.css` for selective loading.
 
 ## Consequences
 
@@ -47,11 +40,8 @@ Consumers receive plain CSS: `styles.css`, or one file per layout plus
   unstyled `div`. The README says so first.
 - **An unrecognised attribute value renders as the default**, silently. That is
   the cost of an attribute vocabulary, and the reason the scrape exists.
-- **Composition is plain React.** Without a static-HTML tier there is no
-  objection to `<Cluster asChild><MyToolbar/></Cluster>`; EJDS's rule that a
-  component reuses a layout only through a Sass mixin does not apply to
-  consumers. Inside this library, a layout that contains another still reuses
-  the mixin, because the mixin is the single definition.
+- **Composition is plain React** (`asChild`); inside the library a layout
+  containing another reuses its mixin.
 
 ## Alternatives considered
 

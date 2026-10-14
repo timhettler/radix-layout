@@ -1,28 +1,7 @@
-// stack.css — a one-dimensional layout: items in a column, spaced by a step on
-// the space scale.
-//
-// The vertical counterpart to `cluster.css`. A stack never wraps, where a
-// cluster always does, and that is the line between them: a column that wraps
-// is a multi-column layout and belongs to neither.
-//
-// Unlayered on purpose, so a product's generic reset cannot erase it; only the
-// space scale's defaults are layered (`defaults.css`). That file has to be
-// loaded too — `styles.css` carries both.
-
 @use "layers";
 @use "layout";
 @use "space";
 
-// Cross-axis alignment, which for a column is the **inline** axis — so this is
-// horizontal, where `cluster`'s identically-named axis is vertical. Same four
-// public keywords, on purpose: one vocabulary across both primitives.
-//
-// The public keyword is not the CSS value. `safe` goes on the two values that
-// can push an over-wide child past the container's *start* edge, where it
-// becomes unreachable — no scroll position exposes overflow in that direction.
-// No fallback is emitted: an engine that does not act on `<overflow-position>`
-// still *recognises* it, so the declaration renders as plain `center`, which is
-// what a fallback would have supplied anyway.
 $align: (
   "start": flex-start,
   "center": safe center,
@@ -30,25 +9,16 @@ $align: (
   "stretch": stretch,
 );
 
-// The class opts an element into the layout and carries the alignment default.
-// It holds no spacing: `data-space` supplies the gap, and an element without one
-// lays out as a stack with no gap at all.
 .el-stack {
   @include layout.stack($space: null);
 }
 
-// One rule per accepted value, emitted from the maps. An unrecognised value
-// therefore matches nothing and renders as the default — the cost of an
-// attribute vocabulary, and why a story scrapes the accepted set back out of
-// this stylesheet and asserts it against the TypeScript lists.
 @each $step, $_ in space.$spaces {
   .el-stack[data-space="#{$step}"] {
     gap: space.value($step);
   }
 }
 
-// `stretch` is emitted even though it restates the class's own default: an axis
-// whose default has no rule is an axis half of which cannot be scraped back out.
 @each $keyword, $value in $align {
   .el-stack[data-align="#{$keyword}"] {
     align-items: $value;

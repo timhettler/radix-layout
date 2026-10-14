@@ -46,6 +46,8 @@ in `docs/decisions/`.
   compares the list to the compiled CSS.
 - **Optional axes are omitted, not defaulted**, so the CSS class is the single
   definition of each default.
+- **Emit a rule for every value, the default included**, so the scrape sees the
+  whole axis.
 - **Only public custom property defaults go in `@layer el.defaults`**; every
   layout declaration stays unlayered (ADR 0003). Each compiled file opens with
   `@layer el.defaults;` via `_layers.scss`.

@@ -1,44 +1,18 @@
-// The layout definitions the component stylesheets share.
-//
-// Each mixin is the single definition of what that layout *is*; its component
-// stylesheet calls it to build the public `data-*` vocabulary, and a later
-// primitive that contains the same layout calls it rather than retyping it.
-// Every parameter is a public axis of that vocabulary — a parameter added
-// because one caller happens to differ makes a mixin a copy with extra steps.
-//
-// Named `layout` rather than after a component: a partial named after an entry
-// point cannot be reached at all.
+// One mixin per layout. Each parameter is a public axis, never a per-caller
+// variant.
 
-/// A one-dimensional layout: items in a row, spaced by a step on the space
-/// scale, wrapping when they run out of room.
-///
-/// **This mixin emits a nested rule as well as declarations**, so include it
-/// where a nested selector is legal.
-///
-/// The `margin: 0` on the children is part of what a cluster *is*, not a
-/// normalisation you could leave to a reset: children arrive carrying live UA
-/// margins, and flex collapses none of them. Both axes are zeroed because both
-/// corrupt what a row promises — a block margin inflates the line so every
-/// `align-items` value resolves against the wrong box, and an inline margin is
-/// additive to the `gap`, so `data-space` stops being the gap it claims. A
-/// column is where that test gives the other answer; see `stack` below.
-///
-/// The reset is class-level (0-1-0) and deliberately **not** `:where()`-wrapped:
-/// zero specificity would lose to a product's own `p { margin: 1em 0 }`, which
-/// is exactly the rule it exists to outrank. No `!important` either, so an
-/// exception stays available at 0-2-0.
-///
-/// `flex-wrap` is therefore *not* a parameter. A cluster always wraps, and a row
-/// that cannot wrap is a different layout — one that overflows its parent
-/// instead of reflowing inside it.
-///
-/// @param {Length | null} $space - The gap. Required, and `null` means *no gap*
-///   rather than "unset": spacing is a decision with no sensible default.
-/// @param {String} $justify - Distribution along the row. CSS values, not the
-///   public keywords — `cluster.scss`'s map owns that translation.
-/// @param {String} $align - Cross-axis alignment within a row.
-/// @param {String} $display - The box level: `flex` or `inline-flex`.
-@mixin cluster($space, $justify: flex-start, $align: center, $display: flex) {
+// Both axes: an inline margin adds to the gap; a block margin skews align-items
+// (ADR 0001).
+//
+// 0-1-0 on purpose, not :where(): it must beat a product's p { margin: 1em 0 }.
+//
+// flex-wrap is fixed: a row that can't wrap is a different layout.
+@mixin cluster(
+  $space,
+  $justify: flex-start,
+  $align: safe center,
+  $display: flex
+) {
   display: $display;
   flex-wrap: wrap;
   justify-content: $justify;
@@ -50,36 +24,18 @@
   }
 }
 
-/// A one-dimensional layout: items in a column, spaced by a step on the space
-/// scale.
-///
-/// The vertical counterpart to `cluster`, and a separate mixin rather than an
-/// `$orientation` parameter on that one: a cluster always wraps and a stack
-/// never can, their cross-axis defaults differ, and they reset different axes.
-///
-/// **This mixin emits a nested rule as well as declarations**, so include it
-/// where a nested selector is legal. **And it has to come before any child rule
-/// of its own block that sets a block margin**: both rules are 0-1-0, so source
-/// order decides. Written below a `&__footer { margin-block-start: auto }`, the
-/// include stops that footer being pushed — the canonical card pattern,
-/// silently broken.
-///
-/// The reset is `margin-block`, not `margin`: a column's inline axis is its
-/// cross axis, so a child's inline margin corrupts nothing, and
-/// `margin-inline: auto` centring a width-constrained child is the use that
-/// earns leaving it alone.
-///
-/// `flex-wrap: nowrap` is **declared** rather than left at its initial value:
-/// relying on the initial value means relying on the *absence* of a
-/// declaration, and a product's own `div { flex-wrap: wrap }` would then win.
-///
-/// `justify-content` is not a parameter. It distributes along the block axis,
-/// which is inert unless the container has a definite block size, and a stack's
-/// premise is auto height.
-///
-/// @param {Length | null} $space - The gap. Required; `null` means no gap.
-/// @param {String} $align - Cross-axis alignment, which for a column is the
-///   **inline** axis. CSS values, not the public keywords.
+// Not an $orientation on cluster: wrapping, cross-axis default and reset axis
+// all differ.
+//
+// Include before any child rule setting a block margin: equal specificity, so a
+// later include cancels e.g. &__footer { margin-block-start: auto }.
+//
+// margin-block only, so margin-inline: auto still centres a child.
+//
+// nowrap is declared, not left initial, so a product's div { flex-wrap: wrap }
+// can't win.
+//
+// No justify: the block axis is inert without a definite height.
 @mixin stack($space, $align: stretch) {
   display: flex;
   flex-direction: column;

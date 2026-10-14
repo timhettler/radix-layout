@@ -1,15 +1,10 @@
 # Responsive layouts — open questions
 
-**Status:** open; the next ADR after the repo is initialised. **Recorded:**
-2026-10-13
-
-Not a decision. This records the question, and the shape it took during the
-port, so the ADR has a starting point.
+**Status:** open. Not a decision. **Recorded:** 2026-10-13
 
 ## The motivating case
 
-A component that is a `Cluster` on desktop and a `Stack` on mobile. In EJDS it
-was hard to see how that would work, and the difficulty is that "responsive"
+A component that is a `Cluster` on desktop and a `Stack` on mobile. "Responsive"
 covers two different problems.
 
 ## 1. A value that varies by viewport

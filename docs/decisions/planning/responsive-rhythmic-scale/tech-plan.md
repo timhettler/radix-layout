@@ -40,7 +40,8 @@ A sketch, not a decision:
 
 - Steps named by **position**, not value: `s-2 … s0 … s5`, or `xs … xl`.
 - Each step is a `clamp(min, preferred, max)`, so it grows continuously with no
-  breakpoints, in keeping with ADR 0002 and the responsive-layouts questions.
+  breakpoints, in keeping with the Grid plan and the responsive-layouts
+  questions.
 - The base, ratio and the fluid range are public custom properties, so a
   consumer retunes the whole scale with a few declarations rather than remapping
   every step.

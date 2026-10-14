@@ -9,24 +9,8 @@ import {
   spaces,
 } from "@timhettler/radix-layout";
 
+import { resolvedGap } from "../lib/space";
 import { componentAttributeValues } from "../lib/stylesheets";
-
-/**
- * A space step resolved to the px the browser will use, through the same custom
- * property the stylesheet reads. `getComputedStyle` always reports px, and the
- * defaults are `rem`, so the browser does the conversion.
- */
-function resolvedGap(step: string) {
-  const probe = document.createElement("div");
-  probe.setAttribute(
-    "style",
-    `position: absolute; visibility: hidden; column-gap: var(--el-space-${step})`,
-  );
-  document.body.append(probe);
-  const value = parseFloat(getComputedStyle(probe).columnGap);
-  probe.remove();
-  return value;
-}
 
 const rects = (node: Element) =>
   [...node.children].map((child) => child.getBoundingClientRect());
@@ -82,8 +66,6 @@ export const Default: Story = {
     await expect(node.tagName).toBe("DIV");
     await expect(node.getAttribute("data-space")).toBe("3");
 
-    // The optional axes are *omitted* rather than defaulted, so `cluster.css`
-    // stays the single definition of each default.
     await expect(node.hasAttribute("data-justify")).toBe(false);
     await expect(node.hasAttribute("data-align")).toBe(false);
     await expect(node.hasAttribute("data-display")).toBe(false);
@@ -103,9 +85,6 @@ export const Default: Story = {
 
 /**
  * Every step on the space scale has a rule, and every rule renders its step.
- *
- * The vocabulary equality is the point: a step in `spaces` with no matching
- * rule renders no gap at all.
  */
 export const Spacing: Story = {
   args: { space: "4" },
@@ -139,14 +118,7 @@ export const Spacing: Story = {
   },
 };
 
-/**
- * Each public keyword lands on the CSS value its map says it does. (The demos
- * are spaced by a `Stack`, which is also the library composing with itself.)
- *
- * The keyword is not the CSS value — `between` is `space-between`, `center` is
- * `safe center` — so a crosswise wiring in the map is the risk, and only the
- * computed value catches it.
- */
+/** Each keyword computes to the value its map says. */
 const JUSTIFY_VALUE = {
   start: "flex-start",
   center: "safe center",
@@ -180,9 +152,6 @@ export const Alignment: Story = {
     </Stack>
   ),
   play: async ({ canvasElement }) => {
-    // Every value the props accept has a rule in the stylesheet, and vice
-    // versa. Without this, adding `'around'` to `justify` typechecks and renders
-    // an attribute matching no rule, which falls back to the default.
     await expect(sorted(acceptedValues("data-justify"))).toEqual(
       sorted(clusterJustifies),
     );
@@ -267,14 +236,7 @@ export const BoxLevel: Story = {
   },
 };
 
-/**
- * A cluster wraps, and the caller's own elements are the flex items.
- *
- * Five children in, five direct flex items out, with no per-item wrapper
- * between them — a `Cluster.Item` or a div per child would silently make the
- * wrapper the flex item, changing what wraps and what a `:first-child`
- * selector in consumer CSS reaches.
- */
+/** No per-item wrapper: the caller's elements are the flex items. */
 export const Wrapping: Story = {
   args: { space: "3" },
   render: () => (
@@ -351,8 +313,7 @@ export const Semantics: Story = {
     await expect(list.getAttribute("data-space")).toBe("2");
     await expect(list.getAttribute("role")).toBe("list");
 
-    // The exact string pins the *direction* of the merge: Radix concatenates
-    // `className` slot-first. `toHaveClass` passes on either ordering.
+    // Slot-first is Radix's order; this pins it, not cx().
     await expect(list.className).toBe("el-cluster chips");
 
     // A prop the Cluster itself was given, on an element it did not render.

@@ -3,26 +3,8 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect } from "storybook/test";
 import { Stack, spaces, stackAligns } from "@timhettler/radix-layout";
 
+import { resolvedGap } from "../lib/space";
 import { componentAttributeValues } from "../lib/stylesheets";
-
-/**
- * A space step resolved to the px the browser will use.
- *
- * Not the declaration text: the defaults are `rem` and a consumer may remap
- * them to anything, while `getComputedStyle` always reports px. So the browser
- * does the conversion, through the same custom property the stylesheet reads.
- */
-function resolvedGap(step: string) {
-  const probe = document.createElement("div");
-  probe.setAttribute(
-    "style",
-    `position: absolute; visibility: hidden; row-gap: var(--el-space-${step})`,
-  );
-  document.body.append(probe);
-  const value = parseFloat(getComputedStyle(probe).rowGap);
-  probe.remove();
-  return value;
-}
 
 const rects = (node: Element) =>
   [...node.children].map((child) => child.getBoundingClientRect());
@@ -71,8 +53,6 @@ export const Default: Story = {
     await expect(node.tagName).toBe("DIV");
     await expect(node.getAttribute("data-space")).toBe("4");
 
-    // `align` is *omitted* rather than defaulted, so `stack.css` stays the
-    // single definition of the default.
     await expect(node.hasAttribute("data-align")).toBe(false);
 
     // One measurement, purely to prove the stylesheet arrived: nothing in the
@@ -85,10 +65,6 @@ export const Default: Story = {
 /**
  * Every step on the space scale reaches its attribute, and every attribute has
  * a rule.
- *
- * The vocabulary equality is the point: a step added to `space.ts` with no
- * matching CSS rule typechecks, renders an attribute that matches nothing, and
- * falls back to no gap at all.
  */
 export const Spacing: Story = {
   args: { space: "4" },
@@ -119,14 +95,7 @@ export const Spacing: Story = {
   },
 };
 
-/**
- * Cross-axis alignment, which for a column is horizontal — and the surprise it
- * exists to answer.
- *
- * `stretch` is the default, so a lone `<button>` in a Stack comes out full
- * width. `align="start"` is the container-level answer, and this story pins
- * both halves so neither can regress into the other.
- */
+/** `stretch` by default, so a lone button goes full width; `start` fixes it. */
 export const Alignment: Story = {
   args: { space: "3" },
   render: () => (
@@ -154,9 +123,6 @@ export const Alignment: Story = {
     const started = stackIn(canvasElement, '[data-demo="start"] .el-stack');
     await expect(started.getAttribute("data-align")).toBe("start");
 
-    // The consequence, not just the attribute. Both stacks are the same width;
-    // their children are not, and that difference *is* the axis. Asserting the
-    // attribute alone would pass with the rule deleted from the stylesheet.
     const [stretchedChild] = rects(stretched);
     const [startedChild] = rects(started);
     await expect(stretchedChild.width).toBeCloseTo(
@@ -167,14 +133,7 @@ export const Alignment: Story = {
   },
 };
 
-/**
- * The child margin reset, checked through real prose elements — the payload
- * that makes it necessary.
- *
- * These children arrive with live UA margins, and flex *adds* a child's margin
- * to the gap rather than collapsing with it. Without the reset in `stack.css`
- * this measures gap + margin + margin.
- */
+/** The block-margin reset, through real h2/p children. */
 export const ProseKeepsTheStep: Story = {
   args: { space: "2" },
   render: () => (
@@ -211,13 +170,8 @@ export const ProseKeepsTheStep: Story = {
 };
 
 /**
- * A consumer remaps the space scale from their own stylesheet, and it wins
- * whatever the load order.
- *
- * The rule is injected *before* every other stylesheet, at equal specificity
- * (`:root`), so if the defaults were unlayered the library's later `:root`
- * would win on source order and this would measure the default. It wins only
- * because the defaults sit in `@layer el.defaults` — ADR 0003 § 1.
+ * Injected before every sheet at equal specificity, so it wins only because the
+ * defaults are layered (ADR 0003 § 1).
  */
 export const RemappedScale: Story = {
   args: { space: "4" },
