@@ -86,6 +86,11 @@ attributes onto it — the same contract as every Radix primitive.
 
 ## The space scale
 
+> **FPO (for placement only).** The current steps are a naive linear stepping
+> (multiples of `0.25rem`) so the layouts have something to render. A
+> responsive, rhythmic scale will replace them before 1.0, and the step names
+> are likely to change with it.
+
 Each step is a custom property, `--el-space-<step>`, with a `rem` default (`1` =
 `0.25rem` … `30` = `7.5rem`). Remap any of them to your own tokens:
 

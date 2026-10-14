@@ -25,6 +25,11 @@ similar — so a consumer class can change the step at their breakpoint. Open:
 whether the knob is a step name or a length, and whether it is per component
 (`--el-stack-space`) or shared.
 
+A fluid scale reduces how often this is needed at all: if every step already
+grows with the space available, most "bigger gap on desktop" cases need no
+consumer media query. That is the subject of
+`../responsive-rhythmic-scale/tech-plan.md`.
+
 ## 2. A layout that changes shape
 
 Row on desktop, column on mobile. This is **not** a `Cluster` or `Stack`
