@@ -75,8 +75,8 @@ behaviour along with its fill.
 - **The rest of the Every Layout set is tested on its own merits, one at a
   time.** Membership in a published vocabulary is not an argument for shipping
   one, and neither is having shipped two of its siblings. `Grid` is the next
-  candidate (`../planning/grid-layout-primitive/tech-plan.md`); `Switcher` is
-  the likely one after (`../planning/responsive-layouts/questions.md`).
+  candidate (`../planning/grid-layout-primitive/tech-plan.md`); `Switcher` and
+  `Sidebar` are planned after it (ADR 0005).
 - **Consumers get no inset or surface utility.** They write the rule, against
   the same scale if they want it.
 
