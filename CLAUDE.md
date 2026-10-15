@@ -41,6 +41,8 @@ in `docs/decisions/`.
 - **The space scale is defined once**, in `lib/src/scss/_space.scss`, and
   mirrored by `lib/src/space.ts`. Add a step in both; the stories' vocabulary
   scrape fails if they disagree.
+- **Responsive spacing belongs to the scale** (ADR 0004): `space` takes one
+  step, never a per-breakpoint value. Never register a step with `@property`.
 - **Each `data-*` axis has a runtime list** (`stackAligns`, `clusterJustifies`,
   …) and the prop type is derived from it. Keep it that way — the scrape
   compares the list to the compiled CSS.
