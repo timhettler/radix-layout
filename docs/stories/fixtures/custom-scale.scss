@@ -1,0 +1,7 @@
+// A project's own scale: a literal step, and one derived from the base and ratio.
+@use "pkg:@timhettler/radix-layout" with (
+  $spaces: (
+    "tight": 3px,
+    "300": 2,
+  )
+);

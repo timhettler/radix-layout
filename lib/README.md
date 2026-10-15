@@ -31,7 +31,7 @@ Children in a column, spaced by a step on the space scale. Never wraps.
 ```tsx
 import { Stack } from "@timhettler/radix-layout";
 
-<Stack space="4">
+<Stack space="m">
   <h2>Notification settings</h2>
   <p>Choose how and when we get in touch.</p>
 </Stack>;
@@ -55,7 +55,7 @@ out of room.
 ```tsx
 import { Cluster } from "@timhettler/radix-layout";
 
-<Cluster space="3" justify="between">
+<Cluster space="s" justify="between">
   <button>Back</button>
   <button>Continue</button>
 </Cluster>;
@@ -77,7 +77,7 @@ Renders your element instead of a `div`, merging the layout's class and
 attributes onto it — the same contract as every Radix primitive.
 
 ```tsx
-<Cluster asChild space="2">
+<Cluster asChild space="xs">
   <ul role="list">
     <li>…</li>
   </ul>
@@ -86,21 +86,92 @@ attributes onto it — the same contract as every Radix primitive.
 
 ## The space scale
 
-> **FPO (for placement only).** The current steps are a naive linear stepping so
-> the layouts have something to render. A responsive, rhythmic scale will
-> replace them before 1.0, and the step names are likely to change with it.
+The default steps are exported as `spaces`: `xs` `s` `m` `l` `xl` `2xl`. `m` is
+`--el-space-base`, and each step up or down multiplies or divides by
+`--el-space-ratio` (1.5). Each step is a custom property, `--el-space-<step>`.
 
-The accepted steps are exported as `spaces`. Each is a custom property,
-`--el-space-<step>`, with a `rem` default. Remap any of them to your own tokens:
+The base is fluid: `0.75rem` in a container `20rem` wide or narrower, growing to
+`0.9375rem` at `80rem`, so every step grows with the room a layout is given.
+"Container" means the layout's nearest
+[query container](https://developer.mozilla.org/docs/Web/CSS/CSS_containment/Container_queries),
+or the viewport when there is none. Declare one on your own element, such as a
+card or a sidebar, and the layouts inside it space themselves for its width:
 
 ```css
-:root {
-  --el-space-4: var(--my-space-md);
+.card {
+  container-type: inline-size;
 }
 ```
 
-The defaults sit in `@layer el.defaults`, so your rule wins whatever its
+Don't declare one on an element sized by its content, such as a `Cluster` child:
+inline-size containment collapses it.
+
+Every default sits in `@layer el.defaults`, so your rule wins whatever its
 specificity or the order your stylesheets load in.
+
+### Retune the scale
+
+Set the knobs on `:root`. The steps read them there, so a knob set on any other
+element changes nothing.
+
+```css
+:root {
+  --el-space-base: 1rem;
+  --el-space-ratio: 1.25;
+}
+```
+
+### Redefine a step
+
+A step name is the contract and its value is a default. Map a step to your own
+token, or step it per breakpoint when your design specs one value per screen:
+
+```css
+:root {
+  --el-space-l: var(--my-space-md);
+}
+
+@media (width >= 64rem) {
+  :root {
+    --el-space-l: var(--my-space-lg);
+  }
+}
+```
+
+### Use your own steps
+
+When your design system's names or number of steps differ, compile the
+stylesheet with your own scale in place of loading `styles.css`. Each value is
+either an exponent on the ratio or a value as written:
+
+```scss
+@use "pkg:@timhettler/radix-layout" with (
+  $spaces: (
+    "xs": var(--ds-space-xs),
+    "sm": var(--ds-space-sm),
+    "md": 0,
+    "lg": 1,
+  )
+);
+```
+
+`$ratio`, `$base-min`, `$base-max`, `$fluid-min` and `$fluid-max` configure the
+same way. The `pkg:` URL needs Dart Sass 1.71 or later with its
+`NodePackageImporter`; in Vite, set
+`css.preprocessorOptions.scss.importers: [new NodePackageImporter()]`.
+
+Then give `space` the same names:
+
+```ts
+declare module "@timhettler/radix-layout" {
+  interface Register {
+    space: "xs" | "sm" | "md" | "lg";
+  }
+}
+```
+
+Keep the two lists in step. A name missing from the Sass renders with no gap,
+and nothing reports it.
 
 ## Design notes
 

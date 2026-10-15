@@ -30,7 +30,7 @@ rule wins regardless of specificity or load order.
 ```css
 @layer el.defaults {
   :root {
-    --el-space-4: 1rem;
+    --el-space-m: 0.75rem;
   }
 }
 ```
@@ -56,7 +56,7 @@ loaded first.
 ## Consequences
 
 - **A consumer's override wins regardless of load order** —
-  `:root { --el-space-4: var(--my-space-md) }` remaps the step even if it loads
+  `:root { --el-space-m: var(--my-space-md) }` remaps the step even if it loads
   before `styles.css`. The `RemappedScale` story asserts exactly that.
 - **A stylesheet carries two override semantics**, and a reader has to know
   which declaration has which. The rule in § 1 is mechanical — is this assigning

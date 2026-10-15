@@ -1,5 +1,5 @@
 export { spaces } from "./space";
-export type { Space } from "./space";
+export type { Register, Space } from "./space";
 
 export { Stack, stackAligns } from "./Stack";
 export type { StackAlign, StackProps } from "./Stack";

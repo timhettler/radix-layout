@@ -1947,6 +1947,7 @@ __metadata:
     playwright: "npm:^1.64.1"
     react: "npm:^19.3.1"
     react-dom: "npm:^19.3.1"
+    sass-embedded: "npm:^1.105.1"
     storybook: "npm:^10.6.2"
     typescript: "npm:^6.0.3"
     vite: "npm:^8.3.4"

@@ -1,21 +1,44 @@
-// Keys are the public data-space values and must match src/space.ts (checked by
-// the vocabulary stories).
-//
-// FPO: values and names change before 1.0; see planning/responsive-rhythmic-scale.
+@use "sass:math";
+@use "sass:meta";
 
+// Keys are the public data-space values and must match src/space.ts (checked by
+// the vocabulary stories). A unitless value is an exponent on the ratio; any
+// other value is the step's default as written. A project may configure all of
+// this (ADR 0006).
 $spaces: (
-  "1": 0.25rem,
-  "2": 0.5rem,
-  "3": 0.75rem,
-  "4": 1rem,
-  "6": 1.5rem,
-  "8": 2rem,
-  "12": 3rem,
-  "16": 4rem,
-  "20": 5rem,
-  "24": 6rem,
-  "30": 7.5rem,
-);
+  "xs": -2,
+  "s": -1,
+  "m": 0,
+  "l": 1,
+  "xl": 2,
+  "2xl": 3,
+) !default;
+
+$ratio: 1.5 !default;
+
+// The base grows from $base-min to $base-max as its container widens from
+// $fluid-min to $fluid-max.
+$base-min: 0.75rem !default;
+$base-max: 0.9375rem !default;
+$fluid-min: 20rem !default;
+$fluid-max: 80rem !default;
+
+@function -round($number) {
+  @return math.div(math.round($number * 10000), 10000);
+}
+
+// Precomputed: interpolating in CSS would divide a length by a length.
+@function -base() {
+  $slope: math.div($base-max - $base-min, $fluid-max - $fluid-min);
+  $intercept: $base-min - $slope * $fluid-min;
+  @return clamp(
+    #{$base-min},
+    #{-round($intercept)} + #{-round($slope * 100)}cqi,
+    #{$base-max}
+  );
+}
+
+$base: -base();
 
 @function property($step) {
   @return --el-space-#{$step};
@@ -23,4 +46,13 @@ $spaces: (
 
 @function value($step) {
   @return var(#{property($step)});
+}
+
+// pow() rather than a chain off the neighbouring step, so redefining one step
+// moves no other.
+@function default($value) {
+  @if meta.type-of($value) == "number" and math.is-unitless($value) {
+    @return calc(var(--el-space-base) * pow(var(--el-space-ratio), $value));
+  }
+  @return $value;
 }

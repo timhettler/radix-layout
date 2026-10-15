@@ -6,8 +6,11 @@
 
 @layer el.defaults {
   :root {
+    --el-space-base: #{space.$base};
+    --el-space-ratio: #{space.$ratio};
+
     @each $step, $value in space.$spaces {
-      #{space.property($step)}: #{$value};
+      #{space.property($step)}: #{space.default($value)};
     }
   }
 }

@@ -89,7 +89,7 @@ Returns the breakpoints to the library and adds a runtime (ADR 0002).
   full-width default while the root sets it. That rules out registering it with
   `inherits: false`.
 - **The gutter is a public property and the row gap is a prop.** `column-gap`
-  reads `--el-grid-gutter`, defaulted in `el.defaults` to a space step; the
+  reads `--el-grid-gutter`, defaulted in `el.defaults` (Open questions); the
   consumer remaps it per breakpoint like the column count. Row rhythm is
   `data-space`, on the same scale as `Stack`.
 - **`.el-grid__item` is a query container** (`container-type: inline-size`). Its
@@ -189,9 +189,9 @@ whoever wrote it.
 - **Does style containment on `.el-grid__item` matter?** If `container-type`
   applies style containment, it scopes CSS counters, and numbering that runs
   across cells restarts in each. Verify, and document it if so.
-- **What is the default gutter?** A step on the rhythmic space scale
-  (`../responsive-rhythmic-scale/tech-plan.md`). It does not block the
-  mechanism.
+- **What is the default gutter?** A step on the space scale (ADR 0006), but a
+  project may compile its own `$spaces`, so the default cannot name a step that
+  might not exist. It does not block the mechanism.
 
 ## Deferred / follow-ups
 

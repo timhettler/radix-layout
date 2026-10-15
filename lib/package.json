@@ -16,6 +16,7 @@
   "exports": {
     ".": {
       "types": "./dist/main.d.ts",
+      "sass": "./dist/scss/styles.scss",
       "default": "./dist/radix-layout.js"
     },
     "./styles.css": "./dist/styles.css",

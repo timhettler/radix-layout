@@ -29,9 +29,7 @@ container, or the small viewport when there is none.
 Never register a step with `@property`. A registered `<length>` computes on
 `:root`, which fixes every container-relative step to the viewport.
 
-Values and names are the rhythmic-scale plan's
-(`../planning/responsive-rhythmic-scale/tech-plan.md`). The position names used
-here (`m`) are illustrative.
+The default values and names, and how a project replaces them, are ADR 0006.
 
 ### 3. The step names are the contract, and a consumer may redefine any step
 

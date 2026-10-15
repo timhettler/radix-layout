@@ -40,7 +40,8 @@ in `docs/decisions/`.
   `data-*` attributes only — never a `style` (ADR 0002).
 - **The space scale is defined once**, in `lib/src/scss/_space.scss`, and
   mirrored by `lib/src/space.ts`. Add a step in both; the stories' vocabulary
-  scrape fails if they disagree.
+  scrape fails if they disagree. A project may compile its own `$spaces` (ADR
+  0006), so no layout names a step outside `_space.scss`.
 - **Responsive spacing belongs to the scale** (ADR 0004): `space` takes one
   step, never a per-breakpoint value. Never register a step with `@property`.
 - **Each `data-*` axis has a runtime list** (`stackAligns`, `clusterJustifies`,
@@ -74,8 +75,8 @@ Every consumer-facing change needs a changeset (`yarn changeset`).
 
 The repo is in Changesets **prerelease mode** (`.changeset/pre.json`, tag
 `alpha`): versions come out as `0.1.0-alpha.N` and publish under the `alpha`
-dist-tag. Breaking changes (for example, renaming the FPO space scale) are
-expected until `yarn changeset pre exit` before 1.0.
+dist-tag. Breaking changes (for example, renaming a space step) are expected
+until `yarn changeset pre exit` before 1.0.
 
 ## Writing
 
