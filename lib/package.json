@@ -1,6 +1,6 @@
 {
   "name": "@timhettler/radix-layout",
-  "version": "0.0.0",
+  "version": "0.1.0-alpha.0",
   "description": "Every Layout's layout primitives as Radix-style React components, styled by static CSS.",
   "type": "module",
   "sideEffects": [
