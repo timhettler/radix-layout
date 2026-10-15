@@ -1,17 +1,6 @@
 // One mixin per layout. Each parameter is a public axis, never a per-caller
 // variant.
 
-@use "sass:list";
-
-// A `safe` value preceded by its plain keyword: Safari added `safe` in 17.6,
-// inside Baseline Widely Available, and drops the declaration before that.
-@mixin alignment($property, $value) {
-  @if list.length($value) == 2 and list.nth($value, 1) == safe {
-    #{$property}: list.nth($value, 2);
-  }
-  #{$property}: $value;
-}
-
 // Both axes: an inline margin adds to the gap; a block margin skews align-items
 // (ADR 0001).
 //
@@ -26,8 +15,8 @@
 ) {
   display: $display;
   flex-wrap: wrap;
-  @include alignment(justify-content, $justify);
-  @include alignment(align-items, $align);
+  justify-content: $justify;
+  align-items: $align;
   gap: $space;
 
   > * {
@@ -51,7 +40,7 @@
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
-  @include alignment(align-items, $align);
+  align-items: $align;
   gap: $space;
 
   > * {

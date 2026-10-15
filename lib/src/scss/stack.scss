@@ -21,6 +21,6 @@ $align: (
 
 @each $keyword, $value in $align {
   .el-stack[data-align="#{$keyword}"] {
-    @include layout.alignment(align-items, $value);
+    align-items: $value;
   }
 }
