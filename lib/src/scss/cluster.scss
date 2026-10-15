@@ -1,3 +1,4 @@
+@use "sass:list";
 @use "layers";
 @use "layout";
 @use "space";
@@ -26,6 +27,26 @@ $display: (
   "block": flex,
   "inline": inline-flex,
 );
+
+// First is the initial value. Every other keyword needs a style() rule in the
+// cluster mixin.
+$flow: (wrap, stack);
+
+@function -syntax($keywords) {
+  $syntax: list.nth($keywords, 1);
+  @for $i from 2 through list.length($keywords) {
+    $syntax: "#{$syntax} | #{list.nth($keywords, $i)}";
+  }
+  @return $syntax;
+}
+
+// Registered so a nested cluster can't inherit stack. A keyword, not a step, so
+// ADR 0004 § 2 doesn't apply.
+@property --el-cluster-flow {
+  syntax: "#{-syntax($flow)}";
+  inherits: false;
+  initial-value: list.nth($flow, 1);
+}
 
 .el-cluster {
   @include layout.cluster($space: null);

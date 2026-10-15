@@ -71,6 +71,25 @@ import { Cluster } from "@timhettler/radix-layout";
 
 Children's margins are zeroed on both axes.
 
+### Stack below your breakpoint
+
+Set `--el-cluster-flow: stack` on the cluster's own class, under your own media
+or container query, and every child takes a full-width line of its own. The
+breakpoint is yours; the library publishes none.
+
+```css
+@container (width < 30rem) {
+  .checkout-actions {
+    --el-cluster-flow: stack;
+  }
+}
+```
+
+The property doesn't inherit, so set on an ancestor it does nothing, and a
+cluster nested inside a stacked one keeps wrapping. The values are exported as
+`clusterFlows`. Stacked children are always full width; for a column whose
+children keep their own width, use `Stack`.
+
 ## `asChild`
 
 Renders your element instead of a `div`, merging the layout's class and
