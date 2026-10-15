@@ -19,17 +19,21 @@ consumer's behalf.
 ## Approach
 
 **The span is a public CSS custom property, and the consumer writes the media
-query.** The library publishes one declaration that reads the property; a
-product sets it on a class of its own, at whatever breakpoints it supports.
+query.** One library declaration reads the property; a product sets it on a
+class of its own, at whatever breakpoints it supports.
 
 ```scss
-// the item's one unlayered declaration
+// the item's unlayered declarations
 .el-grid__item {
-  grid-column: auto / span var(--el-grid-span, var(--el-grid-columns));
+  grid-column: auto / span var(--el-grid-span);
+  container-type: inline-size;
 }
 
-// the `span` prop's default, one rule per legal value, layered (ADR 0003)
+// defaults, layered (ADR 0003): full width, or one rule per legal `span`
 @layer el.defaults {
+  .el-grid__item {
+    --el-grid-span: var(--el-grid-columns);
+  }
   .el-grid__item[data-span="4"] {
     --el-grid-span: 4;
   }
@@ -50,14 +54,14 @@ product sets it on a class of its own, at whatever breakpoints it supports.
 
 Three properties follow. **One property name rather than one per tier**, since
 the consumer's media query does the selecting — no fallback chain, nothing to
-register. **The default is full width without a keyword**: an item with no
-`--el-grid-span` falls back to `--el-grid-columns`, and a span equal to the
-column count is the full row at every width. **The static case is a prop**:
-`Grid.Item`'s `span` emits `data-span`, whose rule is layered so a consumer's
-own class still wins (ADR 0003 § 1).
+register. **The default is full width without a keyword**: every item's layered
+default is `--el-grid-columns`, and a span equal to the column count is the full
+row at every width. **The static case is a prop**: `Grid.Item`'s `span` emits
+`data-span`, whose rule is layered so a consumer's own class still wins (ADR
+0003 § 1).
 
-This is also the general answer for any responsive _value_; see
-`../responsive-layouts/questions.md`.
+This is the per-instance knob shape ADR 0004 § 5 generalises. Responsive
+spacing, the gutter and row gap included, is a token concern (ADR 0004).
 
 **Rejected: an enumerated `data-span-tablet` / `data-span-desktop` vocabulary.**
 Bakes our breakpoints into the consumer's vocabulary, costs a rule per value per
@@ -83,11 +87,17 @@ Returns the breakpoints to the library and adds a runtime (ADR 0002).
   `--el-grid-columns`, `--el-grid-gutter`.
 - **`--el-grid-columns` must inherit**, because the item reads it for its
   full-width default while the root sets it. That rules out registering it with
-  `inherits: false`, the opposite of what `--el-grid-span` wants.
+  `inherits: false`.
 - **The gutter is a public property and the row gap is a prop.** `column-gap`
   reads `--el-grid-gutter`, defaulted in `el.defaults` to a space step; the
   consumer remaps it per breakpoint like the column count. Row rhythm is
   `data-space`, on the same scale as `Stack`.
+- **`.el-grid__item` is a query container** (`container-type: inline-size`). Its
+  width comes from its track, so containment cannot collapse it, and a card in a
+  cell gets its spacing from the cell (ADR 0004 § 4).
+- **Every item assigns `--el-grid-span` in `el.defaults`**, so a nested grid's
+  item never inherits an outer item's span and no `@property` is needed (ADR
+  0004 § 5).
 - **Clears ADR 0001 § 1 on two failure modes**: `minmax(0, 1fr)` and the
   child-margin reset, both of which a caller hand-writing `display: grid` gets
   wrong — see § Notes.
@@ -117,9 +127,10 @@ Returns the breakpoints to the library and adds a runtime (ADR 0002).
 - [ ] **Add the defaults to `lib/src/scss/defaults.scss`**: `--el-grid-columns`
       and `--el-grid-gutter` inside `el.defaults`.
 - [ ] **Author `lib/src/scss/grid.scss`** emitting `.el-grid`, the `data-space`
-      row-gap rules (from `_space.scss`), the layered `data-span` rules that set
-      `--el-grid-span`, and the single unlayered `.el-grid__item` declaration.
-      Add `grid` to `ENTRIES` in `lib/scripts/build-css.mjs` and to `exports`.
+      row-gap rules (from `_space.scss`), the layered rules that set
+      `--el-grid-span`, and the unlayered `.el-grid__item` declarations
+      (`grid-column`, `container-type`). Add `grid` to `ENTRIES` in
+      `lib/scripts/build-css.mjs` and to `exports`.
 - [ ] **Add `lib/src/Grid.tsx`** in the Radix compound shape radix-card uses:
       `Grid` / `GridItem` with `Root` / `Item` aliases, both on `Primitive.div`
       so both take `asChild` and a `ref`. `GridItem` takes `span`, typed from a
@@ -142,9 +153,9 @@ Returns the breakpoints to the library and adds a runtime (ADR 0002).
 
 ## Notes
 
-**The default is full width, and it costs no vocabulary.** `grid-column` falls
-back to the column count, and a span equal to the column count is the full row.
-It works only because `--el-grid-columns` inherits from the root to the item.
+**The default is full width, and it costs no vocabulary.** The span defaults to
+the column count, and a span equal to the column count is the full row. It works
+only because `--el-grid-columns` inherits from the root to the item.
 
 **Two failure modes, and they are the ones that make this a primitive.** `1fr`
 is `minmax(auto, 1fr)`, whose `auto` minimum is content-based, so one long URL
@@ -175,15 +186,12 @@ whoever wrote it.
     most products, and the only place the library would publish breakpoints. The
     consumer replaces it wholesale by setting the property themselves, which
     wins because the defaults are layered.
-- **Should `--el-grid-span` inherit?** Unregistered, it does — so a nested
-  grid's items pick up an ancestor item's span unless they set their own.
-  `@property { syntax: "*"; inherits: false }` should stop that while still
-  letting the property be _absent_ so the `var()` fallback fires. **Verify in
-  Chromium, Gecko and WebKit before relying on it** — the full-width default
-  depends on it.
-- **What is the default gutter?** A step on the space scale, ideally the
-  rhythmic one (`../responsive-rhythmic-scale/tech-plan.md`). It does not block
-  the mechanism.
+- **Does style containment on `.el-grid__item` matter?** If `container-type`
+  applies style containment, it scopes CSS counters, and numbering that runs
+  across cells restarts in each. Verify, and document it if so.
+- **What is the default gutter?** A step on the rhythmic space scale
+  (`../responsive-rhythmic-scale/tech-plan.md`). It does not block the
+  mechanism.
 
 ## Deferred / follow-ups
 
@@ -194,7 +202,3 @@ whoever wrote it.
 - **`grid-auto-flow: dense` as a deliberate axis.** Declared as `row` so a
   product's reset cannot win; `dense` backfills holes, which is a legitimate
   request and a reordering hazard at once.
-- **This is the precedent for every later responsive value** — see
-  `../responsive-layouts/questions.md`. Write the convention down once it has a
-  second instance; a responsive `space` on `Stack` or `Cluster` is the likely
-  one.

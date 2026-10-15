@@ -39,9 +39,9 @@ A sketch, not a decision:
 ```
 
 - Steps named by **position**, not value: `s-2 … s0 … s5`, or `xs … xl`.
-- Each step is a `clamp(min, preferred, max)`, so it grows continuously with no
-  breakpoints, in keeping with the Grid plan and the responsive-layouts
-  questions.
+- Each step is a `clamp(min, preferred, max)` in `cqi`, left unregistered, so it
+  grows with the layout's nearest container and needs no breakpoints (ADR 0004 §
+  2).
 - The base, ratio and the fluid range are public custom properties, so a
   consumer retunes the whole scale with a few declarations rather than remapping
   every step.
@@ -57,6 +57,9 @@ A sketch, not a decision:
   properties, so their defaults are layered.
 - **Grid's gutter default** (Grid plan § Open questions) should come from this
   scale, so settle this first or at the same time.
+- **The step names are the contract; the values are defaults** (ADR 0004 § 3). A
+  consumer may redefine any step, stepped per media query or fluid between their
+  own screen widths, so name for position and document the redefinition pattern.
 
 ## Open questions
 
@@ -65,10 +68,6 @@ A sketch, not a decision:
   type scale?
 - **How many steps, and their names?** Position names (`s-2 … s5`) or T-shirt
   sizes. Negative steps are needed for tight gaps.
-- **Fluid against what?** Viewport units (`vi`) are simple. Container query
-  units (`cqi`) respond to the space a layout is actually given, which matches
-  intrinsic layouts better, but they need a container ancestor and fall back to
-  the small-viewport value without one.
 - **Can a ratio-derived scale stay CSS-only?** `calc()` handles multiplication
   and `clamp()` handles the fluid range. Fluid _interpolation_ between two
   ratios (a tighter ratio on small screens) needs `pow()`, which is newer CSS;
@@ -83,6 +82,8 @@ A sketch, not a decision:
 - [ ] Replace `$spaces` in `_space.scss` and `SPACE_PROPERTY` in `space.ts`.
 - [ ] Emit the knobs and the derived steps from `defaults.scss`, layered.
 - [ ] Update the stories: the vocabulary scrape, and gap measurements at two
-      viewport widths to prove the steps are fluid.
+      container widths to prove the steps are fluid.
+- [ ] Document in `lib/README.md` how to redefine steps per media query and
+      where to declare query containers (ADR 0004 § 3–4).
 - [ ] Remove the FPO notes from `_space.scss`, `space.ts` and `lib/README.md`.
 - [ ] A changeset marking the `space` rename as breaking.
