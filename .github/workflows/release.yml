@@ -29,13 +29,11 @@ jobs:
         run: yarn
 
       - name: Create Release Pull Request or Publish to npm
-        uses: changesets/action@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v1
+        uses: changesets/action@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
         with:
-          publish: yarn release
+          publish-script: yarn release
+          # A PAT with `workflows` permission: the default token can't update a
+          # Version PR that touches .github/workflows/**.
+          github-token: ${{ secrets.RELEASE_TOKEN }}
         env:
-          # PAT (secret: RELEASE_TOKEN) with `workflows` permission so Changesets
-          # can update the Version PR branch even when it includes workflow-file
-          # changes — the default GITHUB_TOKEN cannot push to .github/workflows/**.
-          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
