@@ -53,9 +53,8 @@ in `docs/decisions/`.
 - **Only public custom property defaults go in `@layer el.defaults`**; every
   layout declaration stays unlayered (ADR 0003). Each compiled file opens with
   `@layer el.defaults;` via `_layers.scss`.
-- **Target is Baseline Widely Available** (`.browserslistrc`), which drives
-  lib's Vite target. Sass isn't transformed, so check new CSS against it by
-  hand; `safe` alignment goes through the `alignment` mixin for its fallback.
+- **Target is Baseline Newly Available** (`.browserslistrc`), which drives lib's
+  Vite target. Sass isn't transformed, so check new CSS against it by hand.
 - **A new layout must pass ADR 0001 § 1**: several declarations _and_ a failure
   mode a caller would hit. There is no `Box`, deliberately.
 - **Packaging mirrors Radix**: `@radix-ui/*` primitives are regular,

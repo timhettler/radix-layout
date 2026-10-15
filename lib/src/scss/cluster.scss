@@ -39,13 +39,13 @@ $display: (
 
 @each $keyword, $value in $justify {
   .el-cluster[data-justify="#{$keyword}"] {
-    @include layout.alignment(justify-content, $value);
+    justify-content: $value;
   }
 }
 
 @each $keyword, $value in $align {
   .el-cluster[data-align="#{$keyword}"] {
-    @include layout.alignment(align-items, $value);
+    align-items: $value;
   }
 }
 
