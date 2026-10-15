@@ -51,7 +51,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    space: "3",
+    space: "m",
     children: (
       <>
         <button type="button">Save</button>
@@ -64,7 +64,7 @@ export const Default: Story = {
 
     // The documented default element, and the attribute the required prop writes.
     await expect(node.tagName).toBe("DIV");
-    await expect(node.getAttribute("data-space")).toBe("3");
+    await expect(node.getAttribute("data-space")).toBe("m");
 
     await expect(node.hasAttribute("data-justify")).toBe(false);
     await expect(node.hasAttribute("data-align")).toBe(false);
@@ -79,7 +79,7 @@ export const Default: Story = {
 
     const [first, second] = rects(node);
     await expect(second.top).toBe(first.top);
-    await expect(second.left - first.right).toBeCloseTo(resolvedGap("3"), 1);
+    await expect(second.left - first.right).toBeCloseTo(resolvedGap("m"), 1);
   },
 };
 
@@ -87,9 +87,9 @@ export const Default: Story = {
  * Every step on the space scale has a rule, and every rule renders its step.
  */
 export const Spacing: Story = {
-  args: { space: "4" },
+  args: { space: "l" },
   render: () => (
-    <Stack space="6">
+    <Stack space="xl">
       {spaces.map((step) => (
         <div key={step} data-step={step}>
           <p>space=&quot;{step}&quot;</p>
@@ -134,17 +134,17 @@ const ALIGN_VALUE = {
 } as const;
 
 export const Alignment: Story = {
-  args: { space: "3" },
+  args: { space: "m" },
   render: () => (
-    <Stack space="6">
+    <Stack space="xl">
       {clusterJustifies.map((justify) => (
-        <Cluster key={justify} space="3" justify={justify} data-justify-demo="">
+        <Cluster key={justify} space="m" justify={justify} data-justify-demo="">
           <span style={chip}>justify=&quot;{justify}&quot;</span>
           <span style={chip}>Two</span>
         </Cluster>
       ))}
       {clusterAligns.map((align) => (
-        <Cluster key={align} space="3" align={align} data-align-demo="">
+        <Cluster key={align} space="m" align={align} data-align-demo="">
           <span style={chip}>align=&quot;{align}&quot;</span>
           <span style={{ ...chip, paddingBlock: "2rem" }}>Tall</span>
         </Cluster>
@@ -190,11 +190,11 @@ export const Alignment: Story = {
  * sits in a line of text.
  */
 export const BoxLevel: Story = {
-  args: { space: "2" },
+  args: { space: "s" },
   render: () => (
-    <Stack space="6">
+    <Stack space="xl">
       <div data-demo="block">
-        <Cluster space="2" display="block">
+        <Cluster space="s" display="block">
           <span style={chip}>One</span>
           <span style={chip}>Two</span>
         </Cluster>
@@ -203,7 +203,7 @@ export const BoxLevel: Story = {
           is the case this axis exists for, and a <div> there would be invalid. */}
       <p data-demo="paragraph">
         Text before{" "}
-        <Cluster asChild space="2" display="inline" data-demo="inline">
+        <Cluster asChild space="s" display="inline" data-demo="inline">
           <span>
             <span style={chip}>One</span>
             <span style={chip}>Two</span>
@@ -238,10 +238,10 @@ export const BoxLevel: Story = {
 
 /** No per-item wrapper: the caller's elements are the flex items. */
 export const Wrapping: Story = {
-  args: { space: "3" },
+  args: { space: "m" },
   render: () => (
     <div style={{ maxInlineSize: "12rem" }}>
-      <Cluster space="3">
+      <Cluster space="m">
         {["One", "Two", "Three", "Four", "Five"].map((label) => (
           <button key={label} type="button">
             {label}
@@ -266,7 +266,7 @@ export const Wrapping: Story = {
     await expect(firstLine.length).toBeLessThan(boxes.length);
     const nextLine = boxes[firstLine.length];
     await expect(nextLine.top - firstLine[0].bottom).toBeCloseTo(
-      resolvedGap("3"),
+      resolvedGap("m"),
       1,
     );
   },
@@ -277,12 +277,12 @@ export const Wrapping: Story = {
  * child rather than wrapping it.
  */
 export const Semantics: Story = {
-  args: { space: "2" },
+  args: { space: "s" },
   render: () => (
-    <Stack space="6">
+    <Stack space="xl">
       {/* `role="list"` is not decoration: Safari drops list semantics from a
           `ul` whose `list-style` is `none`, which a product's reset routinely sets. */}
-      <Cluster asChild space="2" data-demo="chips">
+      <Cluster asChild space="s" data-demo="chips">
         <ul
           className="chips"
           role="list"
@@ -297,7 +297,7 @@ export const Semantics: Story = {
         </ul>
       </Cluster>
 
-      <Cluster asChild space="3">
+      <Cluster asChild space="m">
         <nav aria-label="Pagination">
           <a href="#previous">Previous</a>
           <a href="#next">Next</a>
@@ -310,7 +310,7 @@ export const Semantics: Story = {
     // <ul> through its implicit role whether or not `role="list"` survived.
     const list = clusterIn(canvasElement, "ul");
 
-    await expect(list.getAttribute("data-space")).toBe("2");
+    await expect(list.getAttribute("data-space")).toBe("s");
     await expect(list.getAttribute("role")).toBe("list");
 
     // Slot-first is Radix's order; this pins it, not cx().

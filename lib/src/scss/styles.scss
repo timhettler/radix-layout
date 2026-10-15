@@ -1,0 +1,7 @@
+// The aggregate, and the entry a project configures its own scale through:
+// @use "pkg:@timhettler/radix-layout" with ($spaces: (...)).
+@forward "space" show $spaces, $ratio, $base-min, $base-max, $fluid-min,
+  $fluid-max;
+@use "defaults";
+@use "stack";
+@use "cluster";
