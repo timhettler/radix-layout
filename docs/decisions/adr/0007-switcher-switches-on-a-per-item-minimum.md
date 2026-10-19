@@ -69,6 +69,10 @@ larger `min`, which the consumer picks for their content.
 default is `m`. They are item widths, not gaps, so they sit in `rem` off the
 space scale.
 
+The values are provisional: round numbers, measured against no content. With
+`space="m"`, three `m` items need about 747px, so a full-width 3-up row stacks
+in a 768px viewport with 16px of page padding.
+
 `min` and `space` both take ADR 0004 § 5's knob shape. Each `data-min` value
 assigns `--el-switcher-min` in `el.defaults`, each `data-space` step assigns
 `--el-switcher-space`, and a bare `.el-switcher` assigns the `m` minimum. The
@@ -145,4 +149,6 @@ switch point drifts by about 3px. Containers on the items do not move it.
 
 ## Revisit when
 
+- The first real use, such as a form row of City, State and Zip in a drawer,
+  measures the width its items need. That sets the values in § 3.
 - A design caps how many items share the row.
