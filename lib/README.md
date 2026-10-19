@@ -71,6 +71,48 @@ import { Cluster } from "@timhettler/radix-layout";
 
 Children's margins are zeroed on both axes.
 
+## Switcher
+
+Children in one row of equal widths, or all stacked, never split two and one.
+Every child stacks at once when any would be narrower than `min`, so the switch
+follows the space the switcher is given, not the viewport.
+
+```tsx
+import { Switcher } from "@timhettler/radix-layout";
+
+<Switcher space="m" min="s">
+  <PlanCard plan="basic" />
+  <PlanCard plan="pro" />
+  <PlanCard plan="team" />
+</Switcher>;
+```
+
+| Prop      | Values                                   | Default  |
+| --------- | ---------------------------------------- | -------- |
+| `space`   | a step from [`spaces`](#the-space-scale) | required |
+| `min`     | `s` (10rem) `m` (15rem) `l` (20rem)      | `m`      |
+| `asChild` | `boolean`                                | `false`  |
+
+The row needs every child at `min` plus the gaps, so three children at `min="s"`
+need `30rem` and two gaps. Every child counts, including one hidden with
+`display: none`; leave a child out of the render to remove it.
+
+Each child is an inline-size query container. Its content never sizes it, so
+content wider than its share overflows, and the fix is a larger `min`. Spacing
+inside a child resolves against the child.
+
+For a minimum off the list, set `--el-switcher-min` on the switcher's own class.
+`--el-switcher-space` does the same for the gap, and the switch point follows
+both:
+
+```css
+.plan-tiers {
+  --el-switcher-min: 18rem;
+}
+```
+
+Children's margins are zeroed on both axes.
+
 ## `asChild`
 
 Renders your element instead of a `div`, merging the layout's class and

@@ -16,3 +16,6 @@ export type {
   ClusterJustify,
   ClusterProps,
 } from "./Cluster";
+
+export { Switcher, switcherMins } from "./Switcher";
+export type { SwitcherMin, SwitcherProps } from "./Switcher";

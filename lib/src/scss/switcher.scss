@@ -1,0 +1,37 @@
+@use "sass:map";
+@use "layers";
+@use "layout";
+@use "space";
+
+// Item widths, not gaps, so in rem and off the space scale (ADR 0007 § 3).
+$min: (
+  "s": 10rem,
+  "m": 15rem,
+  "l": 20rem,
+);
+
+@layer el.defaults {
+  .el-switcher {
+    --el-switcher-min: #{map.get($min, "m")};
+  }
+
+  @each $keyword, $value in $min {
+    .el-switcher[data-min="#{$keyword}"] {
+      --el-switcher-min: #{$value};
+    }
+  }
+
+  @each $step, $_ in space.$spaces {
+    .el-switcher[data-space="#{$step}"] {
+      --el-switcher-space: #{space.value($step)};
+    }
+  }
+}
+
+.el-switcher {
+  @include layout.switcher;
+}
+
+.el-switcher[data-space] {
+  gap: var(--el-switcher-space);
+}

@@ -25,12 +25,12 @@ position applied to shape rather than value.
 
 ### 3. Each intent is its own layout
 
-| Intent                                                       | Layout                                                  |
-| ------------------------------------------------------------ | ------------------------------------------------------- |
-| Ragged wrap: items move to the next line one at a time       | `Cluster`                                               |
-| All at once: side by side or all stacked, never two + one    | `Switcher` (`../planning/switcher-layout/tech-plan.md`) |
-| Two unequal parts: media beside text, a panel beside results | `Sidebar` (`../planning/sidebar-layout/tech-plan.md`)   |
-| Natural width to full width: an action bar of buttons        | `Cluster` with `--el-cluster-flow` (§ 4)                |
+| Intent                                                       | Layout                                                |
+| ------------------------------------------------------------ | ----------------------------------------------------- |
+| Ragged wrap: items move to the next line one at a time       | `Cluster`                                             |
+| All at once: side by side or all stacked, never two + one    | `Switcher` (ADR 0007)                                 |
+| Two unequal parts: media beside text, a panel beside results | `Sidebar` (`../planning/sidebar-layout/tech-plan.md`) |
+| Natural width to full width: an action bar of buttons        | `Cluster` with `--el-cluster-flow` (§ 4)              |
 
 A new layout still passes ADR 0001 § 1 on its own merits.
 
