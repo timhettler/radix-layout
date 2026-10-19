@@ -52,8 +52,7 @@
 // assigns; gap is left to the [data-space] rule, so a bare gap can't win and
 // fall out of step with the basis (ADR 0004 § 5).
 //
-// The basis is 0 while every item fits at the minimum, so the items share the
-// row, and 100% below it, so each takes a line. Why 1e9 and not 999: ADR 0007 § 1.
+// Why 1e9 and not Every Layout's 999: ADR 0007 § 1.
 //
 // The intrinsic width is load-bearing: containment without it collapses the
 // switcher to its gaps in a shrink-to-fit parent (ADR 0007 § 5).

@@ -97,17 +97,19 @@ The row needs every child at `min` plus the gaps, so three children at `min="s"`
 need `30rem` and two gaps. Every child counts, including one hidden with
 `display: none`; leave a child out of the render to remove it.
 
-Each child is an inline-size query container. Its content never sizes it, so
-content wider than its share overflows, and the fix is a larger `min`. Spacing
-inside a child resolves against the child.
+A child's content never sizes it, so content wider than its share overflows, and
+the fix is a larger `min`. Each child is an inline-size query container, so the
+layouts inside it space themselves for the child's width (see
+[The space scale](#the-space-scale)).
 
-For a minimum off the list, set `--el-switcher-min` on the switcher's own class.
-`--el-switcher-space` does the same for the gap, and the switch point follows
-both:
+For a minimum off the list, set `--el-switcher-min` on a class of your own on
+the switcher. `--el-switcher-space` sets the gap, as a length rather than a step
+name. Both take any length, and the switch point follows both:
 
 ```css
 .plan-tiers {
   --el-switcher-min: 18rem;
+  --el-switcher-space: var(--el-space-l);
 }
 ```
 

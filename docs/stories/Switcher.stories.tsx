@@ -28,14 +28,31 @@ const isRow = (node: Element) => {
   return boxes.every((box) => Math.abs(box.top - boxes[0].top) < 0.5);
 };
 
-/** `--el-switcher-min` in px, resolved inside an item, where the basis reads it. */
-function resolvedMin(node: HTMLElement) {
+/** Every child on its own line at the switcher's full width; a two-and-one split is neither this nor a row. */
+const isStacked = (node: Element) => {
+  const boxes = rects(node);
+  const width = node.getBoundingClientRect().width;
+  return boxes.every(
+    (box, index) =>
+      Math.abs(box.width - width) < 0.5 &&
+      (index === 0 || box.top >= boxes[index - 1].bottom),
+  );
+};
+
+/** The shape the threshold says the switcher should have at its current width. */
+const hasShapeFor = (node: HTMLElement) =>
+  node.getBoundingClientRect().width >= threshold(node)
+    ? isRow(node)
+    : isStacked(node);
+
+/** `--el-switcher-min` in px, resolved inside a child, where the basis reads it. */
+function resolvedMin(node: HTMLElement, child = node.firstElementChild!) {
   const probe = document.createElement("div");
   probe.setAttribute(
     "style",
     "position: absolute; visibility: hidden; inline-size: var(--el-switcher-min)",
   );
-  node.firstElementChild!.append(probe);
+  child.append(probe);
   const value = probe.getBoundingClientRect().width;
   probe.remove();
   return value;
@@ -61,7 +78,7 @@ const childFrames = (node: Element) =>
     );
   }, 0);
 
-/** Above layout's 1/64px rounding, and well inside the band a 999 basis leaves. */
+/** Above the browsers' layout units (1/64px, or 1/60px in Firefox), and well inside the band a 999 basis leaves. */
 const NEAR = 0.1;
 
 const setWidth = (frame: HTMLElement, px: number) => {
@@ -123,9 +140,8 @@ export const Default: Story = {
     const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
     await expect(resolvedMin(node)).toBeCloseTo(15 * rem, 1);
 
-    // Whatever width the canvas gives it, it is one of the two shapes.
-    const width = node.getBoundingClientRect().width;
-    await expect(isRow(node)).toBe(width >= threshold(node));
+    // Whatever width the canvas gives it, it is the shape that width calls for.
+    await expect(hasShapeFor(node)).toBe(true);
   },
 };
 
@@ -221,12 +237,9 @@ export const Threshold: Story = {
       }
 
       setWidth(frame, row - NEAR);
-      await expect(isRow(node), `${count} items at ${row - NEAR}px`).toBe(
-        false,
+      await expect(isStacked(node), `${count} items at ${row - NEAR}px`).toBe(
+        true,
       );
-      for (const box of rects(node)) {
-        await expect(box.width).toBeCloseTo(row - NEAR, 1);
-      }
     }
   },
 };
@@ -255,16 +268,17 @@ export const FluidGap: Story = {
     for (let width = start - 3; width <= start + 3; width += 0.25) {
       setWidth(frame, width);
       const row = threshold(node);
-      // Layout rounds to 1/64px, so skip a width that lands on the threshold.
+      // Layout rounds widths, so skip one that lands on the threshold.
       if (Math.abs(width - row) < 0.05) continue;
-      await expect(isRow(node), `${width}px`).toBe(width >= row);
+      await expect(hasShapeFor(node), `${width}px`).toBe(true);
     }
   },
 };
 
 /**
- * Each child is a query container, so its content never sizes it: a long word
- * overflows its own child, and the row stays equal.
+ * With a zero basis and `min-inline-size: 0`, content never sizes a child: a
+ * long word overflows its own child and the row stays equal. Each child is also
+ * a query container, so `cqi` inside it resolves against the child.
  */
 export const EqualWidths: Story = {
   args: { space: "s" },
@@ -320,6 +334,11 @@ export const ShrinkToFit: Story = {
   args: { space: "s" },
   render: () => (
     <div>
+      <div data-frame="block">
+        <Switcher space="s" min="s">
+          {tiles(3)}
+        </Switcher>
+      </div>
       <div data-frame="inline-block">
         <div style={{ display: "inline-block" }}>
           <Switcher space="s" min="s">
@@ -360,7 +379,7 @@ export const ShrinkToFit: Story = {
       );
 
       setWidth(frame, row - 1);
-      await expect(isRow(node), kind).toBe(false);
+      await expect(isStacked(node), kind).toBe(true);
       await expect(node.getBoundingClientRect().width, kind).toBeCloseTo(
         row - 1,
         0,
@@ -375,6 +394,16 @@ export const ShrinkToFit: Story = {
       );
     }
 
+    // A block parent narrower than one minimum shrinks every child with it.
+    const block = switcherIn(canvasElement, '[data-frame="block"]');
+    const blockNode = switcherIn(block);
+    setWidth(block, resolvedMin(blockNode) / 2);
+    await expect(isStacked(blockNode)).toBe(true);
+    await expect(blockNode.getBoundingClientRect().width).toBeCloseTo(
+      resolvedMin(blockNode) / 2,
+      0,
+    );
+
     // A non-growing flex item beside a title: the bar holds the row until the
     // title, the bar's gap and the row stop fitting.
     const bar = switcherIn(canvasElement, '[data-frame="bar"]');
@@ -386,7 +415,7 @@ export const ShrinkToFit: Story = {
     setWidth(bar, needed + NEAR);
     await expect(isRow(node)).toBe(true);
     setWidth(bar, needed - NEAR);
-    await expect(isRow(node)).toBe(false);
+    await expect(isStacked(node)).toBe(true);
   },
 };
 
@@ -410,10 +439,10 @@ export const HiddenChild: Story = {
     const gap = parseFloat(getComputedStyle(node).columnGap);
     const visibleRow = resolvedMin(node) * 3 + gap * 2;
 
-    setWidth(frame, visibleRow + 0.5);
-    await expect(isRow(node)).toBe(false);
+    setWidth(frame, visibleRow + NEAR);
+    await expect(isStacked(node)).toBe(true);
 
-    setWidth(frame, threshold(node) + 0.5);
+    setWidth(frame, threshold(node) + NEAR);
     await expect(isRow(node)).toBe(true);
   },
 };
@@ -462,7 +491,7 @@ export const ConsumerKnobs: Story = {
       setWidth(frame, 24 * rem + 40);
       await expect(isRow(node)).toBe(true);
       setWidth(frame, 24 * rem + 39);
-      await expect(isRow(node)).toBe(false);
+      await expect(isStacked(node)).toBe(true);
 
       const nested = switcherIn(canvasElement, '[data-demo="nested"]');
       await expect(resolvedMin(nested)).toBeCloseTo(15 * rem, 1);
@@ -473,6 +502,69 @@ export const ConsumerKnobs: Story = {
     } finally {
       override.remove();
       bareGap.remove();
+    }
+  },
+};
+
+/**
+ * The knobs compute once, on the switcher, so every child reads the same
+ * pixels: an `em` minimum is the switcher's ems, not each child's, and a
+ * switcher that is another switcher's child (and so a query container) still
+ * switches where its gap says.
+ */
+export const KnobsComputeOnce: Story = {
+  args: { space: "s" },
+  render: () => (
+    <div>
+      <div data-frame="em">
+        <Switcher space="s" className="em-min">
+          <p style={{ ...tile, fontSize: "1.5rem", margin: 0 }}>Large</p>
+          <p style={tile}>Small</p>
+          <p style={tile}>Small</p>
+        </Switcher>
+      </div>
+      <div data-frame="nested">
+        <Switcher space="s" min="s">
+          <Switcher space="l" min="s" data-demo="inner">
+            {tiles(3)}
+          </Switcher>
+        </Switcher>
+      </div>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const override = document.createElement("style");
+    override.textContent = ".em-min { --el-switcher-min: 12em; }";
+    document.head.prepend(override);
+
+    try {
+      const em = switcherIn(canvasElement, ".em-min");
+      const ems = 12 * parseFloat(getComputedStyle(em).fontSize);
+      for (const child of em.children) {
+        await expect(resolvedMin(em, child)).toBeCloseTo(ems, 1);
+      }
+      const emFrame = switcherIn(canvasElement, '[data-frame="em"]');
+      setWidth(emFrame, threshold(em) + NEAR);
+      await expect(isRow(em)).toBe(true);
+      setWidth(emFrame, threshold(em) - NEAR);
+      await expect(isStacked(em)).toBe(true);
+
+      const frame = switcherIn(canvasElement, '[data-frame="nested"]');
+      const inner = switcherIn(frame, '[data-demo="inner"]');
+      await expect(getComputedStyle(inner).containerType).toBe("inline-size");
+      setWidth(frame, 600);
+      const start = Math.floor(threshold(inner));
+      for (let width = start - 10; width <= start + 10; width += 0.25) {
+        setWidth(frame, width);
+        if (
+          Math.abs(inner.getBoundingClientRect().width - threshold(inner)) <
+          0.05
+        )
+          continue;
+        await expect(hasShapeFor(inner), `${width}px`).toBe(true);
+      }
+    } finally {
+      override.remove();
     }
   },
 };

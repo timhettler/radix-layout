@@ -34,8 +34,10 @@ interface SwitcherProps extends PrimitiveDivProps {
  * Every child counts toward the threshold, including one hidden with
  * `display: none`; render a child conditionally to remove it.
  *
- * Each child is an inline-size query container, so its content never sizes it:
- * content wider than its share overflows, and a larger `min` is the fix.
+ * A child's content never sizes it: content wider than its share overflows,
+ * and a larger `min` is the fix. Each child is an inline-size query container.
+ *
+ * Zeroes children's margins on both axes.
  *
  * No item-level API.
  */

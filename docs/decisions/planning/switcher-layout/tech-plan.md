@@ -14,36 +14,7 @@ narrower than a threshold, with no query and no `container-type`.
 
 ## Approach
 
-A sketch; ADR 0007 holds the decision:
-
-```scss
-.el-switcher {
-  display: flex;
-  flex-wrap: wrap;
-
-  > * {
-    $min: var(--el-switcher-min);
-    $gap: var(--el-switcher-space);
-    $n: sibling-count();
-
-    flex-grow: 1;
-    flex-basis: min(100%, max(0px, ($min * $n + $gap * ($n - 1) - 100%) * 1e9));
-    min-inline-size: 0;
-    margin: 0;
-    container-type: inline-size;
-    contain-intrinsic-inline-size: $min;
-  }
-}
-
-.el-switcher[data-space] {
-  gap: var(--el-switcher-space); // data-space, on the shared scale
-}
-```
-
-- **The basis does the switching.** Above the threshold it is zero and the items
-  share the row equally; below, it is `100%` and each item takes a line.
-- **The threshold follows from the item count and `--el-switcher-min`**, which
-  `data-min` sets (ADR 0007 § 3).
+ADR 0007 holds the design.
 
 ## Constraints
 
@@ -59,6 +30,6 @@ The threshold, the `min` vocabulary and containment are ADR 0007.
 
 ## Steps
 
-- [x] Answer the open questions; record the decision as an ADR (ADR 0007).
+- [x] Record the decision as ADR 0007.
 - [x] The mixin, the compiled stylesheet, the component and its stories,
       following the Grid plan's steps.
