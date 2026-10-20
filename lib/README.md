@@ -134,6 +134,60 @@ name. Both take any length, and the switch point follows both:
 
 Children's margins are zeroed on both axes.
 
+## Sidebar
+
+Two unequal parts side by side, stacking when the content would be narrower than
+its share of the row: the media object, a filter panel beside results, a button
+beside its input. The switch follows the space the sidebar is given, not the
+viewport.
+
+```tsx
+import { Sidebar } from "@timhettler/radix-layout";
+
+<Sidebar.Root space="m">
+  <Sidebar.Side>
+    <img src="avatar.jpg" alt="" width="160" height="160" />
+  </Sidebar.Side>
+  <Sidebar.Content>
+    <p>…</p>
+  </Sidebar.Content>
+</Sidebar.Root>;
+```
+
+The parts are also exported as `SidebarRoot`, `SidebarSide` and
+`SidebarContent`.
+
+| Prop (`Root`) | Values                                   | Default   |
+| ------------- | ---------------------------------------- | --------- |
+| `space`       | a step from [`spaces`](#the-space-scale) | required  |
+| `align`       | `start` `center` `end` `stretch`         | `stretch` |
+| `asChild`     | `boolean`                                | `false`   |
+
+`Side` and `Content` take `asChild`. Put them in reading order: whichever comes
+first sits on the left and stacks on top.
+
+The side is its content's width, which suits an image or a button. A side of
+running text needs a width, or it always stacks. The pair stacks when the
+content would be under half the row, so beside a `10rem` side it holds at twice
+`10rem` plus the gap. Set either length on a class of your own on the root or on
+the part; `--el-sidebar-content-min` takes a percentage or a reading width such
+as `30ch`:
+
+```css
+.filters-layout {
+  --el-sidebar-side-width: 18rem;
+  --el-sidebar-content-min: 60%;
+}
+```
+
+`stretch` makes both parts the height of the taller. An image inside `Side`
+keeps its proportions, but one made the side itself with `asChild` stretches;
+use `align="start"`. Content wider than the content part overflows it rather
+than pushing the side. Neither part is a query container; add `container-type`
+on your own class.
+
+Children's margins are zeroed on both axes.
+
 ## `asChild`
 
 Renders your element instead of a `div`, merging the layout's class and

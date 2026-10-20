@@ -82,3 +82,30 @@
     contain-intrinsic-inline-size: $min;
   }
 }
+
+// Reads --el-sidebar-side-width and --el-sidebar-content-min, which the
+// sidebar assigns. The parts are their own mixins: the side is marked by its
+// class, not its position (ADR 0008 § 2).
+@mixin sidebar($align: stretch) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: $align;
+
+  > * {
+    margin: 0;
+  }
+}
+
+@mixin sidebar-side {
+  flex-basis: var(--el-sidebar-side-width);
+  flex-grow: 1;
+}
+
+// The content grows from nothing and takes the free space, and min-inline-size
+// overrides its automatic minimum, so the pair wraps exactly when the content
+// would fall below its share. Why 1e9 and not Every Layout's 999: ADR 0008 § 1.
+@mixin sidebar-content {
+  flex-basis: 0;
+  flex-grow: 1e9;
+  min-inline-size: var(--el-sidebar-content-min);
+}

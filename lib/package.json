@@ -23,7 +23,8 @@
     "./defaults.css": "./dist/defaults.css",
     "./stack.css": "./dist/stack.css",
     "./cluster.css": "./dist/cluster.css",
-    "./switcher.css": "./dist/switcher.css"
+    "./switcher.css": "./dist/switcher.css",
+    "./sidebar.css": "./dist/sidebar.css"
   },
   "license": "MIT",
   "keywords": [

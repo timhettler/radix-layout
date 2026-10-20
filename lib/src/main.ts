@@ -21,3 +21,17 @@ export type {
 
 export { Switcher, switcherMins } from "./Switcher";
 export type { SwitcherMin, SwitcherProps } from "./Switcher";
+
+export * as Sidebar from "./SidebarParts";
+export {
+  SidebarContent,
+  SidebarRoot,
+  SidebarSide,
+  sidebarAligns,
+} from "./Sidebar";
+export type {
+  SidebarAlign,
+  SidebarContentProps,
+  SidebarRootProps,
+  SidebarSideProps,
+} from "./Sidebar";
