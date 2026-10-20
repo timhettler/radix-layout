@@ -22,10 +22,18 @@ const DISPLAY = ["block", "inline"] as const;
 
 type ClusterDisplay = (typeof DISPLAY)[number];
 
+const FLOW = ["wrap", "stack"] as const;
+
+/** A value of the `--el-cluster-flow` custom property. */
+type ClusterFlow = (typeof FLOW)[number];
+
 /** Every accepted `justify`, `align` and `display`, at runtime. */
 const clusterJustifies: readonly ClusterJustify[] = JUSTIFY;
 const clusterAligns: readonly ClusterAlign[] = ALIGN;
 const clusterDisplays: readonly ClusterDisplay[] = DISPLAY;
+
+/** Every accepted `--el-cluster-flow` value, at runtime. `wrap` is the default. */
+const clusterFlows: readonly ClusterFlow[] = FLOW;
 
 type ClusterElement = React.ComponentRef<typeof Primitive.div>;
 type PrimitiveDivProps = React.ComponentPropsWithoutRef<typeof Primitive.div>;
@@ -43,6 +51,11 @@ interface ClusterProps extends PrimitiveDivProps {
 /**
  * Cluster lays its children out in a row, spaced by a step on the space scale,
  * wrapping when they run out of room.
+ *
+ * To stack every child at full width below your own breakpoint, set
+ * `--el-cluster-flow: stack` on the cluster's own class inside your media or
+ * container query. It doesn't inherit, so set it on the cluster itself, not an
+ * ancestor.
  *
  * No item-level API.
  */
@@ -65,5 +78,17 @@ const Cluster = React.forwardRef<ClusterElement, ClusterProps>(
 
 Cluster.displayName = CLUSTER_NAME;
 
-export { Cluster, clusterAligns, clusterDisplays, clusterJustifies };
-export type { ClusterAlign, ClusterDisplay, ClusterJustify, ClusterProps };
+export {
+  Cluster,
+  clusterAligns,
+  clusterDisplays,
+  clusterFlows,
+  clusterJustifies,
+};
+export type {
+  ClusterAlign,
+  ClusterDisplay,
+  ClusterFlow,
+  ClusterJustify,
+  ClusterProps,
+};

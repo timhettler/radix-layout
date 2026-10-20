@@ -5,12 +5,17 @@ import {
   Stack,
   clusterAligns,
   clusterDisplays,
+  clusterFlows,
   clusterJustifies,
   spaces,
 } from "@timhettler/radix-layout";
 
 import { resolvedGap } from "../lib/space";
-import { componentAttributeValues } from "../lib/stylesheets";
+import {
+  componentAttributeValues,
+  containerStyleValues,
+  registeredProperty,
+} from "../lib/stylesheets";
 
 const rects = (node: Element) =>
   [...node.children].map((child) => child.getBoundingClientRect());
@@ -269,6 +274,127 @@ export const Wrapping: Story = {
       resolvedGap("m"),
       1,
     );
+  },
+};
+
+/** The consumer's stylesheet: their breakpoint, their class, the library's knob. */
+const FLOW_SHEET = `
+.demo-frame { container-type: inline-size; }
+@container (width < 30rem) {
+  .demo-actions { --el-cluster-flow: stack; }
+}
+.demo-stacked { --el-cluster-flow: stack; }
+.demo-typo { --el-cluster-flow: stak; }
+.demo-search { flex-basis: 12rem; }
+`;
+
+const FRAME_WIDTHS = ["36rem", "20rem"] as const;
+
+const flowOf = (node: Element) =>
+  getComputedStyle(node).getPropertyValue("--el-cluster-flow").trim();
+
+/**
+ * The EJDS Button Group: natural widths in a row, every button full width
+ * below the consumer's breakpoint, switched together.
+ */
+export const Flow: Story = {
+  args: { space: "m" },
+  render: () => (
+    <>
+      <style>{FLOW_SHEET}</style>
+      <Stack space="xl">
+        {FRAME_WIDTHS.map((width) => (
+          <div
+            key={width}
+            className="demo-frame"
+            data-frame={width}
+            style={{ inlineSize: width }}
+          >
+            <Cluster space="m" className="demo-actions">
+              <button type="button">Save</button>
+              <button type="button">Cancel</button>
+              <button type="button">Delete draft</button>
+            </Cluster>
+          </div>
+        ))}
+        <Cluster space="m" className="demo-stacked" data-demo="outer">
+          <span style={chip}>Outer</span>
+          <Cluster space="s" data-demo="inner">
+            <span style={chip}>One</span>
+            <span style={chip}>Two</span>
+          </Cluster>
+        </Cluster>
+        <Cluster space="m" className="demo-typo" data-demo="typo">
+          <span style={chip}>One</span>
+          <span style={chip}>Two</span>
+        </Cluster>
+        <Cluster space="m" data-demo="basis">
+          <input type="search" aria-label="Search" className="demo-search" />
+          <button type="button">Go</button>
+        </Cluster>
+      </Stack>
+    </>
+  ),
+  play: async ({ canvasElement }) => {
+    const { values, initial } = registeredProperty("--el-cluster-flow");
+    await expect(values).toEqual([...clusterFlows]);
+    await expect(initial).toBe("wrap");
+    await expect(sorted(containerStyleValues("--el-cluster-flow"))).toEqual(
+      sorted(clusterFlows.filter((flow) => flow !== initial)),
+    );
+
+    const [wideFrame, narrowFrame] = FRAME_WIDTHS.map((width) =>
+      clusterIn(canvasElement, `[data-frame="${width}"]`),
+    );
+
+    // Above the breakpoint: one row, each button its own width.
+    const wide = clusterIn(wideFrame, ".el-cluster");
+    await expect(flowOf(wide)).toBe("wrap");
+    const row = rects(wide);
+    for (const box of row) await expect(box.top).toBe(row[0].top);
+    await expect(new Set(row.map((box) => box.width)).size).toBeGreaterThan(1);
+    await expect(row[1].left - row[0].right).toBeCloseTo(
+      resolvedGap("m", wideFrame),
+      1,
+    );
+
+    // Below it: every button on its own line at the cluster's full width.
+    const narrow = clusterIn(narrowFrame, ".el-cluster");
+    await expect(flowOf(narrow)).toBe("stack");
+    const column = rects(narrow);
+    const full = narrow.getBoundingClientRect().width;
+    for (const box of column) await expect(box.width).toBeCloseTo(full, 0);
+    for (let i = 1; i < column.length; i++) {
+      await expect(column[i].top - column[i - 1].bottom).toBeCloseTo(
+        resolvedGap("m", narrowFrame),
+        1,
+      );
+    }
+
+    // The knob doesn't inherit: a cluster inside a stacked one still wraps.
+    const outer = clusterIn(canvasElement, '[data-demo="outer"]');
+    const inner = clusterIn(canvasElement, '[data-demo="inner"]');
+    await expect(inner.getBoundingClientRect().width).toBeCloseTo(
+      outer.getBoundingClientRect().width,
+      0,
+    );
+    await expect(flowOf(inner)).toBe("wrap");
+    const [one, two] = rects(inner);
+    await expect(two.top).toBe(one.top);
+    await expect(one.width).toBeLessThan(
+      inner.getBoundingClientRect().width / 2,
+    );
+
+    // An unknown keyword is invalid at computed time, so it renders as the default.
+    const typo = clusterIn(canvasElement, '[data-demo="typo"]');
+    await expect(flowOf(typo)).toBe("wrap");
+    const [first, second] = rects(typo);
+    await expect(second.top).toBe(first.top);
+
+    // A wrapping cluster leaves a child's own flex-basis alone.
+    const search = clusterIn(canvasElement, '[data-demo="basis"] input');
+    const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
+    await expect(getComputedStyle(search).flexBasis).toBe(`${12 * rem}px`);
   },
 };
 
