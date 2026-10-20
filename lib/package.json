@@ -22,7 +22,8 @@
     "./styles.css": "./dist/styles.css",
     "./defaults.css": "./dist/defaults.css",
     "./stack.css": "./dist/stack.css",
-    "./cluster.css": "./dist/cluster.css"
+    "./cluster.css": "./dist/cluster.css",
+    "./switcher.css": "./dist/switcher.css"
   },
   "license": "MIT",
   "keywords": [

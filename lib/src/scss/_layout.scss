@@ -54,3 +54,31 @@
     margin-block: 0;
   }
 }
+
+// Reads --el-switcher-min and --el-switcher-space, which the including rule
+// assigns; gap is left to the [data-space] rule, so a bare gap can't win and
+// fall out of step with the basis (ADR 0004 § 5).
+//
+// Why 1e9 and not Every Layout's 999: ADR 0007 § 1.
+//
+// The intrinsic width is load-bearing: containment without it collapses the
+// switcher to its gaps in a shrink-to-fit parent (ADR 0007 § 5).
+//
+// min-inline-size: 0 so a slot narrower than one minimum still shrinks an item.
+@mixin switcher {
+  display: flex;
+  flex-wrap: wrap;
+
+  > * {
+    $min: var(--el-switcher-min);
+    $gap: var(--el-switcher-space);
+    $n: sibling-count();
+
+    flex-grow: 1;
+    flex-basis: min(100%, max(0px, ($min * $n + $gap * ($n - 1) - 100%) * 1e9));
+    min-inline-size: 0;
+    margin: 0;
+    container-type: inline-size;
+    contain-intrinsic-inline-size: $min;
+  }
+}

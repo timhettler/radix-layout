@@ -41,8 +41,9 @@ its own media queries, stepped or as one fluid segment per pair of screens. ADR
 
 Which ancestor is a query container decides what a step responds to. The library
 declares a container only inside a layout whose width is definite by
-construction: `Grid.Item`, whose width comes from its track. Every other
-container is the consumer's, on their own class.
+construction: `Grid.Item`, whose width comes from its track, and a `Switcher`
+item, whose width comes from its row (ADR 0007 § 5). Every other container is
+the consumer's, on their own class.
 
 There is no container component. `container-type` is one declaration, and its
 failure — collapsing in a content-sized slot such as a `Cluster` item — depends
