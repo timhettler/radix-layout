@@ -59,10 +59,13 @@ ties on specificity. The style query reads the cluster from its children, which
 is why the knob changes only child declarations: it gives `Stack`'s `stretch`
 look, and `start` alignment is out of reach.
 
-Every cluster assigns `--el-cluster-flow: wrap` in `el.defaults`, so a nested
-cluster never inherits an outer one's switch (ADR 0004 § 5). The keywords are a
-closed list with a runtime array, like a `data-*` axis, and the vocabulary
-scrape covers the `@container style()` rules.
+`--el-cluster-flow` is registered with `@property` as `wrap | stack`, not
+inherited, with an initial value of `wrap`, so a nested cluster never inherits
+an outer one's switch and an unknown keyword renders as `wrap`. ADR 0004 § 2's
+ban is on registering a length, which computes on `:root`; a keyword has nothing
+to resolve. The keywords are a closed list with a runtime array, like a `data-*`
+axis, and the vocabulary scrape reads the registration's `syntax` and the
+`@container style()` rules.
 
 ## Consequences
 

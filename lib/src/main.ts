@@ -8,11 +8,13 @@ export {
   Cluster,
   clusterAligns,
   clusterDisplays,
+  clusterFlows,
   clusterJustifies,
 } from "./Cluster";
 export type {
   ClusterAlign,
   ClusterDisplay,
+  ClusterFlow,
   ClusterJustify,
   ClusterProps,
 } from "./Cluster";
