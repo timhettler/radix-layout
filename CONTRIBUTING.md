@@ -11,29 +11,32 @@ intent. The labeler reads it to label the PR, and commitlint holds each commit
 to a type. A branch that skips the convention still merges, with no type label.
 Commits are `type: subject`, with no scope. Never commit to `main`.
 
-| Type       | For                                                  |
-| ---------- | ---------------------------------------------------- |
-| `feat`     | a new feature                                        |
-| `fix`      | a bug fix                                            |
-| `refactor` | restructuring with no change a user sees             |
-| `perf`     | a refactor for performance                           |
-| `test`     | tests only                                           |
-| `docs`     | documentation only                                   |
-| `ci`       | automation, workflows and deployment                 |
-| `chore`    | anything else, such as dependencies and `.gitignore` |
+| Type       | For                                      |
+| ---------- | ---------------------------------------- |
+| `feat`     | a new feature                            |
+| `fix`      | a bug fix                                |
+| `refactor` | restructuring with no change a user sees |
+| `perf`     | a refactor for performance               |
+| `test`     | tests only                               |
+| `docs`     | documentation only                       |
+| `build`    | dependencies, build and packaging        |
+| `style`    | formatting only                          |
+| `ci`       | automation, workflows and deployment     |
+| `chore`    | anything else, such as `.gitignore`      |
 
 ## Pull requests
 
 The PR template holds the rules for the title and body. Labels come from the
 branch name and the changed paths; add one by hand only when no path implies it.
-A PR merges by squash, so its title becomes the commit subject on `main`, which
+Merge by squash, so the PR's title becomes the commit subject on `main`, which
 commitlint never sees: write it as a Conventional Commit.
 
 Before you merge, run the full set of checks, not only what you touched, and run
 the thing you changed. Answer every review finding with a fix or a reply.
 
-GitHub deletes the branch on merge. Because a squash lands a new commit, git
-can't tell whether a branch merged: ask GitHub
+Delete the branch once it merges, or let GitHub do it
+([`docs/repo-settings.md`](docs/repo-settings.md)). Because a squash lands a new
+commit, git can't tell whether a branch merged: ask GitHub
 (`gh pr view <branch> --json state`), never `git branch --merged`.
 
 ## Release process
@@ -44,8 +47,8 @@ squash.
 
 1. On a branch that changes a published package, run `yarn changeset`, pick the
    bump, describe the change for a consumer, and commit the file.
-2. On merge, `release.yml` opens or updates a "chore: version packages" PR that
-   bumps the versions and writes each `CHANGELOG.md`.
+2. On merge, `release.yml` opens or updates a "Version Packages" PR that bumps
+   the versions and writes each `CHANGELOG.md`.
 3. Merging that PR publishes to npm with the `NPM_TOKEN` secret, under the
    `alpha` tag while prerelease mode lasts (`CLAUDE.md` § Releasing).
 

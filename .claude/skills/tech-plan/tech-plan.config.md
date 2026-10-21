@@ -10,8 +10,8 @@ reads both; Configure writes both; porting leaves both behind.
 
 ## Gotchas
 
-- **Active plans sit flat in `docs/decisions/planning/<slug>/`.** Only finished
-  ones move, to `archive/<slug>/`.
+- **Active plans sit flat in `docs/decisions/planning/<slug>/`.** A plan moves
+  to `archive/<slug>/` once its status is `complete`.
 - **Plans from before the skill** use `**Recorded:**` where the skill writes
   `**Started:**`, and a `stub` status. Leave them as they are; a plan the skill
   writes uses its own masthead.

@@ -1,7 +1,6 @@
 # Documentation
 
-Engineering docs that outlive a PR. Each row below is the only place its subject
-is documented.
+Engineering docs that outlive a PR.
 
 | Doc                                                          | What it covers                                    |
 | ------------------------------------------------------------ | ------------------------------------------------- |

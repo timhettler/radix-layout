@@ -23,13 +23,13 @@ gh api -X PATCH repos/timhettler/radix-layout -F allow_squash_merge=true -F allo
 
 ## Protecting `main`
 
-Optional when one person works here. To require a PR and a passing `verify`, and
+Optional when one person works here. To require a PR and a passing `Verify`, and
 block force-pushes and deletion:
 
 ```bash
 gh api -X PUT repos/timhettler/radix-layout/branches/main/protection --input - <<'JSON'
 {
-  "required_status_checks": { "strict": false, "contexts": ["verify"] },
+  "required_status_checks": { "strict": false, "contexts": ["Verify"] },
   "enforce_admins": false,
   "required_pull_request_reviews": { "required_approving_review_count": 0 },
   "restrictions": null,
@@ -39,29 +39,17 @@ gh api -X PUT repos/timhettler/radix-layout/branches/main/protection --input - <
 JSON
 ```
 
-The version PR that `release.yml` opens with `GITHUB_TOKEN` gets no `verify`
-run, so an admin merges it past this rule.
-
 Read the rules rather than the `protected` flag, which any ruleset sets:
 `gh api repos/timhettler/radix-layout/branches/main/protection`, and
-`gh api repos/timhettler/radix-layout/rulesets`. Some plans offer no protection
-on a private repository; the first command then fails with a 403.
-
-## Actions
-
-Allow GitHub Actions to create and approve pull requests, or the release
-workflow pushes its branch and then fails to open the version PR:
-
-```bash
-gh api -X PUT repos/timhettler/radix-layout/actions/permissions/workflow -F can_approve_pull_request_reviews=true
-```
+`gh api repos/timhettler/radix-layout/rulesets`.
 
 ## Labels
 
 The labeler can't create a label, so a missing one fails its run. These need
 write access, not admin. Create only those `gh label list` lacks: `bug`,
-`documentation` and `dependencies` came with the repository. `gh label list`
-shows 30 by default, so pass `--limit 100` before calling one absent.
+`documentation` came with the repository, and Dependabot made `dependencies`.
+`gh label list` shows 30 by default, so pass `--limit 100` before calling one
+absent.
 
 ```bash
 gh label create 'feature' --repo timhettler/radix-layout --color 1d76db --description 'A feat/ branch'

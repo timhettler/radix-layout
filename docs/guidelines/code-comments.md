@@ -1,8 +1,9 @@
 # Code comments
 
-The authority on what a comment says, whether a person or an agent writes it.
-`CLAUDE.md` has the short form. No tooling checks any of this, which is why it
-is prose.
+The long form of `CLAUDE.md` § Writing on comments, whether a person or an agent
+writes them. JSDoc on exports is consumer docs, published with the package, so
+it isn't held to the one-line budget. No tooling checks any of this, which is
+why it is prose.
 
 ## What a comment is for
 
