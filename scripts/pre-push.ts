@@ -1,5 +1,5 @@
 // The whole-project checks a commit hook can't afford, run by `.husky/pre-push`. Early feedback
-// only: CI's `verify` runs the full set and is the gate. Run it by hand to check HEAD.
+// only: CI's `Verify` job runs the full set. Run it by hand to check HEAD.
 
 import { execFileSync, spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
@@ -12,9 +12,9 @@ const BASE = "origin/main";
  * makes a new root file slow rather than unchecked.
  */
 const NO_TEST_INPUT = [
-  /^(?:\.changeset|\.claude|\.github|\.husky|\.vscode|docs|scripts)\//,
+  /^(?:\.changeset|\.claude|\.github|\.husky|\.vscode|scripts)\//,
   /^[^/]+\.md$/,
-  /^(?:tsconfig\.json|tsconfig\.scripts\.json|\.prettierrc|\.prettierignore|\.oxlintrc\.json|\.gitignore|\.gitattributes|\.worktreeinclude|\.env\.example|lint-staged\.config\.m?js|commitlint\.config\.m?js)$/,
+  /^(?:tsconfig\.scripts\.json|\.prettierignore|\.gitignore|\.gitattributes|\.worktreeinclude|\.env\.example|lint-staged\.config\.m?js|commitlint\.config\.m?js)$/,
 ];
 
 const PACKAGE_DIR = /^(?:config|lib|docs)\//;

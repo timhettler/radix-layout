@@ -15,5 +15,5 @@ export default {
       ...(linted.length ? [`eslint ${quote(linted)}`] : []),
     ];
   },
-  "*.{json,md,css,yml,yaml}": "prettier --write",
+  "*.{json,md,css,scss,yml,yaml}": "prettier --write",
 };

@@ -22,8 +22,8 @@ lowercase after the colon, no period. Branches are `type/description`.
 - **`commit-msg`:** commitlint checks the message against the conventional
   preset.
 - **`pre-push`:** `scripts/pre-push.ts` runs `build`, `typecheck`, `lint` and
-  `check:markdown`, then the tests Turbo finds affected by the push. CI runs the
-  full set.
+  `check:markdown`, then the tests Turbo finds affected since `origin/main`. CI
+  runs the full set.
 
 Commit and push with the `activate` prefix and outside the sandbox, which yarn
 and husky need.
