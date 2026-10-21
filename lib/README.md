@@ -164,14 +164,15 @@ The parts are also exported as `SidebarRoot`, `SidebarSide` and
 | `asChild`     | `boolean`                                | `false`   |
 
 `Side` and `Content` take `asChild`. Put them in reading order: whichever comes
-first sits on the left and stacks on top.
+first sits at the start and stacks on top. To nest a sidebar, put it inside a
+part rather than merging the two with `asChild`.
 
 The side is its content's width, which suits an image or a button. A side of
 running text needs a width, or it always stacks. The pair stacks when the
-content would be under half the row, so beside a `10rem` side it holds at twice
-`10rem` plus the gap. Set either length on a class of your own on the root or on
-the part; `--el-sidebar-content-min` takes a percentage or a reading width such
-as `30ch`:
+content would be under half the row, so it holds while the row is at least
+`2 × (side + gap)`. Set `--el-sidebar-side-width` or `--el-sidebar-content-min`
+on a class of your own on the root or on the part. The content minimum takes a
+percentage or a reading width such as `30ch`:
 
 ```css
 .filters-layout {
@@ -180,11 +181,14 @@ as `30ch`:
 }
 ```
 
-`stretch` makes both parts the height of the taller. An image inside `Side`
-keeps its proportions, but one made the side itself with `asChild` stretches;
-use `align="start"`. Content wider than the content part overflows it rather
-than pushing the side. Neither part is a query container; add `container-type`
-on your own class.
+Both lengths measure a part's content box, so padding or a border on a part
+moves the wrap point unless the part is `box-sizing: border-box`.
+
+`stretch` makes both parts the height of the taller. Put an image inside `Side`
+rather than making it the side with `asChild`: stacked, the side fills its line,
+and so would the image. Content wider than the content part overflows it rather
+than pushing the side, over the side when the content comes first. Neither part
+is a query container; add `container-type` on your own class.
 
 Children's margins are zeroed on both axes.
 

@@ -111,8 +111,10 @@ export const Default: Story = {
     space: "m",
     children: (
       <>
-        <Sidebar.Side>{image(160, 90)}</Sidebar.Side>
-        {/* A <p>, so a missing margin reset shows as content pushed down. */}
+        {/* A <figure> and a <p>: UA margins on both axes for the reset to zero. */}
+        <Sidebar.Side asChild>
+          <figure>{image(160, 90)}</figure>
+        </Sidebar.Side>
         <Sidebar.Content asChild>
           <p>{prose}</p>
         </Sidebar.Content>
@@ -133,11 +135,18 @@ export const Default: Story = {
     await expect(gapOf(node)).toBeCloseTo(resolvedGap("m"), 1);
 
     const content = nodeIn(node, ".el-sidebar__content");
+    const side = nodeIn(node, ".el-sidebar__side");
     await expect(content.tagName).toBe("P");
-    await expect(getComputedStyle(content).marginBlockStart).toBe("0px");
+    await expect(side.tagName).toBe("FIGURE");
+    for (const part of [side, content]) {
+      const { marginBlockStart, marginInlineStart } = getComputedStyle(part);
+      await expect([marginBlockStart, marginInlineStart]).toEqual([
+        "0px",
+        "0px",
+      ]);
+    }
 
     // The defaults: the side is its content's width, and the content needs half.
-    const side = nodeIn(node, ".el-sidebar__side");
     await expect(getComputedStyle(side).flexBasis).toBe("auto");
     await expect(getComputedStyle(content).minInlineSize).toBe("50%");
 
@@ -237,9 +246,9 @@ export const Alignment: Story = {
 const SIDE_REM = 15;
 
 /**
- * The pair holds while the content gets half the row, so it wraps below twice
- * the side plus the gap. Beside the content the side is exactly its width, at
- * the threshold and well above it; stacked, both parts are full width.
+ * The pair holds while the content gets half the row, so it wraps below
+ * `2 × (side + gap)`. Beside the content the side is exactly its width, at the
+ * threshold and well above it; stacked, both parts are full width.
  */
 export const Threshold: Story = {
   args: { space: "m" },
@@ -469,10 +478,49 @@ export const OnePart: Story = {
 };
 
 /**
- * The knobs are set on the consumer's own classes, injected before every
- * sheet, so they win only because the defaults are layered (ADR 0003 § 1).
- * Either knob works on the root or on the part that reads it, and a nested
- * sidebar keeps its own defaults.
+ * Both lengths measure a part's content box, so a content-box part's padding
+ * moves the wrap by twice the padding, and a border-box part's doesn't.
+ */
+export const PartPadding: Story = {
+  args: { space: "s" },
+  render: () => (
+    <div>
+      {(["content-box", "border-box"] as const).map((sizing) => (
+        <div key={sizing} data-frame={sizing}>
+          <Sidebar.Root space="s" style={knobs({ side: "8rem" })}>
+            <Sidebar.Side>
+              <div style={tile}>Side</div>
+            </Sidebar.Side>
+            <Sidebar.Content style={{ padding: "1rem", boxSizing: sizing }}>
+              <div style={tile}>Content</div>
+            </Sidebar.Content>
+          </Sidebar.Root>
+        </div>
+      ))}
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    for (const sizing of ["content-box", "border-box"]) {
+      const frame = nodeIn(canvasElement, `[data-frame="${sizing}"]`);
+      const node = nodeIn(frame);
+      const padding =
+        sizing === "content-box" ? resolvedLength(node, "2rem") : 0;
+      const threshold =
+        2 * (resolvedLength(node, "8rem") + gapOf(node) + padding);
+
+      setWidth(frame, threshold + NEAR);
+      await expect(isRow(node), sizing).toBe(true);
+      setWidth(frame, threshold - NEAR);
+      await expect(isStacked(node), sizing).toBe(true);
+    }
+  },
+};
+
+/**
+ * The consumer's side width is on the root's own class, injected before every
+ * sheet, so it wins only because the defaults are layered (ADR 0003 § 1). The
+ * content minimum is on the part that reads it, which beats the inherited
+ * value. A nested sidebar keeps its own defaults.
  */
 export const ConsumerKnobs: Story = {
   args: { space: "s" },

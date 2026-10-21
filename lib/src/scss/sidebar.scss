@@ -2,7 +2,7 @@
 @use "layout";
 @use "space";
 
-// As cluster's: safe is inert on a wrapped line, kept for parity with stack.
+// Stack's map; safe is inert on a wrapped line.
 $align: (
   "start": flex-start,
   "center": safe center,
@@ -10,8 +10,7 @@ $align: (
   "stretch": stretch,
 );
 
-// Assigned on every sidebar, so a nested one never inherits an outer one's
-// values. Unregistered: one part reads each, so a ch minimum is the content's.
+// Per sidebar so nesting can't inherit; unregistered (ADR 0008 § 3).
 @layer el.defaults {
   .el-sidebar {
     --el-sidebar-side-width: auto;

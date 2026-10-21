@@ -131,10 +131,10 @@ Returns the breakpoints to the library and adds a runtime (ADR 0002).
       `--el-grid-span`, and the unlayered `.el-grid__item` declarations
       (`grid-column`, `container-type`). Add `grid` to `ENTRIES` in
       `lib/scripts/build-css.mjs` and to `exports`.
-- [ ] **Add `lib/src/Grid.tsx`** in the Radix compound shape radix-card uses:
-      `Grid` / `GridItem` with `Root` / `Item` aliases, both on `Primitive.div`
-      so both take `asChild` and a `ref`. `GridItem` takes `span`, typed from a
-      runtime `gridSpans` list; re-export from `main.ts`.
+- [ ] **Add `lib/src/Grid.tsx`** in Sidebar's compound shape (ADR 0008 § 2):
+      `GridRoot` / `GridItem`, exported flat and as `export * as Grid`, both on
+      `Primitive.div` so both take `asChild` and a `ref`. `GridItem` takes
+      `span`, typed from a runtime `gridSpans` list; re-export from `main.ts`.
 - [ ] **Add `docs/stories/Grid.stories.tsx`** with a `play` function per story,
       asserting resolved placement: the `data-span` vocabulary scrape, the
       full-width default, and a story that injects a consumer stylesheet with

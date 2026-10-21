@@ -37,10 +37,15 @@ interface SidebarRootProps extends PrimitiveDivProps {
  * Holds one `SidebarSide` and one `SidebarContent`, in reading order. The side
  * is its content's width unless `--el-sidebar-side-width` sets one, and the
  * pair stacks when the content would be under `--el-sidebar-content-min`
- * (`50%`). Set either on a class of your own on the root or on the part.
+ * (`50%`), so by default it holds while the row is at least
+ * `2 × (side + gap)`. Set either on a class of your own on the root or on the
+ * part.
  *
- * With `asChild` onto an `img`, the default `stretch` distorts it: wrap the
- * image, or use `align="start"`.
+ * Both lengths measure a part's content box, so padding or a border on a part
+ * moves the wrap unless the part is `box-sizing: border-box`.
+ *
+ * Nest a sidebar inside a part rather than merging the two with `asChild`: one
+ * element can't hold both sidebars' lengths.
  *
  * Zeroes children's margins on both axes.
  */
@@ -70,6 +75,9 @@ type SidebarSideProps = PrimitiveDivProps;
  * The narrower part. Its width is `--el-sidebar-side-width`, or its content's
  * when that is `auto`, which suits an image or a button; a side of running
  * text needs a length. Stacked, it fills its line.
+ *
+ * Wrap an image rather than making it the side with `asChild`: stacked, the
+ * image would take the full width and lose its proportions.
  */
 const SidebarSide = React.forwardRef<SidebarElement, SidebarSideProps>(
   ({ className, ...sideProps }, forwardedRef) => (
@@ -93,8 +101,9 @@ type SidebarContentProps = PrimitiveDivProps;
 
 /**
  * The main part, which takes the rest of the row. Content wider than it
- * overflows it rather than pushing the side. Not a query container; add
- * `container-type` on a class of your own.
+ * overflows it rather than pushing the side, over the side when the content
+ * comes first. Not a query container; add `container-type` on a class of your
+ * own.
  */
 const SidebarContent = React.forwardRef<SidebarElement, SidebarContentProps>(
   ({ className, ...contentProps }, forwardedRef) => (

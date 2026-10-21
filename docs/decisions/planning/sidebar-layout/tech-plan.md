@@ -21,8 +21,8 @@ ADR 0008 holds the design.
 
 - **ADR 0001 § 1.** Passes. The grow ratio, the zero basis and `min-inline-size`
   together are the wrap trigger, and a caller writing `flex: 1` on both parts
-  gets equal halves that squeeze and never wrap. The reset is Cluster's, on both
-  axes.
+  gets equal halves that squeeze and never wrap. The margin reset is Cluster's,
+  on both axes.
 - **ADR 0004.** `space` is one step; nothing about the switch is a breakpoint.
 
 ## Decisions

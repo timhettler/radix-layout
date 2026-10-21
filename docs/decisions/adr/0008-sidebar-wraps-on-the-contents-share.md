@@ -40,14 +40,13 @@ The planning record is `../planning/sidebar-layout/tech-plan.md`.
 
 The content's zero basis and huge grow give it all the free space, so the side
 sits at its basis. `min-inline-size` overrides the content's automatic minimum,
-which makes the line break exact: at the default `50%` the pair holds at twice
-the side plus the gap and stacks below it. Wrapped, each part fills its line.
+which makes the line break exact: at the default `50%` the pair holds while the
+row is at least `2 × (side + gap)` and stacks below it. Wrapped, each part fills
+its line.
 
 Every Layout's grow of `999` hands the side 1/1000 of the free space, nearly 1px
 beside a `15rem` side in a 1200px row, so the side is never exactly its width.
-At `1e9` the side's share is below a layout unit. The sum `1e9 + 1` is past
-float precision, so the content takes the free space whole and nothing
-overflows.
+At `1e9` the side's share is the free space times 1e-9, below a layout unit.
 
 ### 2. The parts are components, marked by class
 
@@ -56,6 +55,10 @@ with `asChild`. The side is `.el-sidebar__side`, not `:first-child`, so a
 conditional or hidden sibling can't change which part is the side, and DOM order
 stays the author's: it is the reading order and decides which part stacks on
 top. Either part alone fills the row.
+
+A sidebar nests inside a part, not merged with it through `asChild`. A merged
+element assigns its own root's defaults, which beat the values it would inherit
+as a part, and one element can't hold both sidebars' values of one property.
 
 They are exported flat and as a namespace, `Sidebar.Root`, `Sidebar.Side` and
 `Sidebar.Content`, through `export * as Sidebar`. A top-level `Root` alias, as
@@ -86,8 +89,7 @@ names. The content minimum takes any length-percentage.
 
 `align` takes `start`, `center`, `end` and `stretch`, as on `Stack`, with
 `stretch` the default, so a filter panel's fill reaches the bottom of the
-results. The parts stretch and an image inside one keeps its aspect ratio. Only
-`asChild` onto an `img` distorts it, and the JSDoc says so.
+results. The parts stretch, and an image inside one keeps its proportions.
 
 `space` is a required step emitted as `gap`, as on `Stack` and `Cluster`.
 Nothing computes from the gap, so it has no knob.
@@ -95,26 +97,32 @@ Nothing computes from the gap, so it has no knob.
 ### 5. Neither part is a query container
 
 The content's width is definite only when the sidebar's is. In a shrink-to-fit
-parent, inline-size containment zeroes its intrinsic width and it collapses, and
-unlike Switcher (ADR 0007 § 5) there is no length for
+parent, inline-size containment zeroes the content's intrinsic width and the
+content collapses, and unlike Switcher (ADR 0007 § 5) there is no length for
 `contain-intrinsic-inline-size` when the minimum is a percentage. The side is
-sized by its content, so it can never be one. A consumer adds `container-type`
-on their own class (ADR 0004 § 4).
+sized by its content, so it can never be a container. A consumer adds
+`container-type` on their own class (ADR 0004 § 4).
 
 ## Consequences
 
 - **The wrap is exact.** The stories check 0.1px either side of the threshold
-  for a set side width, an intrinsic image, a `66.666%` search field and a
-  `30ch` minimum, and assert the side within 0.02px of its width. They run in
-  Chromium, and also pass in Firefox 157 and WebKit 27.2.
+  for a set side width, an intrinsic image, a search field with a `66.666%`
+  content minimum and a `30ch` minimum, and all but the last assert the side
+  within 0.02px of its width. They run in Chromium, and also pass in Firefox 157
+  and WebKit 27.2.
 - **An `auto` side suits an image or a button.** A side of running text has a
   max-content width of the whole paragraph on one line, so it always stacks; it
   needs a length.
+- **Both lengths measure a part's content box.** Padding or a border on a
+  content-box part moves the wrap; at `50%`, by twice the padding and border. A
+  `border-box` part keeps the threshold.
 - **A long word in the content overflows the content**; the side keeps its
-  width. A side whose content is wider than its knob grows to that content.
+  width, and when the content comes first the word runs over the side. A side
+  whose content is wider than its knob grows to that content.
 - **A stacked side fills its line.** Its content keeps its own width, so an
-  avatar inside `Side` stays small.
-- **A side that reads first but sits on the right is out of reach.** That is
+  avatar inside `Side` stays small. An image made the side itself with `asChild`
+  takes the full width and loses its proportions, so the JSDoc says to wrap it.
+- **A side that reads first but sits at the end isn't supported.** It needs
   `order`, which separates reading order from visual order.
 - **Children other than the two parts get no part rules.**
 
@@ -129,8 +137,8 @@ on their own class (ADR 0004 § 4).
 - **Content as a query container with an intrinsic-width knob.** Gives the
   results column fluid steps, at the cost of a third knob whose default nothing
   determines.
-- **A `start` default.** Safe for `asChild` onto an `img`, but the commoner
-  need, equal-height panels, would then take `align="stretch"`.
+- **A `start` default.** Natural heights, and the commoner need, equal-height
+  panels, would then take `align="stretch"`.
 
 ## Revisit when
 
