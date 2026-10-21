@@ -1,0 +1,40 @@
+<!--
+  Rendered by the `tech-plan` skill as the body of a plan issue. Delete this comment.
+  GitHub renders every newline in an issue body as a line break, so keep each paragraph and list
+  item on one line.
+-->
+
+**Owner:** {{Owner}} **Started:** {{Started}} **PRs:** {{PRs}}
+
+## Problem
+
+{{Problem}}
+
+## Approach
+
+{{Approach}}
+
+**Rejected:** {{RejectedAlternative}}
+
+## Constraints & decisions
+
+- {{Constraint}}
+- **Done means:** {{SuccessCriterion}}
+
+## Steps
+
+- [ ] {{Step}}
+{{DefaultSteps}}
+- [ ] Close this issue with `Closes #N` in the PR that finishes the last open step, which moves it to Done on the board
+
+## Open questions
+
+- {{OpenQuestion}}
+
+## Deferred / follow-ups
+
+- {{Deferred}}
+
+## Notes
+
+{{Note}}
