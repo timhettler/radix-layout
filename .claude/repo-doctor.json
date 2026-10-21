@@ -74,6 +74,8 @@
     ".claude/skills/pr/templates/pull_request_template.md",
     ".env.example",
     ".gitattributes",
+    ".github/labeler.yml",
+    ".github/workflows/labeler.yml",
     ".husky/commit-msg",
     ".husky/pre-commit",
     ".husky/pre-push",

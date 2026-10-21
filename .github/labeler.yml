@@ -1,0 +1,41 @@
+# Type comes from the branch name, which records the intent: an unlabelled PR is one whose branch
+# didn't say. Area comes from the paths, one label per package, so no area label means root tooling.
+
+feature:
+  - head-branch: ["^feat/"]
+
+bug:
+  - head-branch: ["^fix/"]
+
+documentation:
+  - head-branch: ["^docs/"]
+
+chore:
+  - head-branch:
+      ["^chore/", "^refactor/", "^perf/", "^test/", "^build/", "^style/"]
+
+ci:
+  - head-branch: ["^ci/"]
+  - changed-files:
+      - any-glob-to-any-file: ".github/**"
+
+agentic-workflows:
+  - changed-files:
+      - any-glob-to-any-file: [".claude/**", "CLAUDE.md"]
+
+# The lockfile rather than package.json, which changes as often for a script as for a dependency.
+dependencies:
+  - changed-files:
+      - any-glob-to-any-file: "yarn.lock"
+
+"@timhettler/config":
+  - changed-files:
+      - any-glob-to-any-file: "config/**"
+
+"@timhettler/radix-layout":
+  - changed-files:
+      - any-glob-to-any-file: "lib/**"
+
+"@timhettler/radix-layout-docs":
+  - changed-files:
+      - any-glob-to-any-file: "docs/**"

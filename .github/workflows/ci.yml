@@ -43,6 +43,9 @@ jobs:
       - name: Check formatting
         run: yarn format:check
 
+      - name: Check markdown
+        run: yarn check:markdown
+
       - name: Typecheck
         run: yarn typecheck
 

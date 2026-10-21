@@ -37,9 +37,12 @@ the `activate` prefix and outside the sandbox, which yarn and husky need.
 ## CI
 
 `Verify` in [`ci.yml`](../../../.github/workflows/ci.yml) runs install, `lint`,
-`format:check`, `typecheck`, `build`, then `test` (Storybook play functions in
-Playwright's Chromium) and `check:package`. `main` has no branch protection, so
-a red check still merges. The usual fixes:
+`format:check`, `check:markdown`, `typecheck`, `build`, then `test` (Storybook
+play functions in Playwright's Chromium) and `check:package`. `main` has no
+branch protection, so a red check still merges.
+[`labeler.yml`](../../../.github/workflows/labeler.yml) labels each PR by its
+branch type and the workspaces it touches, and fails on a label the repository
+lacks. The usual fixes:
 
 - `format:check`: `yarn format`, then commit.
 - `test`: run
