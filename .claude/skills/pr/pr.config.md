@@ -36,18 +36,16 @@ the `activate` prefix and outside the sandbox, which yarn and husky need.
 
 ## CI
 
-`Verify` in [`ci.yml`](../../../.github/workflows/ci.yml) runs install, `lint`,
-`format:check`, `check:markdown`, `typecheck`, `build`, then `test` (Storybook
-play functions in Playwright's Chromium) and `check:package`. `main` has no
-branch protection, so a red check still merges.
-[`labeler.yml`](../../../.github/workflows/labeler.yml) labels each PR by its
-branch type and the workspaces it touches, and fails on a label the repository
-lacks. The usual fixes:
+[`ci.yml`](../../../.github/workflows/ci.yml) and
+[`labeler.yml`](../../../.github/workflows/labeler.yml) run on every PR. `main`
+has no branch protection, so a red check still merges. The usual fixes:
 
 - `format:check`: `yarn format`, then commit.
 - `test`: run
   `yarn workspace @timhettler/radix-layout-docs exec playwright install chromium`
   once locally, then `yarn test`.
+- `label`: a label the labeler applies is missing; create it as
+  `docs/repo-settings.md` § Labels shows.
 
 ## Gotchas
 
