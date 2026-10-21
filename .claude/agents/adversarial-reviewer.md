@@ -71,14 +71,12 @@ Misses cluster in a few general shapes. Check these directly rather than hoping:
 
 ## Verification setup in this repo
 
-- **Activate Node 22 first:** `source ~/.nvm/nvm.sh && nvm use`. Vite 8 breaks
-  under an older Node.
+- **Activate Node first:** `source ~/.nvm/nvm.sh && nvm use`.
 - **The tests are Storybook play functions in Chromium.** Run
   `yarn workspace @timhettler/radix-layout-docs exec playwright install chromium`
   once, then `yarn test`. A run that never launched a browser proved nothing.
-- **Assert computed styles and measured geometry,** not attributes: an attribute
-  assertion passes with the CSS rule deleted. `yarn build` compiles the CSS the
-  stories load.
+- **`yarn build` compiles the CSS the stories load;** `CLAUDE.md` § Testing says
+  what an assertion has to measure.
 - **`gh` and `git push` need the account's token outside the sandbox;** see
   `.claude/skills/pr/pr.config.md` § Gotchas.
 

@@ -23,7 +23,7 @@
   },
   "scripts": {
     "lint": "turbo lint",
-    "typecheck": "turbo typecheck && yarn typecheck:scripts",
+    "typecheck": "turbo typecheck typecheck:scripts",
     "build": "turbo build",
     "test": "turbo test",
     "format": "prettier --write .",

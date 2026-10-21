@@ -107,13 +107,12 @@ function scan(file: string, source: string): Violation[] {
       continue;
     }
 
-    // Found by index, not at line start: `Text <!--` opens a comment too.
+    // Only a `<!--` that starts a block spans lines; an unclosed one mid-paragraph is literal text.
     if (inComment) {
       if (body.includes("-->")) inComment = false;
       continue;
     }
-    const commentOpen = body.indexOf("<!--");
-    if (commentOpen !== -1 && !body.slice(commentOpen).includes("-->")) {
+    if (COMMENT_BLOCK.test(body) && !body.includes("-->")) {
       inComment = true;
       inTable = false;
       continue;

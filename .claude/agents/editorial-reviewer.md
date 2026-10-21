@@ -50,10 +50,10 @@ drifted from the code.
 
 ## Writing standard in this repo
 
-`CLAUDE.md` § Writing is the standard; it links to the ADRs in
-`docs/decisions/adr/`, which hold the reasons a comment or doc points at. JSDoc
-on exports is consumer docs, published with the package, so it isn't held to the
-one-line comment budget. Changesets may narrate a change.
+`CLAUDE.md` § Writing is the standard. The ADRs in `docs/decisions/adr/` hold
+the reasons a comment or doc links to rather than repeats. JSDoc on exports is
+consumer docs, published with the package, so it isn't held to the one-line
+comment budget. Changesets may narrate a change.
 
 ## Report
 

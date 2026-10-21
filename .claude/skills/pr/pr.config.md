@@ -12,9 +12,8 @@ Configure writes both; porting leaves both behind.
 ## Commit convention
 
 Conventional Commits, `type: subject`, with `!` before the colon for a breaking
-change. Dependabot's `build(deps):` is the only scope in use. Subject
-imperative, lowercase after the colon, no period. Branches are
-`type/description`.
+change. Don't use a scope; `build(deps):` is Dependabot's. Subject imperative,
+lowercase after the colon, no period. Branches are `type/description`.
 
 ## Git hooks
 
