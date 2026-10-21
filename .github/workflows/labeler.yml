@@ -3,8 +3,6 @@
 #     PR from a fork gets a read-only token and fails here.
 #   - No `issues: write`, which would let the action create a missing label with no description. A
 #     missing label should fail the run; docs/repo-settings.md lists them.
-#   - A PR opened with `GITHUB_TOKEN` triggers no `pull_request`, so the workflow that opens one
-#     labels it.
 name: Labeler
 
 on: pull_request
@@ -19,7 +17,7 @@ permissions:
 
 jobs:
   label:
-    # Dependabot's runs get a read-only token, so its PRs go unlabelled.
+    # Dependabot's runs get a read-only token, so the labeler skips them; Dependabot adds its own labels.
     if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
