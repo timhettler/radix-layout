@@ -77,7 +77,6 @@
     ".vscode/settings.json",
     ".worktreeinclude",
     "scripts/check-markdown.ts",
-    "scripts/package.json",
     "tsconfig.scripts.json"
   ]
 }

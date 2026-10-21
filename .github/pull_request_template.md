@@ -6,7 +6,7 @@
   about 8 lines, and delete any section or bullet with nothing to say.
 -->
 
-**Evidence**
+**Verification**
 
 <!--
   The issue or plan link first, then the acceptance criteria met or left open, then checks you ran
