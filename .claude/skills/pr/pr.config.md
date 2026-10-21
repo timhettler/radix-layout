@@ -18,11 +18,12 @@ lowercase after the colon, no period. Branches are `type/description`.
 ## Git hooks
 
 - **`pre-commit`:** lint-staged runs Prettier on staged files, and ESLint on
-  staged scripts.
+  staged scripts under `lib/` and `docs/`, the workspaces with an ESLint config.
 - **`commit-msg`:** commitlint checks the message against the conventional
   preset.
-- **`pre-push`:** `scripts/pre-push.ts` runs `typecheck` and `lint`, then the
-  tests Turbo finds affected by the push. CI runs the full set.
+- **`pre-push`:** `scripts/pre-push.ts` runs `build`, `typecheck`, `lint` and
+  `check:markdown`, then the tests Turbo finds affected by the push. CI runs the
+  full set.
 
 Commit and push with the `activate` prefix and outside the sandbox, which yarn
 and husky need.
