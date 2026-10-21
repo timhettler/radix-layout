@@ -82,3 +82,26 @@
     contain-intrinsic-inline-size: $min;
   }
 }
+
+// The parts are their own mixins: the side is marked by its class (ADR 0008 § 2).
+@mixin sidebar($align: stretch) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: $align;
+
+  > * {
+    margin: 0;
+  }
+}
+
+@mixin sidebar-side {
+  flex-basis: var(--el-sidebar-side-width);
+  flex-grow: 1;
+}
+
+// Zero basis, 1e9 grow and min-inline-size are the wrap trigger (ADR 0008 § 1).
+@mixin sidebar-content {
+  flex-basis: 0;
+  flex-grow: 1e9;
+  min-inline-size: var(--el-sidebar-content-min);
+}

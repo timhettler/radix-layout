@@ -25,12 +25,13 @@ position applied to shape rather than value.
 
 ### 3. Each intent is its own layout
 
-| Intent                                                       | Layout                                                |
-| ------------------------------------------------------------ | ----------------------------------------------------- |
-| Ragged wrap: items move to the next line one at a time       | `Cluster`                                             |
-| All at once: side by side or all stacked, never two + one    | `Switcher` (ADR 0007)                                 |
-| Two unequal parts: media beside text, a panel beside results | `Sidebar` (`../planning/sidebar-layout/tech-plan.md`) |
-| Natural width to full width: an action bar of buttons        | `Cluster` with `--el-cluster-flow` (§ 4)              |
+| Intent                                                          | Layout                                   |
+| --------------------------------------------------------------- | ---------------------------------------- |
+| Ragged wrap: items move to the next line one at a time          | `Cluster`                                |
+| All at once: side by side or all stacked, never two + one       | `Switcher` (ADR 0007)                    |
+| Two unequal parts: media beside text, a panel beside results    | `Sidebar` (ADR 0008)                     |
+| Natural width to full width: an action bar of buttons           | `Cluster` with `--el-cluster-flow` (§ 4) |
+| No switch: a column at every width, children at their own width | `Stack`                                  |
 
 A new layout still passes ADR 0001 § 1 on its own merits.
 
@@ -73,7 +74,7 @@ axis, and the vocabulary scrape reads the registration's `syntax` and the
   switches together" and "the image drops below when the text is cramped" name
   different layouts; the screens alone do not.
 - **The media object is a `Sidebar`**, which no one would search for by that
-  name. The Sidebar plan holds the naming question.
+  name. ADR 0008 § 2 keeps the name and leads its docs with the media object.
 - **Every shape change renders on the server as it will look**, since none
   involves script.
 

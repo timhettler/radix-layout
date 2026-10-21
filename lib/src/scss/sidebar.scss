@@ -1,0 +1,43 @@
+@use "layers";
+@use "layout";
+@use "space";
+
+// Stack's map; safe is inert on a wrapped line.
+$align: (
+  "start": flex-start,
+  "center": safe center,
+  "end": safe flex-end,
+  "stretch": stretch,
+);
+
+// Per sidebar so nesting can't inherit; unregistered (ADR 0008 § 3).
+@layer el.defaults {
+  .el-sidebar {
+    --el-sidebar-side-width: auto;
+    --el-sidebar-content-min: 50%;
+  }
+}
+
+.el-sidebar {
+  @include layout.sidebar;
+}
+
+.el-sidebar__side {
+  @include layout.sidebar-side;
+}
+
+.el-sidebar__content {
+  @include layout.sidebar-content;
+}
+
+@each $step, $_ in space.$spaces {
+  .el-sidebar[data-space="#{$step}"] {
+    gap: space.value($step);
+  }
+}
+
+@each $keyword, $value in $align {
+  .el-sidebar[data-align="#{$keyword}"] {
+    align-items: $value;
+  }
+}
