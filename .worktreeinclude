@@ -1,0 +1,3 @@
+# Gitignored files to copy into new worktrees (gitignore syntax). Claude Code reads this when it
+# creates a worktree; the worktree skill reads it for worktrees made with plain `git worktree add`.
+.env

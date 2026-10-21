@@ -27,6 +27,7 @@ in `docs/decisions/`.
 
 - `yarn lint` / `yarn typecheck` / `yarn build` / `yarn test` / `yarn format` (+
   `format:check`) via Turbo.
+- `yarn check:markdown` fails on a table row GitHub would print as text.
 - `yarn workspace @timhettler/radix-layout check:package` — `publint` + `attw`.
   Run after any packaging change.
 - `yarn workspace @timhettler/radix-layout-docs storybook` — dev server on 6006.

@@ -16,15 +16,20 @@
   },
   "devDependencies": {
     "@timhettler/config": "workspace:*",
-    "prettier": "^3.9.10"
+    "@types/node": "22",
+    "prettier": "^3.9.10",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
   },
   "scripts": {
     "lint": "turbo lint",
-    "typecheck": "turbo typecheck",
+    "typecheck": "turbo typecheck && yarn typecheck:scripts",
     "build": "turbo build",
     "test": "turbo test",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "release": "turbo run build --filter=@timhettler/radix-layout && changeset publish"
+    "release": "turbo run build --filter=@timhettler/radix-layout && changeset publish",
+    "typecheck:scripts": "tsc -p tsconfig.scripts.json",
+    "check:markdown": "yarn tsx scripts/check-markdown.ts"
   }
 }

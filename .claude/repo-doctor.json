@@ -1,0 +1,83 @@
+{
+  "templateVersion": 2,
+  "kind": {
+    "stable": false,
+    "team": false
+  },
+  "guess": {
+    "stable": false,
+    "team": false
+  },
+  "slots": {
+    "packageManager": {
+      "verdict": "kept",
+      "value": "yarn"
+    },
+    "runtimePin": {
+      "verdict": "kept",
+      "value": ".nvmrc"
+    },
+    "repoShape": {
+      "verdict": "kept",
+      "value": "workspace"
+    },
+    "monorepoRunner": {
+      "verdict": "kept",
+      "value": "turbo"
+    },
+    "typescript": {
+      "verdict": "kept",
+      "value": "typescript"
+    },
+    "formatter": {
+      "verdict": "kept",
+      "value": "prettier"
+    },
+    "linter": {
+      "verdict": "kept",
+      "value": "eslint"
+    },
+    "hookManager": {
+      "verdict": "defaulted",
+      "value": "husky"
+    },
+    "stagedRunner": {
+      "verdict": "defaulted",
+      "value": "lint-staged"
+    },
+    "commitConvention": {
+      "verdict": "defaulted",
+      "value": "commitlint"
+    },
+    "testRunner": {
+      "verdict": "kept",
+      "value": "vitest"
+    },
+    "release": {
+      "verdict": "kept",
+      "value": "changesets"
+    },
+    "dependencyUpdates": {
+      "verdict": "kept",
+      "value": "dependabot"
+    },
+    "liveStateStore": {
+      "verdict": "asked",
+      "value": "repo"
+    }
+  },
+  "files": [
+    ".claude/skills/pr/CONFIGURE.md",
+    ".claude/skills/pr/SKILL.md",
+    ".claude/skills/pr/agents/adversarial-reviewer.md",
+    ".claude/skills/pr/agents/editorial-reviewer.md",
+    ".claude/skills/pr/templates/pull_request_template.md",
+    ".env.example",
+    ".gitattributes",
+    ".vscode/settings.json",
+    ".worktreeinclude",
+    "scripts/check-markdown.ts",
+    "scripts/package.json",
+    "tsconfig.scripts.json"
+  ]
+}
