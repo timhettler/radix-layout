@@ -1,0 +1,2 @@
+# What CI checks, run early: scripts/pre-push.ts says which tests.
+yarn tsx scripts/pre-push.ts "$@"

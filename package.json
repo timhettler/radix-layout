@@ -15,8 +15,12 @@
     "turbo": "^2.11.8"
   },
   "devDependencies": {
+    "@commitlint/cli": "^21.2.4",
+    "@commitlint/config-conventional": "^21.2.4",
     "@timhettler/config": "workspace:*",
     "@types/node": "^26.6.5",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.6.0",
     "prettier": "^3.9.10",
     "tsx": "^4.23.15",
     "typescript": "^6.0.3"
@@ -30,6 +34,7 @@
     "format:check": "prettier --check .",
     "release": "turbo run build --filter=@timhettler/radix-layout && changeset publish",
     "typecheck:scripts": "tsc -p tsconfig.scripts.json",
-    "check:markdown": "yarn tsx scripts/check-markdown.ts"
+    "check:markdown": "yarn tsx scripts/check-markdown.ts",
+    "postinstall": "husky"
   }
 }

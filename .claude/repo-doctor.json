@@ -74,9 +74,15 @@
     ".claude/skills/pr/templates/pull_request_template.md",
     ".env.example",
     ".gitattributes",
+    ".husky/commit-msg",
+    ".husky/pre-commit",
+    ".husky/pre-push",
     ".vscode/settings.json",
     ".worktreeinclude",
+    "commitlint.config.mjs",
+    "lint-staged.config.mjs",
     "scripts/check-markdown.ts",
+    "scripts/pre-push.ts",
     "tsconfig.scripts.json"
   ]
 }
