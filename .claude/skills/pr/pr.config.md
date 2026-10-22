@@ -17,7 +17,12 @@ lowercase after the colon, no period. Branches are `type/description`.
 
 ## Git hooks
 
-None yet.
+The hooks are in [`.husky/`](../../../.husky/), with
+[`lint-staged.config.mjs`](../../../lint-staged.config.mjs),
+[`commitlint.config.mjs`](../../../commitlint.config.mjs) and
+[`scripts/pre-push.ts`](../../../scripts/pre-push.ts). Only commitlint goes
+unrepeated in CI, and a squash merge's title skips it too. Commit and push with
+the `activate` prefix and outside the sandbox, which yarn and husky need.
 
 ## Doc obligations
 
