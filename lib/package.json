@@ -24,7 +24,8 @@
     "./stack.css": "./dist/stack.css",
     "./cluster.css": "./dist/cluster.css",
     "./switcher.css": "./dist/switcher.css",
-    "./sidebar.css": "./dist/sidebar.css"
+    "./sidebar.css": "./dist/sidebar.css",
+    "./center.css": "./dist/center.css"
   },
   "license": "MIT",
   "keywords": [
