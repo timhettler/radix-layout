@@ -49,6 +49,8 @@ There is no container component. `container-type` is one declaration, and its
 failure — collapsing in a content-sized slot such as a `Cluster` item — depends
 on the parent, which a component cannot control (ADR 0001 § 1).
 
+_Superseded in part by ADR 0010: `BleedBoundary` is a container component._
+
 ### 5. A per-instance exception goes through a per-layout knob
 
 ```scss

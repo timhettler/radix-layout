@@ -15,7 +15,10 @@ export default mergeConfig(
       name: "storybook",
       browser: {
         enabled: true,
-        provider: playwright(),
+        // Headless Chromium hides scrollbars by default; the Bleed stories need a classic one.
+        provider: playwright({
+          launchOptions: { ignoreDefaultArgs: ["--hide-scrollbars"] },
+        }),
         headless: true,
         instances: [{ browser: "chromium" }],
       },

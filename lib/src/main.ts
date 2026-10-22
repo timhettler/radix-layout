@@ -38,3 +38,6 @@ export type {
 
 export { Center } from "./Center";
 export type { CenterProps } from "./Center";
+
+export { Bleed, BleedBoundary } from "./Bleed";
+export type { BleedBoundaryProps, BleedProps } from "./Bleed";

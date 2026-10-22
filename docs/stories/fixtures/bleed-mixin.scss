@@ -1,0 +1,6 @@
+// A project's own selector for CMS output it doesn't author.
+@use "pkg:@timhettler/radix-layout/mixins" as el;
+
+.cms .alignfull {
+  @include el.bleed;
+}

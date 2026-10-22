@@ -241,6 +241,71 @@ To centre children narrower than the column, such as a button, merge it onto a
 Block margins are left alone. Put a center inside a `Cluster`, `Switcher` or
 `Sidebar` child, not as the child itself.
 
+## Bleed
+
+A child of a centred column that reaches the edges of the nearest
+`BleedBoundary` above it: a hero image or a full-width band in an article.
+
+Put the boundary once around the page, or around a region a bleed should stop
+at, wrapping the column rather than merged onto it. The bleed can sit any depth
+below it:
+
+```tsx
+import { Bleed, BleedBoundary, Center, Stack } from "@timhettler/radix-layout";
+
+// layout.tsx
+<BleedBoundary>{children}</BleedBoundary>;
+
+// article.tsx
+<Center asChild gutter="m">
+  <Stack space="m">
+    <p>…</p>
+    <Bleed asChild>
+      <img src="hero.jpg" alt="…" />
+    </Bleed>
+  </Stack>
+</Center>;
+```
+
+Both take `asChild`. Outside a boundary, a bleed is its parent's width. Its
+parent must be centred in the boundary, as a `Center` is; in a `Cluster`,
+`Switcher` or `Sidebar` child the bleed doesn't work. Padding of your own stays
+inside the bleed, and it overrides a `max-width: 100%` reset on images.
+
+The boundary is an inline-size query container, so it needs a width from its
+parent, and space steps inside it are fluid against it. To cap every bleed in a
+boundary, centred on it, set `--el-bleed-max` to a length on a class of your
+own:
+
+```css
+.page {
+  --el-bleed-max: 120rem;
+}
+```
+
+For HTML you don't author, such as CMS output, include the bleed's rule on your
+own selector. The `mixins` entry emits no CSS, and its `pkg:` URL needs the same
+setup as [your own steps](#use-your-own-steps):
+
+```scss
+@use "pkg:@timhettler/radix-layout/mixins" as el;
+
+.prose .alignfull {
+  @include el.bleed;
+}
+```
+
+Without Sass, write what it compiles to:
+
+```css
+.prose .alignfull {
+  box-sizing: border-box;
+  inline-size: var(--el-bleed-width);
+  max-inline-size: none;
+  margin-inline: calc(50% - var(--el-bleed-width) / 2);
+}
+```
+
 ## `asChild`
 
 Renders your element instead of a `div`, merging the layout's class and
