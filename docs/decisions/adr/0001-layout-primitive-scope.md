@@ -58,6 +58,8 @@ the declarations on its own class.
 A region reaching the edge of a container is a sibling of that container's
 padded content, never a child cancelling the padding with a negative margin.
 
+_Superseded in part by ADR 0010: a `Bleed` cancels its column's inset._
+
 ## The strongest case for Box
 
 Every Layout's Box carries a genuine failure guard — a transparent outline, so a

@@ -1,0 +1,33 @@
+@use "layers";
+@use "layout";
+
+// Registered so it computes to px where it's assigned and inherits that, so a
+// container between the boundary and the bleed can't move the reach. The
+// initial 100% leaves a bleed outside any boundary at its parent's width
+// (ADR 0010 § 2).
+@property --el-bleed-width {
+  syntax: "<length-percentage>";
+  inherits: true;
+  initial-value: 100%;
+}
+
+// Per boundary so a nested one can't inherit an outer cap. On the children,
+// not the boundary, because a container's own cqi resolves against its
+// ancestors.
+@layer el.defaults {
+  .el-bleed-boundary {
+    --el-bleed-max: 100cqi;
+  }
+
+  .el-bleed-boundary > * {
+    --el-bleed-width: min(100cqi, var(--el-bleed-max));
+  }
+}
+
+.el-bleed-boundary {
+  container-type: inline-size;
+}
+
+.el-bleed {
+  @include layout.bleed;
+}

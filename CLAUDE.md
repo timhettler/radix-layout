@@ -53,6 +53,9 @@ in `docs/decisions/`.
 - **Register a per-instance knob a consumer may set to `0`** as a
   `<length-percentage>` when a `calc()` sums it, so a unitless `0` can't void
   the declaration (ADR 0009 § 2).
+- **A mixin a consumer includes is public only through `mixins.scss`**, which
+  forwards it with `show` and emits no CSS; the rest of `_layout.scss` stays
+  internal (ADR 0010 § 4).
 - **Optional axes are omitted, not defaulted**, so the CSS class is the single
   definition of each default.
 - **Emit a rule for every value, the default included**, so the scrape sees the

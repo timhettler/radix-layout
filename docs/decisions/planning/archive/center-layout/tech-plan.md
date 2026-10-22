@@ -55,4 +55,4 @@ ADR 0009 holds the design: a Center that fills its parent up to
 
 - **Full-bleed children of a Center**, for content whose structure isn't the
   author's, such as CMS prose. Cut so this plan doesn't wait on reversing ADR
-  0001 § 4; it is [`center-bleed`](../../../planning/center-bleed/tech-plan.md).
+  0001 § 4; it is [`bleed-layout`](../../archive/bleed-layout/tech-plan.md).

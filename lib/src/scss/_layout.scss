@@ -122,3 +122,18 @@
   margin-inline: auto;
   padding-inline: var(--el-center-gutter);
 }
+
+// Public through mixins.scss, for HTML a consumer doesn't author. Reads
+// --el-bleed-width, which a boundary's children assign (ADR 0010 § 1).
+//
+// The margin centres the bleed on its parent, so it reaches the boundary's
+// edges only when that parent is centred in the boundary.
+//
+// max-inline-size beats a product's img { max-width: 100% }; border-box keeps
+// a padded band from overflowing by its padding.
+@mixin bleed {
+  box-sizing: border-box;
+  inline-size: var(--el-bleed-width);
+  max-inline-size: none;
+  margin-inline: calc(50% - var(--el-bleed-width) / 2);
+}
