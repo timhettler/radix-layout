@@ -55,7 +55,7 @@ in `docs/decisions/`.
   the declaration (ADR 0009 § 2).
 - **A mixin a consumer includes is public only through `mixins.scss`**, which
   forwards it with `show` and emits no CSS; the rest of `_layout.scss` stays
-  internal (ADR 0010 § 4).
+  internal, so only a mixin written for consumers becomes contract.
 - **Optional axes are omitted, not defaulted**, so the CSS class is the single
   definition of each default.
 - **Emit a rule for every value, the default included**, so the scrape sees the

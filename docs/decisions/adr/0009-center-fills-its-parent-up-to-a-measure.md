@@ -106,10 +106,9 @@ grid's root.
 - **A Center that is a `Cluster`, `Switcher` or `Sidebar` child isn't
   supported,** placed or merged. Their `> * { margin: 0 }` ties with its auto
   margins at 0-1-0, so load order decides. Nest it inside the child.
-- **Full bleed is structural where the author writes the markup** (ADR 0001 §
-  4): a full-width region is a sibling of the Centers in a page `Stack`, with
-  its own Center inside. A child of a Center reaches the page's edges as a
-  `Bleed` (ADR 0010).
+- **A child of a Center reaches its `BleedBoundary`'s edges as a `Bleed`** (ADR
+  0010). Where the author writes the markup, a full-width sibling of the Centers
+  in a page `Stack`, with its own Center inside, also works (ADR 0001 § 4).
 
 ## Alternatives considered
 

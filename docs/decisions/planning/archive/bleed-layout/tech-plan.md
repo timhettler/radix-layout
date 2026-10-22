@@ -1,7 +1,7 @@
 # Bleed layout primitive — tech plan
 
 **Status:** complete **Owner:** unassigned **Started:** 2026-10-22
-**Completed:** 2026-10-22 **PRs:** — **Predecessor:**
+**Completed:** 2026-10-22 **PRs:** #20 **Predecessor:**
 [`center-layout`](../../archive/center-layout/tech-plan.md)
 
 ## Problem
@@ -14,52 +14,11 @@ one block of HTML.
 
 ## Approach
 
-David Bushell's container-unit breakout, as two components and a mixin (ADR
-0010). `BleedBoundary` is the query container. Its children compute a registered
-width against it, and every element below inherits that width in pixels. `Bleed`
-takes that width and centres itself on its parent with negative margins:
+ADR 0010 holds the design: `BleedBoundary` as the query container, a registered
+`--el-bleed-width` computed on its children, and `Bleed` and a `bleed` mixin
+centring on their parent with negative margins.
 
-```scss
-@property --el-bleed-width {
-  syntax: "<length-percentage>";
-  inherits: true;
-  initial-value: 100%;
-}
-
-@layer el.defaults {
-  .el-bleed-boundary {
-    --el-bleed-max: 100cqi;
-  }
-
-  .el-bleed-boundary > * {
-    --el-bleed-width: min(100cqi, var(--el-bleed-max));
-  }
-}
-
-.el-bleed-boundary {
-  container-type: inline-size;
-}
-
-.el-bleed {
-  box-sizing: border-box;
-  inline-size: var(--el-bleed-width);
-  max-inline-size: none;
-  margin-inline: calc(50% - var(--el-bleed-width) / 2);
-}
-```
-
-The same rule is the `bleed` mixin, from `pkg:@timhettler/radix-layout/mixins`,
-for HTML a consumer doesn't author.
-
-**Rejected:**
-
-- full-bleed grid tracks (ADR 0009, Alternatives);
-- `100vw` with `overflow-x: hidden` on `body`, which crops a few pixels either
-  side under a classic scrollbar;
-- `scrollbar-gutter: stable`, which reserves a gutter on a page that doesn't
-  scroll;
-- each Center assigning `100cqi`, so a bleed reaches the nearest query
-  container, which any container a consumer adds would move.
+**Rejected:** ADR 0010's alternatives.
 
 ## Constraints & decisions
 
@@ -96,10 +55,3 @@ for HTML a consumer doesn't author.
 - ~~**Does the library declare the page container?**~~ — **answered
   2026-10-22:** `BleedBoundary` is the container, around the page or a narrower
   region (ADR 0010 § 3).
-
-## Notes
-
-The technique is from David Bushell,
-[Fixing full-bleed CSS](https://dbushell.com/2026/07/03/fixing-full-bleed-css/)
-(2026-07-03). His nested-container fix registers the width on an element below
-`body`; here the boundary's children play that part.

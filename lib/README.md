@@ -270,7 +270,7 @@ below it:
 import { Bleed, BleedBoundary, Center, Stack } from "@timhettler/radix-layout";
 
 // layout.tsx
-<BleedBoundary>{children}</BleedBoundary>;
+<BleedBoundary className="page">{children}</BleedBoundary>;
 
 // article.tsx
 <Center asChild gutter="m">
@@ -286,12 +286,14 @@ import { Bleed, BleedBoundary, Center, Stack } from "@timhettler/radix-layout";
 Both take `asChild`. Outside a boundary, a bleed is its parent's width. Its
 parent must be centred in the boundary, as a `Center` is; in a `Cluster`,
 `Switcher` or `Sidebar` child the bleed doesn't work. Padding of your own stays
-inside the bleed, and it overrides a `max-width: 100%` reset on images.
+inside the bleed, and it overrides a `max-width: 100%` reset on images. To hold
+a band's content to a column, nest a `Center` inside the bleed rather than
+merging the two with `asChild`.
 
 The boundary is an inline-size query container, so it needs a width from its
 parent, and space steps inside it are fluid against it. To cap every bleed in a
-boundary, centred on it, set `--el-bleed-max` to a length on a class of your
-own:
+boundary, centred on it, set `--el-bleed-max` to a length on the boundary's own
+class; set anywhere else, it does nothing:
 
 ```css
 .page {
