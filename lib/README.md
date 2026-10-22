@@ -26,19 +26,19 @@ import "@timhettler/radix-layout/stack.css";
 
 ### With your own cascade layers
 
-Every `--el-*` default sits in `@layer el.defaults`, so an unlayered rule of
-yours beats it whatever its specificity or the order your stylesheets load in. A
-rule inside one of your own layers, such as a Tailwind v4 utility, beats it only
-when `el.defaults` is declared first. Put the statement at the top of your entry
-stylesheet:
+Every `--el-*` default the library declares sits in `@layer el.defaults`, so an
+unlayered rule of yours beats it whatever its specificity or the order your
+stylesheets load in. If your CSS uses its own cascade layers, as Tailwind v4
+does, put this at the top of your entry stylesheet:
 
 ```css
 @layer el.defaults;
 @import "tailwindcss";
 ```
 
-Without it, whichever stylesheet loads first decides, and when yours does, the
-defaults beat every layer of yours with nothing reporting it.
+Without it, when your stylesheet loads first, a knob set from one of your layers
+on `:root` or on the layout itself, such as a `[--el-switcher-min:18rem]`
+utility on a `Switcher`, keeps the default and nothing reports it.
 
 ## Stack
 
@@ -357,9 +357,8 @@ card or a sidebar, and the layouts inside it space themselves for its width:
 Don't declare one on an element sized by its content, such as a `Cluster` child:
 inline-size containment collapses it.
 
-Every default sits in `@layer el.defaults`, so your rule wins whatever its
-specificity or the order your stylesheets load in. If your CSS uses cascade
-layers, declare `el.defaults` first; see
+Your rule beats these defaults whatever its specificity or the order your
+stylesheets load in. If your CSS uses cascade layers, see
 [With your own cascade layers](#with-your-own-cascade-layers).
 
 ### Retune the scale

@@ -2,7 +2,7 @@
 "@timhettler/radix-layout": patch
 ---
 
-Documents the one line a project with its own cascade layers, such as Tailwind
-v4, needs: `@layer el.defaults;` at the top of its entry stylesheet. Without it,
-a knob set from one of your layers loses to the library's default whenever your
-stylesheet loads first.
+If your CSS uses its own cascade layers, as Tailwind v4 does, put
+`@layer el.defaults;` at the top of your entry stylesheet. Without it, a knob
+set from one of your layers on `:root` or on a layout's own element keeps the
+library's default whenever your stylesheet loads first.
