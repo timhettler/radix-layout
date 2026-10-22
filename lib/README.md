@@ -192,6 +192,55 @@ is a query container; add `container-type` on your own class.
 
 Children's margins are zeroed on both axes.
 
+## Center
+
+A column centred in its parent, filling it up to a maximum width, with a gutter
+either side when the parent is narrower: an article held to a readable measure,
+or a page container.
+
+```tsx
+import { Center } from "@timhettler/radix-layout";
+
+<Center gutter="m">
+  <h1>…</h1>
+  <p>…</p>
+</Center>;
+```
+
+| Prop      | Values                                   | Default   |
+| --------- | ---------------------------------------- | --------- |
+| `gutter`  | a step from [`spaces`](#the-space-scale) | no gutter |
+| `asChild` | `boolean`                                | `false`   |
+
+The content is at most `--el-center-max` wide, `60ch` in the center's own font,
+and the gutter is added outside it. For a page container, set the width on a
+class of your own, and `--el-center-gutter` for a gutter off the scale:
+
+```css
+.page {
+  --el-center-max: 90rem;
+  --el-center-gutter: max(1rem, 5%);
+}
+```
+
+Padding of your own on a center comes out of the measure, so set the inset with
+the gutter.
+
+To centre children narrower than the column, such as a button, merge it onto a
+`Stack`. Running text still fills the column:
+
+```tsx
+<Center asChild gutter="m">
+  <Stack space="m" align="center">
+    <p>…</p>
+    <button type="button">Launch demo</button>
+  </Stack>
+</Center>
+```
+
+Block margins are left alone. Put a center inside a `Cluster`, `Switcher` or
+`Sidebar` child, not as the child itself.
+
 ## `asChild`
 
 Renders your element instead of a `div`, merging the layout's class and

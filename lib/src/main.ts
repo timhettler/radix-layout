@@ -35,3 +35,6 @@ export type {
   SidebarRootProps,
   SidebarSideProps,
 } from "./Sidebar";
+
+export { Center } from "./Center";
+export type { CenterProps } from "./Center";

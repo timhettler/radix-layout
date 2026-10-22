@@ -1,0 +1,28 @@
+@use "layers";
+@use "layout";
+@use "space";
+
+// Registered so a unitless 0 or a step name falls back to 0px rather than
+// invalidating the cap's calc (ADR 0009 § 2).
+@property --el-center-gutter {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+// Per center so nesting can't inherit.
+@layer el.defaults {
+  .el-center {
+    --el-center-max: 60ch;
+  }
+
+  @each $step, $_ in space.$spaces {
+    .el-center[data-gutter="#{$step}"] {
+      --el-center-gutter: #{space.value($step)};
+    }
+  }
+}
+
+.el-center {
+  @include layout.center;
+}

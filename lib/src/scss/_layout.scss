@@ -105,3 +105,20 @@
   flex-grow: 1e9;
   min-inline-size: var(--el-sidebar-content-min);
 }
+
+// Reads --el-center-max and --el-center-gutter, which the including rule
+// assigns.
+//
+// inline-size is load-bearing: an auto margin turns off stretch, so a Stack or
+// grid child would shrink to its content (ADR 0009 § 1).
+//
+// The cap adds both gutters so the content box keeps the measure.
+//
+// margin-inline only, so a Stack's block reset and a parent's rhythm survive.
+@mixin center {
+  box-sizing: border-box;
+  inline-size: 100%;
+  max-inline-size: calc(var(--el-center-max) + 2 * var(--el-center-gutter));
+  margin-inline: auto;
+  padding-inline: var(--el-center-gutter);
+}

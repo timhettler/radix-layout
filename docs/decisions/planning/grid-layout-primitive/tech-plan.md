@@ -108,8 +108,8 @@ Returns the breakpoints to the library and adds a runtime (ADR 0002).
 
 ## Not in scope
 
-- **The page container** — margins and max inline size belong to the product's
-  page shell (ADR 0001 § 2).
+- **The page container** — margins and max inline size belong to `Center`,
+  merged onto the grid's root for a page-width grid (ADR 0009 § 5).
 - **A per-tier span vocabulary**, per § Approach.
 - **`subgrid`** and **an intrinsic `auto-fit` grid** — § Deferred.
 
