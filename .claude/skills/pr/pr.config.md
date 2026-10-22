@@ -29,6 +29,8 @@ the `activate` prefix and outside the sandbox, which yarn and husky need.
 - **Does a consumer see the change?** Add a changeset with `yarn changeset`. The
   repository is in prerelease mode, so a breaking change is expected and still
   needs one.
+- **Does it advance or finish a plan in `docs/decisions/planning/`?** Update it
+  through `tech-plan`.
 - **Does it decide something someone will want the reasoning for?** Add an ADR
   under `docs/decisions/adr/`.
 - **Does it change how a layout is built?** Update `CLAUDE.md` § How a layout is

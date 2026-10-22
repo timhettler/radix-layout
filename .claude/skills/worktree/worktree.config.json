@@ -1,0 +1,7 @@
+{
+  "worktreeRoot": ".claude/worktrees/",
+  "activate": "source ~/.nvm/nvm.sh && nvm use",
+  "install": "yarn install",
+  "generate": [],
+  "hooks": { "installedBy": "yarn install" }
+}

@@ -1,0 +1,42 @@
+<!--
+  Rendered by the `tech-plan` skill to <plans.active>/<slug>/tech-plan.md. Delete this comment.
+  Nothing formats this file, so keep its 100-column wrapping by hand.
+-->
+
+# {{Title}} — tech plan
+
+**Status:** {{Status}} **Owner:** {{Owner}} **Started:** {{Started}} **PRs:** {{PRs}}
+
+## Problem
+
+{{Problem}}
+
+## Approach
+
+{{Approach}}
+
+**Rejected:** {{RejectedAlternative}}
+
+## Constraints & decisions
+
+- {{Constraint}}
+- **Done means:** {{SuccessCriterion}}
+
+## Steps
+
+- [ ] {{Step}}
+{{DefaultSteps}}
+- [ ] Set `Status:` to `complete` in the PR that finishes the work, and archive the plan in that
+      same PR if it closes the last open step
+
+## Open questions
+
+- {{OpenQuestion}}
+
+## Deferred / follow-ups
+
+- {{Deferred}}
+
+## Notes
+
+{{Note}}

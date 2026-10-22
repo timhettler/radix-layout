@@ -1,0 +1,11 @@
+{
+  "store": "repo",
+  "plans": {
+    "active": "docs/decisions/planning",
+    "archive": "docs/decisions/planning/archive"
+  },
+  "project": null,
+  "format": "source ~/.nvm/nvm.sh && nvm use && yarn prettier --write",
+  "destinations": { "adr": "docs/decisions/adr", "lessons": "docs/lessons" },
+  "prSkill": "pr"
+}
