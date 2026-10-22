@@ -16,8 +16,8 @@ When that sheet loads before the library's, `el.defaults` is appended after
 `utilities` and outranks it, so a step remapped on `:root` from one of those
 layers, or a `[--el-switcher-min:18rem]` utility on a Switcher, keeps the
 default with nothing reporting it. Loaded the other way round, the consumer's
-rule wins. Set on any other element, a knob wins either way, because the default
-reaches that element only by inheritance.
+rule wins. Set on an element the default reaches only by inheritance, such as a
+step on a card, a knob wins either way.
 
 The library can't fix this from its own files: no stylesheet can place a layer
 ahead of one the page has already declared.
@@ -53,10 +53,10 @@ The library documents this in its README and changes nothing in its CSS. ADR
 - **Defaults as `var()` fallbacks where each knob is read**, with the library
   declaring no knob at all. A consumer rule would then win from any layer
   without the statement. Consumer CSS could no longer read a step,
-  `var(--el-space-l)`, unless it set that step itself. Each layout also declares
-  its knob defaults per element so a nested layout doesn't inherit an outer
-  one's, which a fallback can't do without an internal registered property per
-  knob.
+  `var(--el-space-l)`, unless it set that step itself. A layout's knob defaults
+  in `el.defaults` sit on its own element, so a nested layout doesn't inherit an
+  outer one's, which a fallback can't do without an internal registered property
+  per knob.
 - **Support knobs from unlayered CSS only.** That shuts out `@theme`, and
   arbitrary-property utilities on a layout itself, to save the consumer one
   line.
