@@ -199,10 +199,12 @@ either side when the parent is narrower: an article held to a readable measure,
 or a page container.
 
 ```tsx
+import { Center } from "@timhettler/radix-layout";
+
 <Center gutter="m">
   <h1>…</h1>
   <p>…</p>
-</Center>
+</Center>;
 ```
 
 | Prop      | Values                                   | Default   |
@@ -217,6 +219,7 @@ class of your own, and `--el-center-gutter` for a gutter off the scale:
 ```css
 .page {
   --el-center-max: 90rem;
+  --el-center-gutter: max(1rem, 5%);
 }
 ```
 
@@ -235,8 +238,8 @@ To centre children narrower than the column, such as a button, merge it onto a
 </Center>
 ```
 
-Block margins are left alone. Nest a center inside a `Cluster`, `Switcher` or
-`Sidebar` child rather than merging the two with `asChild`.
+Block margins are left alone. Put a center inside a `Cluster`, `Switcher` or
+`Sidebar` child, not as the child itself.
 
 ## `asChild`
 

@@ -1,7 +1,7 @@
 # Center layout primitive — tech plan
 
 **Status:** complete **Owner:** unassigned **Started:** 2026-10-22
-**Completed:** 2026-10-22 **PRs:** —
+**Completed:** 2026-10-22 **PRs:** #19
 
 ## Problem
 

@@ -23,7 +23,7 @@ interface CenterProps extends PrimitiveDivProps {
  * readable measure.
  *
  * The content is at most `--el-center-max` wide (`60ch`, in the center's own
- * font), and `gutter` keeps that space either side when the parent is
+ * font), and `gutter` is the least space either side when the parent is
  * narrower. Set `--el-center-max`, or `--el-center-gutter` for a length off the
  * scale, on a class of your own. Padding of your own comes out of the measure.
  *

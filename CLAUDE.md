@@ -48,10 +48,11 @@ in `docs/decisions/`.
 - **Each `data-*` axis has a runtime list** (`stackAligns`, `clusterJustifies`,
   …) and the prop type is derived from it. Keep it that way — the scrape
   compares the list to the compiled CSS.
-- **A layout that merges onto another with `asChild` writes attribute names the
-  other doesn't**, because the child's props win (ADR 0009 § 2).
-- **Register a per-instance knob that a `calc()` sums** as a `<length>`, so a
-  unitless `0` can't void the declaration (ADR 0009 § 2).
+- **A layout designed to merge onto another with `asChild` writes attribute
+  names the other doesn't**, because the child's props win (ADR 0009 § 2).
+- **Register a per-instance knob a consumer may set to `0`** as a
+  `<length-percentage>` when a `calc()` sums it, so a unitless `0` can't void
+  the declaration (ADR 0009 § 2).
 - **Optional axes are omitted, not defaulted**, so the CSS class is the single
   definition of each default.
 - **Emit a rule for every value, the default included**, so the scrape sees the

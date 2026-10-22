@@ -45,23 +45,25 @@ Center past its parent.
 every `.el-center` in `el.defaults`, so a consumer's rule wins regardless of
 load order (ADR 0003) and a nested Center never inherits an outer one's (ADR
 0004 § 5). It has no prop for ADR 0008 § 3's reason: the length is off the space
-scale, and a page container's width is the product's. It stays unregistered, so
-`ch` resolves in the Center's own font.
+scale, and a page container's width is the product's. It stays unregistered: no
+one sets a measure to a unitless `0`, so a registration would guard nothing.
 
 `gutter` takes a step on the space scale and writes `data-gutter`, which assigns
 `--el-center-gutter` in `el.defaults`. It isn't `data-space`: merged onto a
 `Stack` with `asChild`, the child's props win, and Stack's `data-space` would
 replace the gutter silently. Omitted, there is no gutter.
 
-`--el-center-gutter` is registered as a `<length>`, not inherited, with an
-initial value of `0px`, which is the gutter's only default. Unregistered, a
-consumer's unitless `0` or a step name makes the cap's `calc()` invalid, and the
-Center is as wide as its parent with nothing reporting it. Registered, `0`
-computes to `0px`, and a value that isn't a length falls back to the initial
-value. ADR 0004 § 2 bans registering a step because a step is assigned on
-`:root`. This knob is assigned on each Center, so a fluid step computes against
-the Center's nearest container, where it would resolve unregistered (ADR 0007 §
-6).
+`--el-center-gutter` is registered as a `<length-percentage>`, not inherited,
+with an initial value of `0px`, which is the gutter's only default.
+Unregistered, a consumer's unitless `0` or a step name makes the cap's `calc()`
+invalid, and the Center is as wide as its parent with nothing reporting it.
+Registered, `0` computes to `0px`, and a value that isn't a length or a
+percentage falls back to the initial value. A percentage, as in `max(1rem, 5%)`,
+resolves against the containing block in both the padding and the cap, so the
+content keeps the measure. ADR 0004 § 2 bans registering a step because a step
+is assigned on `:root`. This knob is assigned on each Center, so a fluid step
+computes against the Center's nearest container, where it would resolve
+unregistered (ADR 0007 § 6).
 
 ### 3. Intrinsic centering is composition
 
@@ -101,9 +103,9 @@ grid's root.
   27.2.
 - **A border or padding of your own on a Center comes out of the measure.** The
   inset is `gutter` or `--el-center-gutter`.
-- **A Center merged onto a `Cluster`, `Switcher` or `Sidebar` child isn't
-  supported.** Their `> * { margin: 0 }` ties with its auto margins at 0-1-0, so
-  load order decides. Nest it inside the child.
+- **A Center that is a `Cluster`, `Switcher` or `Sidebar` child isn't
+  supported,** placed or merged. Their `> * { margin: 0 }` ties with its auto
+  margins at 0-1-0, so load order decides. Nest it inside the child.
 - **Full bleed stays structural** (ADR 0001 § 4): a full-width region is a
   sibling of the Centers in a page `Stack`, with its own Center inside. A bleed
   child, for content whose structure isn't the author's, is
@@ -117,6 +119,8 @@ grid's root.
   geometry, and a border pushes the Center past its parent.
 - **`inline-size: stretch`.** Fills the parent with no gutter in a calc, and
   Firefox supports it only in part, so it isn't Baseline.
+- **A gutter registered as a `<length>`.** A percentage gutter, such as
+  `max(1rem, 5%)`, fails the syntax and silently becomes `0px`.
 - **An unregistered gutter defaulting to `0px`.** A consumer's unitless `0`
   uncaps the Center (§ 2).
 - **A unitless knob cast with `* 1px`.** Rules out `rem`, `cqi` and the space
@@ -130,5 +134,5 @@ grid's root.
 ## Revisit when
 
 - Real uses settle on a few measures. That is the case for a vocabulary.
-- `stretch` reaches Baseline. With `content-box`, it removes the `inline-size`
-  and the cap's calc.
+- `stretch` reaches Baseline. With `content-box`, it replaces `100%` and drops
+  the cap's calc.

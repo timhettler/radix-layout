@@ -159,6 +159,7 @@ export const Gutters: Story = {
       const padding = paddingOf(node);
       await expect(padding.start, step).toBeCloseTo(gutter, 1);
       await expect(padding.end, step).toBeCloseTo(gutter, 1);
+      await expect(getComputedStyle(node).paddingBlockStart, step).toBe("0px");
 
       setWidth(frame, WIDE);
       await expect(contentWidthOf(node), `${step} wide`).toBeCloseTo(
@@ -334,7 +335,86 @@ export const OffScaleGutter: Story = {
 };
 
 /**
- * A unitless `0` or a value that isn't a length removes the gutter and keeps
+ * A percentage gutter resolves against the parent in both the padding and the
+ * cap, so the content keeps the measure.
+ */
+export const PercentageGutter: Story = {
+  render: () => (
+    <div data-frame="">
+      <Center className="page">
+        <p>{prose}</p>
+      </Center>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const restore = prepend(".page { --el-center-gutter: max(1rem, 5%); }");
+
+    try {
+      const frame = nodeIn(canvasElement, "[data-frame]");
+      const node = nodeIn(frame);
+      const rem = resolvedLength(node, "1rem");
+
+      for (const width of [WIDE, NARROW]) {
+        setWidth(frame, width);
+        await expect(paddingOf(node).start, `${width}px`).toBeCloseTo(
+          Math.max(rem, 0.05 * width),
+          1,
+        );
+      }
+
+      setWidth(frame, WIDE);
+      await expect(contentWidthOf(node)).toBeCloseTo(
+        resolvedLength(node, "60ch"),
+        1,
+      );
+    } finally {
+      restore();
+    }
+  },
+};
+
+/**
+ * The layout rule is unlayered and sets only inline margins, so a product's
+ * element reset can't undo it and the product's own block margin survives.
+ */
+export const ProductResets: Story = {
+  render: () => (
+    <div data-frame="">
+      <Center className="spaced" gutter="m">
+        <p>{prose}</p>
+      </Center>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const restore = prepend(
+      "div { margin: 0; padding: 0; } .spaced { margin-block: 40px; }",
+    );
+
+    try {
+      const frame = nodeIn(canvasElement, "[data-frame]");
+      const node = nodeIn(frame);
+      setWidth(frame, WIDE);
+
+      const style = getComputedStyle(node);
+      await expect([style.marginBlockStart, style.marginBlockEnd]).toEqual([
+        "40px",
+        "40px",
+      ]);
+      await expect(paddingOf(node).start).toBeCloseTo(
+        resolvedGap("m", frame),
+        1,
+      );
+      const { start, end } = offsetsIn(frame, node);
+      await expect(start).toBeGreaterThan(0);
+      await expect(end).toBeCloseTo(start, 1);
+    } finally {
+      restore();
+    }
+  },
+};
+
+/**
+ * A unitless `0` or a step name removes the gutter and keeps
  * the cap. Unregistered, either would invalidate the cap's calc and leave the
  * center as wide as its parent.
  */
