@@ -20,6 +20,9 @@
     "test": {
       "dependsOn": ["^build"],
       "outputs": []
+    },
+    "//#typecheck:scripts": {
+      "cache": false
     }
   }
 }

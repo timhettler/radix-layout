@@ -27,6 +27,7 @@ in `docs/decisions/`.
 
 - `yarn lint` / `yarn typecheck` / `yarn build` / `yarn test` / `yarn format` (+
   `format:check`) via Turbo.
+- `yarn check:markdown` fails on a table row GitHub would print as text.
 - `yarn workspace @timhettler/radix-layout check:package` — `publint` + `attw`.
   Run after any packaging change.
 - `yarn workspace @timhettler/radix-layout-docs storybook` — dev server on 6006.
@@ -101,7 +102,7 @@ on Slack: plain, direct, complete sentences. Cut filler, not grammar.
 | Code comment | 1 line, for what the code can't say. JSDoc on exports is consumer docs |
 | Issue        | The problem, what "done" means, one link                               |
 
-A PR opens with the change in one or two sentences, no header. **Evidence**
+A PR opens with the change in one or two sentences, no header. **Verification**
 follows: the issue link, acceptance criteria met or open, checks run by hand.
 **Reviewer notes** come last: what to judge, or do after merge. Omit empty
 sections. A comment runs longer only where a constraint needs several facts and

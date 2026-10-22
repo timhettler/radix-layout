@@ -16,6 +16,7 @@ storybook-static
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
+!.vscode/settings.json
 .idea
 .DS_Store
 *.suo
@@ -36,3 +37,14 @@ storybook-static
 # turbo
 .turbo
 .vercel
+
+# env
+.env
+.env.*
+!.env.example
+
+# typescript
+*.tsbuildinfo
+
+# agents
+.claude/worktrees/

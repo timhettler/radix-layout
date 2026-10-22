@@ -1,0 +1,2 @@
+# The formatter writes LF; this keeps a Windows checkout from converting it to CRLF.
+* text=auto eol=lf
