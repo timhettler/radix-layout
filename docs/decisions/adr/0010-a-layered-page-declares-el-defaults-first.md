@@ -9,16 +9,15 @@ ADR 0003 puts each default the library declares in `@layer el.defaults` so that
 a consumer's rule beats it whatever the load order. That holds for unlayered
 consumer CSS, which outranks every layer. A consumer rule inside a cascade layer
 gets no such guarantee where it sets a knob on the element the default is
-declared on: `:root` for the scale, the layout itself for Switcher's and
-Sidebar's knobs. Layers rank by the order they are first declared, the last one
-winning, and Tailwind v4's output opens with
-`@layer theme, base, components, utilities;`. When that sheet loads before the
-library's, `el.defaults` is appended after `utilities` and outranks it, so a
-step remapped on `:root` from one of those layers, or a
-`[--el-switcher-min:18rem]` utility on a Switcher, keeps the default with
-nothing reporting it. Loaded the other way round, the consumer's rule wins. Set
-on any other element, a knob wins either way, because the default reaches that
-element only by inheritance.
+declared on: `:root` for the scale, the layout's own element for its knobs.
+Layers rank by the order they are first declared, the last one winning, and
+Tailwind v4's output opens with `@layer theme, base, components, utilities;`.
+When that sheet loads before the library's, `el.defaults` is appended after
+`utilities` and outranks it, so a step remapped on `:root` from one of those
+layers, or a `[--el-switcher-min:18rem]` utility on a Switcher, keeps the
+default with nothing reporting it. Loaded the other way round, the consumer's
+rule wins. Set on any other element, a knob wins either way, because the default
+reaches that element only by inheritance.
 
 The library can't fix this from its own files: no stylesheet can place a layer
 ahead of one the page has already declared.
@@ -54,13 +53,13 @@ The library documents this in its README and changes nothing in its CSS. ADR
 - **Defaults as `var()` fallbacks where each knob is read**, with the library
   declaring no knob at all. A consumer rule would then win from any layer
   without the statement. Consumer CSS could no longer read a step,
-  `var(--el-space-l)`, unless it set that step itself. Switcher and Sidebar also
-  scope their defaults per element so a nested layout doesn't inherit an outer
+  `var(--el-space-l)`, unless it set that step itself. Each layout also declares
+  its knob defaults per element so a nested layout doesn't inherit an outer
   one's, which a fallback can't do without an internal registered property per
   knob.
 - **Support knobs from unlayered CSS only.** That shuts out `@theme`, and
-  arbitrary-property utilities on a Switcher or Sidebar itself, to save the
-  consumer one line.
+  arbitrary-property utilities on a layout itself, to save the consumer one
+  line.
 
 ## Revisit when
 
