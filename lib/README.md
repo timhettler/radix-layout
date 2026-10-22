@@ -24,6 +24,22 @@ import "@timhettler/radix-layout/defaults.css";
 import "@timhettler/radix-layout/stack.css";
 ```
 
+### With your own cascade layers
+
+Every `--el-*` default sits in `@layer el.defaults`, so an unlayered rule of
+yours beats it whatever its specificity or the order your stylesheets load in. A
+rule inside one of your own layers, such as a Tailwind v4 utility, beats it only
+when `el.defaults` is declared first. Put the statement at the top of your entry
+stylesheet:
+
+```css
+@layer el.defaults;
+@import "tailwindcss";
+```
+
+Without it, whichever stylesheet loads first decides, and when yours does, the
+defaults beat every layer of yours with nothing reporting it.
+
 ## Stack
 
 Children in a column, spaced by a step on the space scale. Never wraps.
@@ -342,7 +358,9 @@ Don't declare one on an element sized by its content, such as a `Cluster` child:
 inline-size containment collapses it.
 
 Every default sits in `@layer el.defaults`, so your rule wins whatever its
-specificity or the order your stylesheets load in.
+specificity or the order your stylesheets load in. If your CSS uses cascade
+layers, declare `el.defaults` first; see
+[With your own cascade layers](#with-your-own-cascade-layers).
 
 ### Retune the scale
 
