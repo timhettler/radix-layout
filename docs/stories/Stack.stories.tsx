@@ -197,6 +197,53 @@ export const RemappedScale: Story = {
   },
 };
 
+/**
+ * A page that declares its own layers before the library loads, as Tailwind v4
+ * does, ranks `el.defaults` above them, so a remap in one of its layers loses
+ * unless its first statement names `el.defaults` (ADR 0010).
+ */
+export const LayeredRemap: Story = {
+  args: { space: "l" },
+  render: (args) => (
+    <Stack {...args}>
+      <span>One</span>
+      <span>Two</span>
+    </Stack>
+  ),
+  play: async ({ canvasElement }) => {
+    const gap = () => {
+      const [first, second] = rects(stackIn(canvasElement));
+      return second.top - first.bottom;
+    };
+    const unremapped = gap();
+    await expect(unremapped).not.toBeCloseTo(50, 1);
+
+    // The shape `@import "tailwindcss"` compiles to, loaded before the library.
+    const consumer = (statement: string) => {
+      const sheet = document.createElement("style");
+      sheet.textContent = `${statement}
+        @layer theme, base, components, utilities;
+        @layer utilities { :root { --el-space-l: 50px; } }`;
+      document.head.prepend(sheet);
+      return sheet;
+    };
+
+    const unordered = consumer("");
+    try {
+      await expect(gap(), "without the statement").toBeCloseTo(unremapped, 1);
+    } finally {
+      unordered.remove();
+    }
+
+    const ordered = consumer("@layer el.defaults;");
+    try {
+      await expect(gap(), "with the statement").toBeCloseTo(50, 1);
+    } finally {
+      ordered.remove();
+    }
+  },
+};
+
 const CONTAINER_WIDTHS = ["16rem", "20rem", "60rem"] as const;
 
 /**

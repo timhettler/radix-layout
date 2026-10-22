@@ -1,6 +1,8 @@
 # ADR 0003 — A public custom property's default is layered so a consumer's own rule wins; layout declarations stay unlayered
 
-**Status:** accepted **Date:** 2026-10-13 **Deciders:** Tim Hettler
+**Status:** accepted; amended by
+[ADR 0010](0010-a-layered-page-declares-el-defaults-first.md) **Date:**
+2026-10-13 **Deciders:** Tim Hettler
 
 ## Context
 
