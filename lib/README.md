@@ -26,19 +26,17 @@ import "@timhettler/radix-layout/stack.css";
 
 ### With your own cascade layers
 
-Every `--el-*` default sits in `@layer el.defaults`, so an unlayered rule of
-yours beats it whatever its specificity or the order your stylesheets load in. A
-rule inside one of your own layers, such as a Tailwind v4 utility, beats it only
-when `el.defaults` is declared first. Put the statement at the top of your entry
-stylesheet:
+If your CSS uses its own cascade layers, as Tailwind v4 does, put this at the
+top of your entry stylesheet:
 
 ```css
 @layer el.defaults;
 @import "tailwindcss";
 ```
 
-Without it, whichever stylesheet loads first decides, and when yours does, the
-defaults beat every layer of yours with nothing reporting it.
+Without it, when your stylesheet loads first, a knob set from one of your layers
+on `:root` or on the layout itself, such as a `[--el-switcher-min:18rem]`
+utility on a `Switcher`, keeps the default and nothing reports it.
 
 ## Stack
 
@@ -270,7 +268,7 @@ below it:
 import { Bleed, BleedBoundary, Center, Stack } from "@timhettler/radix-layout";
 
 // layout.tsx
-<BleedBoundary>{children}</BleedBoundary>;
+<BleedBoundary className="page">{children}</BleedBoundary>;
 
 // article.tsx
 <Center asChild gutter="m">
@@ -284,14 +282,16 @@ import { Bleed, BleedBoundary, Center, Stack } from "@timhettler/radix-layout";
 ```
 
 Both take `asChild`. Outside a boundary, a bleed is its parent's width. Its
-parent must be centred in the boundary, as a `Center` is; in a `Cluster`,
-`Switcher` or `Sidebar` child the bleed doesn't work. Padding of your own stays
-inside the bleed, and it overrides a `max-width: 100%` reset on images.
+parent must be centred in the boundary, as a `Center` is; as a `Cluster`,
+`Switcher` or `Sidebar` child it isn't supported. Padding of your own stays
+inside the bleed, and it overrides a `max-width: 100%` reset on images. To hold
+a band's content to a column, nest a `Center` inside the bleed rather than
+merging the two with `asChild`.
 
 The boundary is an inline-size query container, so it needs a width from its
 parent, and space steps inside it are fluid against it. To cap every bleed in a
-boundary, centred on it, set `--el-bleed-max` to a length on a class of your
-own:
+boundary, centred on it, set `--el-bleed-max` to a length on the boundary's own
+class; on `:root` or another ancestor it does nothing:
 
 ```css
 .page {
@@ -357,9 +357,8 @@ card or a sidebar, and the layouts inside it space themselves for its width:
 Don't declare one on an element sized by its content, such as a `Cluster` child:
 inline-size containment collapses it.
 
-Every default sits in `@layer el.defaults`, so your rule wins whatever its
-specificity or the order your stylesheets load in. If your CSS uses cascade
-layers, declare `el.defaults` first; see
+Your rule beats these defaults whatever its specificity or the order your
+stylesheets load in. If your CSS uses cascade layers, see
 [With your own cascade layers](#with-your-own-cascade-layers).
 
 ### Retune the scale

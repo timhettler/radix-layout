@@ -66,8 +66,7 @@ reaches. That is Bushell's nested-container fix, with the boundary in the place
 of his element below `body`.
 
 Outside any boundary, the initial `100%` leaves the bleed its parent's width
-with no margins. Unregistered, the bleed would read `100cqi` against its own
-nearest container.
+with no margins.
 
 ### 3. The boundary is a container component
 
@@ -76,9 +75,10 @@ without a container, and a requirement only the README states doesn't show in
 the React tree that needs it. A boundary can also be narrower than the page,
 around a region a bleed should stop at.
 
-This supersedes ADR 0004 § 4's "There is no container component" for the
-boundary. The failure that section names still holds: in a content-sized slot,
-such as a `Cluster` child, a boundary collapses, and its JSDoc says so.
+This supersedes ADR 0004 § 4 for the boundary: the library declares it, and its
+width comes from its parent. The failure that section names still holds: in a
+content-sized slot, such as a `Cluster` child, a boundary collapses, and its
+JSDoc says so.
 
 ### 4. Two flat components, and a mixin
 
@@ -98,7 +98,7 @@ an entry that emits no CSS:
 }
 ```
 
-A project without Sass copies the four declarations.
+A project without Sass copies § 1's rule; the README shows it.
 
 ### 5. The cap is a knob on the boundary
 
@@ -116,16 +116,16 @@ length; a percentage would resolve against the bleed's parent.
   boundary and the bleed shrinks the reach, and an image under a product's reset
   stays its parent's width.
 - **The stories break each guard.** Removing the registration,
-  `max-inline-size: none`, `border-box` or the layered `--el-bleed-max` default,
-  or computing the width on the boundary, fails at least one story. They run in
-  Chromium with a classic scrollbar, which needs Playwright's headless
-  `--hide-scrollbars` dropped, and also pass in WebKit 27.2. Headless Firefox
-  157 on macOS shows overlay scrollbars, so its scrollbar premise fails; the
-  geometry passes.
+  `max-inline-size: none`, `border-box`, the end margin or the layered
+  `--el-bleed-max` default, or computing the width on the boundary, fails at
+  least one story. They run in Chromium with a classic scrollbar, and also pass
+  in WebKit 27.2. Headless Firefox 157 on macOS shows overlay scrollbars, so its
+  scrollbar premise fails; the geometry passes.
 - **A bleed's parent must be centred in the boundary.** In an off-centre column,
   such as a `Sidebar` part, the bleed lands off-centre and can overflow.
-- **A bleed in a `Cluster`, `Switcher` or `Sidebar` child isn't supported.**
-  Their `> * { margin: 0 }` ties with its margins at 0-1-0.
+- **A bleed that is a `Cluster`, `Switcher` or `Sidebar` child isn't
+  supported.** Their `> * { margin: 0 }` ties with its margins at 0-1-0, so load
+  order decides.
 - **A boundary merged onto the column with `asChild` is the column,** so its
   bleeds reach the column. Wrap the column.
 - **Fluid space steps inside a boundary resolve against it,** not the small

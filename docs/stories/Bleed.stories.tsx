@@ -11,6 +11,7 @@ import {
 
 import { registeredProperty } from "../lib/stylesheets";
 import bleedMixin from "./fixtures/bleed-mixin.scss?inline";
+import mixinsEntry from "./fixtures/mixins-entry.scss?inline";
 
 function nodeIn(root: Element, selector: string) {
   const node = root.querySelector<HTMLElement>(selector);
@@ -43,10 +44,13 @@ function prepend(css: string) {
   return () => override.remove();
 }
 
-/** The content box, left of a classic scrollbar. Exact while the frame's width is whole pixels. */
+/** The content box, inside padding and left of a classic scrollbar. Exact while the frame's width is whole pixels. */
 function contentBoxOf(node: HTMLElement) {
-  const left = node.getBoundingClientRect().left + node.clientLeft;
-  return { left, right: left + node.clientWidth };
+  const style = getComputedStyle(node);
+  const start = parseFloat(style.paddingInlineStart);
+  const end = parseFloat(style.paddingInlineEnd);
+  const left = node.getBoundingClientRect().left + node.clientLeft + start;
+  return { left, right: left + node.clientWidth - start - end };
 }
 
 async function expectSpans(bleed: Element, boundary: HTMLElement, label = "") {
@@ -72,7 +76,7 @@ const MID = 700;
 const NARROW = 300;
 const WIDTHS = [WIDE, MID, NARROW];
 
-/** Scrolls on the block axis with a styled, so always classic, scrollbar. */
+/** Scrolls on the block axis; `::-webkit-scrollbar` keeps its scrollbar classic in Chromium and WebKit. */
 const scrollerCss = `
   .scroller { overflow-y: scroll; block-size: 16rem; }
   .scroller::-webkit-scrollbar { width: 16px; }
@@ -233,6 +237,53 @@ export const InAStack: Story = {
           `[data-align-demo="${align}"] > .el-bleed`,
         );
         await expectSpans(bleed, boundary, `${width}px ${align}`);
+      }
+    }
+  },
+};
+
+/**
+ * Parents that centre without `safe` read both margins, so the bleed's end
+ * margin is what keeps it on the boundary.
+ */
+export const CentringParents: Story = {
+  render: () => (
+    <div data-frame="">
+      <BleedBoundary data-boundary="">
+        <Center gutter="m">
+          <div
+            data-parent="grid"
+            style={{ display: "grid", justifyItems: "center" }}
+          >
+            <Bleed style={band}>
+              <p>justify-items: center</p>
+            </Bleed>
+          </div>
+          <div
+            data-parent="flex"
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <Bleed style={band}>
+              <p>align-items: center</p>
+            </Bleed>
+          </div>
+        </Center>
+      </BleedBoundary>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const frame = nodeIn(canvasElement, "[data-frame]");
+    const boundary = nodeIn(frame, "[data-boundary]");
+
+    for (const width of [WIDE, NARROW]) {
+      setWidth(frame, width);
+      for (const parent of ["grid", "flex"]) {
+        const bleed = nodeIn(boundary, `[data-parent="${parent}"] > .el-bleed`);
+        await expectSpans(bleed, boundary, `${width}px ${parent}`);
       }
     }
   },
@@ -454,8 +505,7 @@ export const Mixin: Story = {
     </div>
   ),
   play: async ({ canvasElement }) => {
-    // The mixins entry emits nothing of the library's own.
-    await expect(bleedMixin).not.toMatch(/\.el-|@property|@layer/);
+    await expect(mixinsEntry.trim()).toBe("");
 
     const sheet = document.createElement("style");
     sheet.textContent = bleedMixin;
@@ -478,7 +528,7 @@ export const Mixin: Story = {
   },
 };
 
-/** The boundary contains no fixed-position descendant, so a dialog or toast inside it stays on the viewport. */
+/** The boundary isn't a containing block for fixed-position descendants, so a dialog or toast inside it stays on the viewport. */
 export const FixedChild: Story = {
   render: () => (
     <div style={{ marginInlineStart: "3rem", marginBlockStart: "3rem" }}>

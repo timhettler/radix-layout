@@ -53,8 +53,8 @@ type BleedProps = PrimitiveDivProps;
  * article. Outside a boundary it is its parent's width.
  *
  * Its parent must be centred in the boundary, as a `Center` is, or a `Stack`
- * merged onto one. In a `Cluster`, `Switcher` or `Sidebar` child, their margin
- * reset cancels the bleed.
+ * merged onto one. As a `Cluster`, `Switcher` or `Sidebar` child it isn't
+ * supported: their margin reset ties with its margins.
  *
  * For HTML you don't author, include the same rule on your own selector:
  * `@include el.bleed` from `pkg:@timhettler/radix-layout/mixins`.
