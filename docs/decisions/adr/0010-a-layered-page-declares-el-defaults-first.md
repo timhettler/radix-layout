@@ -5,19 +5,23 @@ Hettler
 
 ## Context
 
-ADR 0003 puts every knob's default in `@layer el.defaults` so that a consumer's
-rule beats it whatever the load order. That holds for unlayered consumer CSS,
-which outranks every layer. A consumer rule inside a cascade layer gets no such
-guarantee. Layers rank by the order they are first declared, the last one
+ADR 0003 puts each default the library declares in `@layer el.defaults` so that
+a consumer's rule beats it whatever the load order. That holds for unlayered
+consumer CSS, which outranks every layer. A consumer rule inside a cascade layer
+gets no such guarantee where it sets a knob on the element the default is
+declared on: `:root` for the scale, the layout itself for Switcher's and
+Sidebar's knobs. Layers rank by the order they are first declared, the last one
 winning, and Tailwind v4's output opens with
 `@layer theme, base, components, utilities;`. When that sheet loads before the
 library's, `el.defaults` is appended after `utilities` and outranks it, so a
-`[--el-space-l:2rem]` utility renders the default with nothing reporting it.
-Loaded the other way round, the utility wins.
+step remapped on `:root` from one of those layers, or a
+`[--el-switcher-min:18rem]` utility on a Switcher, keeps the default with
+nothing reporting it. Loaded the other way round, the consumer's rule wins. Set
+on any other element, a knob wins either way, because the default reaches that
+element only by inheritance.
 
-The library can't fix this from its own files. ADR 0003 § 3's statement fixes
-the order of the library's layers whichever of its files loads first, but no
-stylesheet can place a layer ahead of one the page has already declared.
+The library can't fix this from its own files: no stylesheet can place a layer
+ahead of one the page has already declared.
 
 ## Decision
 
@@ -35,29 +39,31 @@ The library documents this in its README and changes nothing in its CSS. ADR
 ## Consequences
 
 - **With the statement, a knob set from any consumer layer wins**, whichever
-  stylesheet loads first. The `LayeredRemap` story asserts that, and that the
-  same sheet without the statement loses.
+  stylesheet loads first. The `LayeredRemap` story asserts both outcomes with
+  the consumer's sheet loaded first.
 - **Unlayered consumer CSS needs nothing.** ADR 0003's guarantee holds for it as
   written.
 - **Forgetting the statement fails silently, and only when the consumer's layers
-  load first**, so the same code can work on one page and not on another. It's
-  the ritual ADR 0003 rejected the specificity workaround for, accepted here
-  because it is one line in one file rather than one per override.
+  load first and set a knob where its default is declared**, so the same code
+  can work on one page and not on another. It's the ritual ADR 0003 rejected the
+  specificity workaround for, accepted here because it is one line in one file
+  rather than one per override.
 
 ## Alternatives considered
 
 - **Defaults as `var()` fallbacks where each knob is read**, with the library
   declaring no knob at all. A consumer rule would then win from any layer
   without the statement. Consumer CSS could no longer read a step,
-  `var(--el-space-l)`, unless it set that step itself, and Switcher and Sidebar
+  `var(--el-space-l)`, unless it set that step itself. Switcher and Sidebar also
   scope their defaults per element so a nested layout doesn't inherit an outer
   one's, which a fallback can't do without an internal registered property per
   knob.
-- **Support knobs from unlayered CSS only.** That shuts out Tailwind's
-  arbitrary-property utilities and `@theme`, the usual ways a Tailwind project
-  sets a custom property, to save the consumer one line.
+- **Support knobs from unlayered CSS only.** That shuts out `@theme`, and
+  arbitrary-property utilities on a Switcher or Sidebar itself, to save the
+  consumer one line.
 
 ## Revisit when
 
 - Layered consumers are found forgetting the statement. That is the signal to
-  take the fallback alternative despite the break.
+  take the fallback alternative and accept that consumer CSS can no longer read
+  a step.
