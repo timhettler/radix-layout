@@ -1,4 +1,4 @@
-# ADR 0010 — A page with its own cascade layers declares `el.defaults` first
+# ADR 0011 — A page with its own cascade layers declares `el.defaults` first
 
 **Status:** accepted; amends ADR 0003 **Date:** 2026-10-22 **Deciders:** Tim
 Hettler

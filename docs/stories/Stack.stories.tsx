@@ -200,7 +200,7 @@ export const RemappedScale: Story = {
 /**
  * A page that declares its own layers before the library loads, as Tailwind v4
  * does, ranks `el.defaults` above them, so a `:root` remap in one of its layers
- * loses unless its first statement names `el.defaults` (ADR 0010).
+ * loses unless its first statement names `el.defaults` (ADR 0011).
  */
 export const LayeredRemap: Story = {
   args: { space: "l" },
