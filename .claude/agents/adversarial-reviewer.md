@@ -77,8 +77,8 @@ Misses cluster in a few general shapes. Check these directly rather than hoping:
   once, then `yarn test`. A run that never launched a browser proved nothing.
 - **`yarn build` compiles the CSS the stories load;** `CLAUDE.md` § Testing says
   what an assertion has to measure.
-- **`gh` and `git push` need the account's token outside the sandbox;** see
-  `.claude/skills/pr/pr.config.md` § Gotchas.
+- **Run `gh` and `git push` outside the sandbox,** where the keychain is
+  readable.
 
 ## Report
 
