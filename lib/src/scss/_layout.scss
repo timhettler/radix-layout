@@ -141,3 +141,39 @@
   max-inline-size: none;
   margin-inline: calc(50% - var(--el-bleed-width) / 2);
 }
+
+// Reads --el-frame-ratio, which the including rule assigns.
+//
+// overflow also zeroes the automatic minimum, so taller content is cropped
+// rather than growing the frame (ADR 0013 § 1).
+//
+// object-fit on the root crops when asChild puts the frame on an img or video;
+// it's inert on a div. A replaced root fills like a div would, and WebKit
+// ignores aspect-ratio on one whose width is auto.
+//
+// The fill is !important so a reset's height: auto can't void the crop at any
+// specificity or load order; object-fit stays overridable (ADR 0013 § 3).
+// border-box keeps an iframe's UA border inside the frame.
+@mixin frame {
+  aspect-ratio: var(--el-frame-ratio);
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  object-fit: cover;
+
+  &:where(img, video, iframe) {
+    inline-size: 100%;
+  }
+
+  > img,
+  > video,
+  > iframe,
+  > picture,
+  > picture > img {
+    box-sizing: border-box;
+    inline-size: 100% !important;
+    block-size: 100% !important;
+    object-fit: cover;
+  }
+}
