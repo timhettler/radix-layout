@@ -55,6 +55,20 @@
   }
 }
 
+// A stack with a minimum height, so the block axis has space to give out.
+@mixin cover($space) {
+  min-block-size: var(--el-cover-min);
+  @include stack($space);
+}
+
+// Auto margins, not justify-content: they shrink to 0 when the cover is full,
+// so nothing is pushed out above the top (ADR 0012).
+//
+// Include on a selector that outranks `.el-cover > *`, or the reset wins.
+@mixin cover-centered {
+  margin-block: auto;
+}
+
 // Reads --el-switcher-min and --el-switcher-space, which the including rule
 // assigns; gap is left to the [data-space] rule, so a bare gap can't win and
 // fall out of step with the basis (ADR 0004 § 5).

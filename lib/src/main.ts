@@ -41,3 +41,7 @@ export type { CenterProps } from "./Center";
 
 export { Bleed, BleedBoundary } from "./Bleed";
 export type { BleedBoundaryProps, BleedProps } from "./Bleed";
+
+export * as Cover from "./CoverParts";
+export { CoverCentered, CoverRoot } from "./Cover";
+export type { CoverCenteredProps, CoverRootProps } from "./Cover";

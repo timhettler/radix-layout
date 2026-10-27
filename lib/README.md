@@ -322,6 +322,47 @@ Without Sass, write what it compiles to:
 }
 ```
 
+## Cover
+
+A column at least the viewport's height with one child in the middle of the
+space its siblings leave: a hero with an optional header above and footer below.
+Content taller than the minimum grows the cover, with `space` between the parts.
+
+```tsx
+import { Cover } from "@timhettler/radix-layout";
+
+<Cover.Root space="m">
+  <header>…</header>
+  <Cover.Centered asChild>
+    <h1>…</h1>
+  </Cover.Centered>
+  <p>…</p>
+</Cover.Root>;
+```
+
+The parts are also exported as `CoverRoot` and `CoverCentered`.
+
+| Prop (`Root`) | Values                                   | Default  |
+| ------------- | ---------------------------------------- | -------- |
+| `space`       | a step from [`spaces`](#the-space-scale) | required |
+| `asChild`     | `boolean`                                | `false`  |
+
+`Centered` takes `asChild`. Use one per cover. The minimum is `--el-cover-min`,
+`100svh`, so a footer clears a mobile browser's toolbar; set it on your own
+class on the root:
+
+```css
+.hero {
+  --el-cover-min: calc(100svh - var(--site-header-height));
+  box-sizing: border-box;
+  padding: 2rem;
+}
+```
+
+Padding of your own adds to the minimum unless the root is
+`box-sizing: border-box`. Cover centres vertically only: put a `Center` around
+it or inside a part, or set `text-align`.
+
 ## `asChild`
 
 Renders your element instead of a `div`, merging the layout's class and

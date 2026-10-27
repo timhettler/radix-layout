@@ -1,0 +1,26 @@
+@use "layers";
+@use "layout";
+@use "space";
+
+// Per cover so nesting can't inherit; svh so a footer clears mobile browser
+// chrome (ADR 0012).
+@layer el.defaults {
+  .el-cover {
+    --el-cover-min: 100svh;
+  }
+}
+
+.el-cover {
+  @include layout.cover($space: null);
+}
+
+// 0-2-0: beats the reset above and a consumer's 0-1-0 block margin.
+.el-cover > .el-cover__centered {
+  @include layout.cover-centered;
+}
+
+@each $step, $_ in space.$spaces {
+  .el-cover[data-space="#{$step}"] {
+    gap: space.value($step);
+  }
+}
