@@ -1,6 +1,7 @@
 # Sidebar layout primitive — tech plan
 
-**Status:** implemented **Owner:** unassigned **Recorded:** 2026-10-15
+**Status:** complete **Owner:** unassigned **Recorded:** 2026-10-15
+**Completed:** 2026-10-21 **PRs:** #13
 
 ## Problem
 
