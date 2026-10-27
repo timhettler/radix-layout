@@ -50,12 +50,3 @@ has no branch protection, so a red check still merges. The usual fixes:
   `docs/repo-settings.md` § Labels shows.
 
 ## Gotchas
-
-- **Scope every `gh` call to the repository's account:** prefix it with
-  `GH_TOKEN=$(gh auth token --user timhettler)`, and never run `gh auth switch`.
-  Run it outside the sandbox, where the keychain is readable.
-- **Push with the same account's token:**
-
-  ```bash
-  git -c credential.helper= -c credential.helper='!f() { echo username=timhettler; echo "password=$(gh auth token --user timhettler)"; }; f' push -u origin <branch>
-  ```
