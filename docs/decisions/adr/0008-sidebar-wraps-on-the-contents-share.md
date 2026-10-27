@@ -11,7 +11,7 @@ rest, and wraps the pair when the wide part would be narrower than a percentage
 of the row. Its custom element picks the narrow part by position and takes every
 length as an attribute.
 
-The planning record is `../planning/sidebar-layout/tech-plan.md`.
+The planning record is `../planning/archive/sidebar-layout/tech-plan.md`.
 
 ## Decision
 
