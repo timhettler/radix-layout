@@ -360,8 +360,9 @@ class on the root:
 ```
 
 Padding of your own adds to the minimum unless the root is
-`box-sizing: border-box`. Cover centres vertically only: put a `Center` around
-it or inside a part, or set `text-align`.
+`box-sizing: border-box`. A block margin you set on `Centered` with two classes
+or more replaces the centring. Cover centres vertically only: put a `Center`
+around it or inside a part, or set `text-align`.
 
 ## `asChild`
 

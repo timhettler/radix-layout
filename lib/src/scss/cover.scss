@@ -2,8 +2,7 @@
 @use "layout";
 @use "space";
 
-// Per cover so nesting can't inherit; svh so a footer clears mobile browser
-// chrome (ADR 0012).
+// Per cover, so a nested cover can't inherit an outer one's (ADR 0012 § 3).
 @layer el.defaults {
   .el-cover {
     --el-cover-min: 100svh;

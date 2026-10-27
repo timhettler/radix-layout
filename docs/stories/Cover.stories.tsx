@@ -146,8 +146,8 @@ export const CenteredAlone: Story = {
 };
 
 /**
- * Content taller than the minimum grows the cover. The auto margins give way
- * to the gap, so nothing is pushed above the top.
+ * Content taller than the minimum grows the cover, with the header and footer
+ * at its edges and the gap between the parts.
  */
 export const TallContent: Story = {
   args: {
@@ -217,6 +217,27 @@ export const MinimumHeight: Story = {
     } finally {
       restore();
     }
+  },
+};
+
+/** A nested cover keeps its own minimum when the outer one sets the knob. */
+export const Nested: Story = {
+  args: { space: "m" },
+  render: () => (
+    <Cover.Root space="m" style={knob("30rem")}>
+      <Cover.Centered asChild>
+        <Cover.Root space="m" data-cover="inner">
+          <Cover.Centered style={tile("3rem")} />
+        </Cover.Root>
+      </Cover.Centered>
+    </Cover.Root>
+  ),
+  play: async ({ canvasElement }) => {
+    const inner = nodeIn(canvasElement, '[data-cover="inner"]');
+    await expect(inner.getBoundingClientRect().height).toBeCloseTo(
+      window.innerHeight,
+      0,
+    );
   },
 };
 

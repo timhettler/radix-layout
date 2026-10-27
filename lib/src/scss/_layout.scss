@@ -61,10 +61,7 @@
   @include stack($space);
 }
 
-// Auto margins, not justify-content: they shrink to 0 when the cover is full,
-// so nothing is pushed out above the top (ADR 0012).
-//
-// Include on a selector that outranks `.el-cover > *`, or the reset wins.
+// Include on a selector that outranks `.el-cover > *`, or the reset wins (ADR 0012 § 2).
 @mixin cover-centered {
   margin-block: auto;
 }

@@ -18,14 +18,12 @@ needs a decision: a layout of its own, or items on `Stack`.
 It passes ADR 0001 § 1 with three failures a caller would hit building it by
 hand. A consumer's `margin-block: auto` on a `Stack` child ties `.el-stack > *`
 at 0-1-0, so load order decides whether the child centres. Centring with
-`justify-content: center` instead pushes content taller than the cover out above
-its top, where no one can scroll to it. And `100vh`, the obvious minimum, puts a
-footer behind a mobile browser's toolbar.
+`justify-content: center` instead centres the header, child and footer as one
+group, so neither end stays at the cover's edge. And `100vh`, the obvious
+minimum, puts a footer behind a mobile browser's toolbar.
 
 Item props on `Stack` would make it a compound component, a breaking change to
-every caller, and carve an exception out of its reset. A `push` prop also
-generalises toward the one-flex-component-with-every-knob that ADR 0005 turns
-down.
+every caller, and carve an exception out of its reset.
 
 ### 2. The centred child is a part, with auto margins that outrank the reset
 
@@ -43,8 +41,8 @@ down.
 Auto margins split the space the header, the footer and the gaps leave, and
 shrink to 0 when the content fills the cover, so the gap is the least space
 between parts. At 0-2-0 the rule beats the reset and a consumer's single-class
-block margin whatever the load order. Every Layout's `:first-child:not(h1)`
-margin rules predate flex `gap` and have nothing left to do.
+block margin whatever the load order; a rule of two classes on the child, loaded
+after, wins.
 
 The part is `Cover.Centered` rather than a selector prop, because a selector
 would need a style or a generated rule per value (ADR 0002).
@@ -54,7 +52,7 @@ would need a style or a generated rule per value (ADR 0002).
 `--el-cover-min` is assigned on every `.el-cover` in `el.defaults` (ADR 0003),
 so a nested cover never inherits an outer one's. `svh` is the viewport with the
 browser's toolbars shown, so the footer is visible on first paint. A cover meant
-to fill the space around a sticky header sets the knob to
+to fill the space below a sticky header sets the knob to
 `calc(100svh - <header height>)` on its own class.
 
 It stays unregistered: no `calc()` here sums it, and an invalid value leaves
@@ -69,13 +67,16 @@ or `text-align`, as Every Layout composes it. Children stretch, as in `Stack`.
 ## Consequences
 
 - **Padding on the root adds to the minimum** unless the consumer's class sets
-  `box-sizing: border-box`. The JSDoc and README say so.
+  `box-sizing: border-box`.
 - **Two `Cover.Centered` in one root share the space between them**, which is
   documented rather than prevented.
 
 ## Alternatives considered
 
 - **`push` on `Stack` items, as a general auto-margin prop.** See § 1.
+- **Every Layout's margin rules**, which zero the first and last child's outer
+  margin unless it is the centred one. They predate flex `gap`, which does the
+  same job.
 - **A `min` axis of closed `data-*` values**, such as `screen` and `none`. A
   height is the product's, like Center's measure (ADR 0009 § 2), and a closed
   list can't express a minimum less a sticky header.

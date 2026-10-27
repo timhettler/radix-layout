@@ -30,8 +30,8 @@ interface CoverRootProps extends PrimitiveDivProps {
  * Centres vertically only. To centre across, put a `Center` around the cover or
  * inside a part, or set `text-align`.
  *
- * Zeroes children's block margins, as `Stack` does; `margin-inline` is
- * untouched.
+ * Zeroes the other children's block margins, as `Stack` does; `margin-inline`
+ * is untouched.
  */
 const CoverRoot = React.forwardRef<CoverElement, CoverRootProps>(
   ({ space, className, ...rootProps }, forwardedRef) => (
