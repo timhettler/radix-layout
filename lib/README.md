@@ -366,9 +366,10 @@ own class on the root; it wins over `min`:
 Use one `Centered` or one `Fill` per cover; both take `asChild`. Content taller
 than the space grows the cover, unless the root has a fixed height, where a
 `Fill` shrinks instead and your `overflow` on it decides whether the rest
-scrolls or is clipped. A block margin you set on `Centered` replaces the
-centring if its selector has more than two classes, or two and loads after
-`cover.css`.
+scrolls or is clipped. To fill a parent of fixed height, set `block-size: 100%`
+on the root, not a minimum, which the content would grow past. A block margin
+you set on `Centered` replaces the centring if its selector has more than two
+classes, or two and loads after `cover.css`.
 
 Padding of your own adds to the minimum unless the root is
 `box-sizing: border-box`. Cover centres vertically only: put a `Center` around
