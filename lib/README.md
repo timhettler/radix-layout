@@ -383,9 +383,10 @@ import { Frame } from "@timhettler/radix-layout";
 | `asChild` | `boolean`                                       | `false` |
 
 A child `img`, `video`, `iframe` or `picture` fills the frame and is cropped by
-`object-fit: cover`; any other child is centred and clipped. The fill is
-`!important`, so a reset such as `.prose img { height: auto }` can't undo it.
-Set `object-position` on the child to move the focal point, or
+`object-fit: cover`. Any other child is centred and clipped where it's taller
+than the frame; give it a `min-inline-size` over `100%` to crop it across. The
+fill is `!important`, so a reset such as `.prose img { height: auto }` can't
+undo it. Set `object-position` on the child to move the focal point, or
 `object-fit: contain` with two classes, such as `.el-frame > .letterbox`, to
 letterbox it.
 
@@ -404,8 +405,8 @@ your own class:
 }
 ```
 
-A frame has no width of its own, so in a flex row, such as a `Cluster`, give it
-one.
+A frame has no width of its own, so give it one in a flex row, such as a
+`Cluster` or another `Frame`, and in a `Stack` aligned other than `stretch`.
 
 ## `asChild`
 

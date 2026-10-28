@@ -54,8 +54,8 @@ in `docs/decisions/`.
   `<length-percentage>` when a `calc()` sums it, so a unitless `0` can't void
   the declaration (ADR 0009 § 2).
 - **A declaration a common reset would undo at any specificity is
-  `!important`**, as Frame's media fill is against `img { height: auto }` (ADR
-  0013 § 3). What a consumer may legitimately change, such as `object-fit`,
+  `!important`**, as Frame's media fill is against `.prose img { height: auto }`
+  (ADR 0013 § 3). What a consumer may legitimately change, such as `object-fit`,
   stays overridable.
 - **A mixin a consumer includes is public only through `mixins.scss`**, which
   forwards it with `show` and emits no CSS; the rest of `_layout.scss` stays

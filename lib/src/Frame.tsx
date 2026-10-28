@@ -30,13 +30,15 @@ interface FrameProps extends PrimitiveDivProps {
  *
  * A child `img`, `video`, `iframe` or `picture` fills the frame and is cropped
  * by `object-fit: cover`; set `object-position` on it to move the focal point.
- * Any other child is centred and clipped at the frame's edges.
+ * Any other child is centred and clipped where it's taller than the frame; a
+ * `min-inline-size` over `100%` crops it across.
  *
  * Set `--el-frame-ratio` (`3 / 2`) on a class of your own for a ratio off the
  * list, or to change it in a media query.
  *
- * In a flex row, such as a `Cluster`, give the frame a width; it has none of
- * its own.
+ * Give the frame a width in a flex row, such as a `Cluster` or another
+ * `Frame`, and in a `Stack` aligned other than `stretch`; it has none of its
+ * own.
  */
 const Frame = React.forwardRef<FrameElement, FrameProps>(
   ({ ratio, className, ...frameProps }, forwardedRef) => (

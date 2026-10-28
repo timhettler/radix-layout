@@ -124,7 +124,7 @@ export const Ratios: Story = {
 
 /**
  * Each kind of media child fills the frame, cropped rather than distorted,
- * even under a reset loaded after the library at a higher specificity.
+ * even under a reset of equal specificity loaded after the library.
  */
 export const CropsMedia: Story = {
   render: () => (
@@ -148,7 +148,7 @@ export const CropsMedia: Story = {
   play: async ({ canvasElement }) => {
     await decoded(canvasElement);
     const restore = append(
-      ".prose img, .prose video, .prose iframe { block-size: auto; max-inline-size: 100%; max-block-size: 100%; }",
+      ".prose img, .prose video, .prose iframe { inline-size: auto; block-size: auto; max-inline-size: 100%; max-block-size: 100%; }",
     );
     try {
       for (const kind of ["img", "picture", "video", "iframe"]) {
@@ -190,11 +190,17 @@ export const Letterbox: Story = {
   },
 };
 
-/** Content taller than the frame is centred and clipped; it doesn't grow the frame. */
+/**
+ * Content taller than the frame is centred and clipped; it doesn't grow the
+ * frame. A `min-inline-size` over `100%` crops it across, centred.
+ */
 export const CropsContent: Story = {
   args: {
     children: (
-      <p data-part="content" style={{ margin: 0, blockSize: "30rem" }}>
+      <p
+        data-part="content"
+        style={{ margin: 0, blockSize: "30rem", minInlineSize: "150%" }}
+      >
         Image pending
       </p>
     ),
@@ -209,8 +215,12 @@ export const CropsContent: Story = {
 
     await expect(frame.height).toBeCloseTo((frame.width * 9) / 16, 0);
     await expect(content.height).toBeGreaterThan(frame.height);
+    await expect(content.width).toBeCloseTo(frame.width * 1.5, 0);
     await expect(
       Math.abs(frame.top - content.top - (content.bottom - frame.bottom)),
+    ).toBeLessThan(NEAR);
+    await expect(
+      Math.abs(frame.left - content.left - (content.right - frame.right)),
     ).toBeLessThan(NEAR);
     await expect(
       document.elementFromPoint(frame.left + 1, frame.bottom + 1),
@@ -255,25 +265,62 @@ export const Knob: Story = {
   },
 };
 
-/** On an image itself, the frame is one element that fills the column and crops its own source. */
+/**
+ * On a media element itself, the frame is one element that fills the column
+ * and crops its own source, whatever its `width` and `height` attributes say.
+ */
 export const AsChild: Story = {
-  args: {
-    asChild: true,
-    ratio: "1:1",
-    children: <img className="own" src={WIDE} alt="A gold circle on teal" />,
-  },
+  render: () => (
+    <div>
+      <Frame asChild ratio="1:1">
+        <img
+          className="own"
+          data-demo="img"
+          src={WIDE}
+          alt="A gold circle on teal"
+        />
+      </Frame>
+      <Frame asChild ratio="1:1">
+        <img
+          data-demo="sized"
+          src={WIDE}
+          width={240}
+          height={90}
+          alt="A gold circle on teal"
+        />
+      </Frame>
+      <Frame asChild>
+        <iframe
+          data-demo="iframe"
+          title="An embed"
+          srcDoc="<p>Embedded</p>"
+          width={560}
+          height={315}
+        />
+      </Frame>
+    </div>
+  ),
   play: async ({ canvasElement }) => {
     await decoded(canvasElement);
-    const node = nodeIn(canvasElement);
+    const column = nodeIn(canvasElement, "div").getBoundingClientRect().width;
+    const img = nodeIn(canvasElement, '[data-demo="img"]');
 
-    await expect(node.tagName).toBe("IMG");
-    await expect(node.classList.contains("own")).toBe(true);
-    await expect(node.getAttribute("data-ratio")).toBe("1:1");
-    await expect(getComputedStyle(node).objectFit).toBe("cover");
-    await expect(node.getBoundingClientRect().width).toBeCloseTo(
-      nodeIn(canvasElement, "div").getBoundingClientRect().width,
-      1,
-    );
-    await expect(ratioOf(node)).toBeCloseTo(1, 2);
+    await expect(img.classList.contains("el-frame")).toBe(true);
+    await expect(img.classList.contains("own")).toBe(true);
+    await expect(img.getAttribute("data-ratio")).toBe("1:1");
+    await expect(getComputedStyle(img).objectFit).toBe("cover");
+
+    for (const [demo, ratio] of [
+      ["img", 1],
+      ["sized", 1],
+      ["iframe", 16 / 9],
+    ] as const) {
+      const node = nodeIn(canvasElement, `[data-demo="${demo}"]`);
+      await expect(node.getBoundingClientRect().width, demo).toBeCloseTo(
+        column,
+        1,
+      );
+      await expect(ratioOf(node), demo).toBeCloseTo(ratio, 2);
+    }
   },
 };

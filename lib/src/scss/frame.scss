@@ -9,9 +9,7 @@ $ratio: (
   "4:5": list.slash(4, 5),
 );
 
-// Unregistered: there's no <ratio> syntax, and an invalid value leaves
-// aspect-ratio at auto, which loses only the shape. Per frame, so nesting
-// can't inherit.
+// Unregistered (ADR 0013 § 2). Per frame, so nesting can't inherit.
 @layer el.defaults {
   .el-frame {
     --el-frame-ratio: #{map.get($ratio, "16:9")};

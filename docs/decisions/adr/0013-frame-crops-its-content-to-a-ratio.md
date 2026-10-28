@@ -33,9 +33,10 @@ through a `<picture>` to its image.
 ```
 
 `object-fit` on the root is inert on a `div`, and crops when `asChild` puts the
-frame on an `<img>` or `<video>` itself. Such a root also gets
-`inline-size: 100%` at 0-1-0, so it fills as a `div` does; WebKit ignores
-`aspect-ratio` on a replaced element whose width is `auto`.
+frame on an `<img>` or `<video>` itself. Such a root, or an `<iframe>`, also
+gets `inline-size: 100%`, `block-size: auto` and `border-box` at 0-1-0, so it
+fills as a `div` does: WebKit ignores `aspect-ratio` on a replaced element whose
+width is `auto`, and a `height` attribute would fix the block size.
 
 ### 2. Three named ratios and a knob, defaulting to `16:9`
 
@@ -67,16 +68,19 @@ invalid value leaves `aspect-ratio` at `auto`, which loses only the shape.
 
 The child's size is the layout: a caller who wants it smaller wants a different
 component. At 0-1-1 the rule still ties `.prose img` and loses on load order, so
-the size is `!important`. Only an `!important` in a cascade layer beats it.
-`object-fit` isn't forced, since `contain` is a legitimate letterbox, and
-`border-box` keeps an iframe's border inside the frame.
+the size is `!important`, which a normal declaration can't beat. `object-fit`
+isn't forced, since `contain` is a legitimate letterbox, and `border-box` keeps
+an iframe's border inside the frame.
 
 A `max-inline-size: 100%` reset needs nothing: it resolves against the same
 frame as the fill.
 
 ## Consequences
 
-- **A frame has no width of its own**, so in a flex row it needs one.
+- **A frame has no width of its own.** In a flex row, including another frame,
+  or a `Stack` aligned other than `stretch`, it takes its content's width.
+- **Other children are clipped in the block axis only.** Flex shrinking narrows
+  a wide child to the frame; a `min-inline-size` over `100%` crops it across.
 - **The focal point is `object-position` on the child**, which the frame leaves
   alone.
 
