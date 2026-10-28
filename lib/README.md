@@ -366,15 +366,17 @@ own class on the root; it wins over `min`:
 Use one `Centered` or one `Fill` per cover; both take `asChild`. Content taller
 than the space grows the cover, unless the root has a fixed height, where a
 `Fill` shrinks instead and your `overflow` on it decides whether the rest
-scrolls or is clipped. A block margin you set on `Centered` with two classes or
-more replaces the centring.
+scrolls or is clipped. A block margin you set on `Centered` replaces the
+centring if its selector has more than two classes, or two and loads after
+`cover.css`.
 
 Padding of your own adds to the minimum unless the root is
 `box-sizing: border-box`. Cover centres vertically only: put a `Center` around
 it or inside a part, or set `text-align`.
 
 For a page shell, merge a `Sidebar` onto the fill so both columns run between
-the header and footer:
+the header and footer. Once the sidebar stacks, the side and the content share
+the fill's height:
 
 ```tsx
 <Cover.Root space="m" min="screen">

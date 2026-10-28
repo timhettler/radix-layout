@@ -65,7 +65,8 @@ height, so in a cover of fixed height the fill shrinks to the space left and the
 footer stays at the bottom. Whether what doesn't fit scrolls or is clipped is
 the consumer's `overflow`: a scrolling region has to be reachable by keyboard,
 which the layout can't know. Neither declaration is in the reset, so one class
-is enough, and a consumer's own minimum on the fill wins on load order.
+is enough, and a consumer's own minimum on the fill wins if it loads after
+`cover.css`.
 
 One principal child per cover. A fill takes all the free space, so a centred
 child beside it has none to be centred in.
@@ -81,9 +82,11 @@ for, where a default would also apply to every cover in a fixed box.
 
 `--el-cover-min` takes any other length, such as `calc(100svh - <header>)` below
 a sticky header, from a class of the consumer's own, and wins over the prop.
-It's assigned on every `.el-cover`, as `auto`, so a nested cover never inherits
-an outer one's. It stays unregistered: no `calc()` sums it, and an invalid value
-leaves `min-block-size` at `auto`, which loses only the minimum.
+It's assigned on every `.el-cover`, as `0`, so a nested cover never inherits an
+outer one's. `0` rather than `auto`: as a flex item in a column, or in a `1fr`
+grid row, a cover with an automatic minimum keeps its content's height and its
+fill can't shrink. It stays unregistered: no `calc()` sums it, and an invalid
+value leaves `min-block-size` at `auto`, which loses only the minimum.
 
 ### 5. No padding and no cross-axis prop
 
@@ -96,7 +99,8 @@ or `text-align`, as Every Layout composes it. Children stretch, as in `Stack`.
 - **Padding on the root adds to the minimum** unless the consumer's class sets
   `box-sizing: border-box`.
 - **A page shell is a composition:** a `Sidebar` merged onto `Cover.Fill` runs
-  both columns between the header and footer.
+  both columns between the header and footer. Once the sidebar stacks, its two
+  lines share the fill's height, so a short side grows with them.
 
 ## Alternatives considered
 

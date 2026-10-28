@@ -5,7 +5,7 @@
 // Per cover, so a nested cover can't inherit an outer one's (ADR 0012 § 4).
 @layer el.defaults {
   .el-cover {
-    --el-cover-min: auto;
+    --el-cover-min: 0;
   }
 
   .el-cover[data-min="screen"] {

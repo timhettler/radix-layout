@@ -332,6 +332,77 @@ export const FillFixedHeight: Story = {
   },
 };
 
+/** Content taller than the screen grows the cover, with the footer still at its bottom. */
+export const FillTall: Story = {
+  args: {
+    space: "m",
+    min: "screen",
+    children: (
+      <>
+        <div data-part="header" style={tile("3rem")} />
+        <Cover.Fill data-part="fill">
+          <div style={tile("150vh")} />
+        </Cover.Fill>
+        <div data-part="footer" style={tile("3rem")} />
+      </>
+    ),
+  },
+  play: async ({ canvasElement }) => {
+    const node = nodeIn(canvasElement);
+    const root = node.getBoundingClientRect();
+    const fill = rectOf(node, '[data-part="fill"]');
+    const footer = rectOf(node, '[data-part="footer"]');
+
+    await expect(root.height).toBeGreaterThan(window.innerHeight);
+    await expect(fill.height).toBeCloseTo(resolvedLength(node, "150vh"), 1);
+    await expect(footer.bottom).toBeCloseTo(root.bottom, 1);
+  },
+};
+
+/**
+ * A cover sized by its parent, as a flex item in a column or in a `1fr` grid
+ * row, shrinks to the space it's given, so its fill does too.
+ */
+export const FillSizedByParent: Story = {
+  args: { space: "m" },
+  render: () => (
+    <>
+      {[
+        { display: "flex", flexDirection: "column" },
+        { display: "grid", gridTemplateRows: "1fr" },
+      ].map((layout) => (
+        <div
+          key={layout.display}
+          data-parent={layout.display}
+          style={{ ...layout, blockSize: "20rem" } as React.CSSProperties}
+        >
+          <Cover.Root space="m" style={{ flexGrow: 1 }}>
+            <div data-part="header" style={tile("3rem")} />
+            <Cover.Fill data-part="fill">
+              <div style={tile("60rem")} />
+            </Cover.Fill>
+            <div data-part="footer" style={tile("3rem")} />
+          </Cover.Root>
+        </div>
+      ))}
+    </>
+  ),
+  play: async ({ canvasElement }) => {
+    for (const display of ["flex", "grid"]) {
+      const parent = nodeIn(canvasElement, `[data-parent="${display}"]`);
+      const box = parent.getBoundingClientRect();
+      const node = nodeIn(parent);
+      const footer = rectOf(node, '[data-part="footer"]');
+
+      await expect(node.getBoundingClientRect().height, display).toBeCloseTo(
+        box.height,
+        1,
+      );
+      await expect(footer.bottom, display).toBeCloseTo(box.bottom, 1);
+    }
+  },
+};
+
 /**
  * A page shell: the fill is a `Sidebar`, so both columns run the full height
  * between the header and footer.
