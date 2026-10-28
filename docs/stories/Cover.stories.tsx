@@ -1,7 +1,7 @@
 import type * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect } from "storybook/test";
-import { Cover, spaces } from "@timhettler/radix-layout";
+import { Cover, Sidebar, coverMins, spaces } from "@timhettler/radix-layout";
 
 import { resolvedGap } from "../lib/space";
 import { componentAttributeValues } from "../lib/stylesheets";
@@ -69,6 +69,7 @@ const meta = {
   argTypes: {
     // Taken from the library, not restated — a restated list drifts.
     space: { control: "select", options: spaces },
+    min: { control: "select", options: coverMins },
   },
 } satisfies Meta<typeof Cover.Root>;
 
@@ -77,12 +78,13 @@ type Story = StoryObj<typeof meta>;
 
 /** The viewport's height, with the heading in the middle of what the header and footer leave. */
 export const Default: Story = {
-  args: { space: "m", children: parts },
+  args: { space: "m", min: "screen", children: parts },
   play: async ({ canvasElement }) => {
     const node = nodeIn(canvasElement);
 
     await expect(node.tagName).toBe("DIV");
     await expect(node.getAttribute("data-space")).toBe("m");
+    await expect(node.getAttribute("data-min")).toBe("screen");
 
     const style = getComputedStyle(node);
     await expect(style.display).toBe("flex");
@@ -126,6 +128,7 @@ export const Default: Story = {
 export const CenteredAlone: Story = {
   args: {
     space: "m",
+    min: "screen",
     children: (
       <Cover.Centered asChild>
         <h1 data-part="centered">Welcome</h1>
@@ -152,6 +155,7 @@ export const CenteredAlone: Story = {
 export const TallContent: Story = {
   args: {
     space: "l",
+    min: "screen",
     children: (
       <>
         <div data-part="header" style={tile("4rem")} />
@@ -176,40 +180,64 @@ export const TallContent: Story = {
   },
 };
 
-/** `--el-cover-min` sets the minimum; at `0` the cover is its content's height. */
+/**
+ * Omitted, `min` leaves the cover its content's height. `screen` is the
+ * viewport's, and `--el-cover-min` from a class of your own beats either.
+ */
 export const MinimumHeight: Story = {
   args: { space: "m" },
   render: () => (
     <>
-      <Cover.Root space="m" data-min="20rem" style={knob("20rem")}>
-        {parts}
-      </Cover.Root>
-      <Cover.Root space="m" data-min="0" style={knob("0")}>
-        <div data-part="header" style={tile("2rem")} />
+      <Cover.Root space="m" data-case="none">
+        <div style={tile("2rem")} />
         <Cover.Centered style={tile("3rem")} />
       </Cover.Root>
-      <Cover.Root space="m" data-min="class" className="story-cover">
+      <Cover.Root space="m" min="screen" data-case="screen">
+        <Cover.Centered style={tile("3rem")} />
+      </Cover.Root>
+      <Cover.Root space="m" data-case="knob" style={knob("20rem")}>
+        {parts}
+      </Cover.Root>
+      <Cover.Root
+        space="m"
+        min="screen"
+        data-case="class"
+        className="story-cover"
+      >
         <Cover.Centered style={tile("3rem")} />
       </Cover.Root>
     </>
   ),
   play: async ({ canvasElement }) => {
-    const twenty = nodeIn(canvasElement, '[data-min="20rem"]');
+    await expect(
+      [...componentAttributeValues("el-cover", "data-min")].sort(),
+    ).toEqual([...coverMins].sort());
+
+    const none = nodeIn(canvasElement, '[data-case="none"]');
+    await expect(none.hasAttribute("data-min")).toBe(false);
+    await expect(none.getBoundingClientRect().height).toBeCloseTo(
+      resolvedLength(none, "5rem") + resolvedGap("m", none),
+      1,
+    );
+
+    const screen = nodeIn(canvasElement, '[data-case="screen"]');
+    await expect(screen.getAttribute("data-min")).toBe("screen");
+    // svh is the viewport's height in a frame with no browser chrome.
+    await expect(screen.getBoundingClientRect().height).toBeCloseTo(
+      window.innerHeight,
+      0,
+    );
+
+    const twenty = nodeIn(canvasElement, '[data-case="knob"]');
     await expect(twenty.getBoundingClientRect().height).toBeCloseTo(
       resolvedLength(twenty, "20rem"),
       1,
     );
 
-    const zero = nodeIn(canvasElement, '[data-min="0"]');
-    await expect(zero.getBoundingClientRect().height).toBeCloseTo(
-      resolvedLength(zero, "5rem") + resolvedGap("m", zero),
-      1,
-    );
-
-    // A consumer's class wins over the layered default whatever the load order.
+    // A consumer's class wins over the layered prop whatever the load order.
     const restore = prepend(".story-cover { --el-cover-min: 12rem; }");
     try {
-      const own = nodeIn(canvasElement, '[data-min="class"]');
+      const own = nodeIn(canvasElement, '[data-case="class"]');
       await expect(own.getBoundingClientRect().height).toBeCloseTo(
         resolvedLength(own, "12rem"),
         1,
@@ -235,9 +263,186 @@ export const Nested: Story = {
   play: async ({ canvasElement }) => {
     const inner = nodeIn(canvasElement, '[data-cover="inner"]');
     await expect(inner.getBoundingClientRect().height).toBeCloseTo(
-      window.innerHeight,
-      0,
+      resolvedLength(inner, "3rem"),
+      1,
     );
+  },
+};
+
+/** A fill takes the space between the header and footer, so the footer sits at the bottom. */
+export const Fill: Story = {
+  args: {
+    space: "m",
+    min: "screen",
+    children: (
+      <>
+        <div data-part="header" style={tile("3rem")} />
+        <Cover.Fill data-part="fill">
+          <div style={tile("4rem")} />
+        </Cover.Fill>
+        <div data-part="footer" style={tile("3rem")} />
+      </>
+    ),
+  },
+  play: async ({ canvasElement }) => {
+    const node = nodeIn(canvasElement);
+    const root = node.getBoundingClientRect();
+    const header = rectOf(node, '[data-part="header"]');
+    const fill = rectOf(node, '[data-part="fill"]');
+    const footer = rectOf(node, '[data-part="footer"]');
+    const gap = resolvedGap("m");
+
+    await expect(root.height).toBeCloseTo(window.innerHeight, 0);
+    await expect(fill.top - header.bottom).toBeCloseTo(gap, 1);
+    await expect(footer.top - fill.bottom).toBeCloseTo(gap, 1);
+    await expect(footer.bottom).toBeCloseTo(root.bottom, 1);
+  },
+};
+
+/**
+ * In a cover of fixed height, a fill with more content than fits shrinks
+ * rather than pushing the footer out of the box.
+ */
+export const FillFixedHeight: Story = {
+  args: {
+    space: "m",
+    style: { blockSize: "20rem" },
+    children: (
+      <>
+        <div data-part="header" style={tile("3rem")} />
+        <Cover.Fill data-part="fill">
+          <div style={tile("60rem")} />
+        </Cover.Fill>
+        <div data-part="footer" style={tile("3rem")} />
+      </>
+    ),
+  },
+  play: async ({ canvasElement }) => {
+    const node = nodeIn(canvasElement);
+    const root = node.getBoundingClientRect();
+    const header = rectOf(node, '[data-part="header"]');
+    const fill = rectOf(node, '[data-part="fill"]');
+    const footer = rectOf(node, '[data-part="footer"]');
+    const gap = resolvedGap("m");
+
+    await expect(root.height).toBeCloseTo(resolvedLength(node, "20rem"), 1);
+    await expect(footer.bottom).toBeCloseTo(root.bottom, 1);
+    await expect(fill.top - header.bottom).toBeCloseTo(gap, 1);
+    await expect(footer.top - fill.bottom).toBeCloseTo(gap, 1);
+  },
+};
+
+/** Content taller than the screen grows the cover, with the footer still at its bottom. */
+export const FillTall: Story = {
+  args: {
+    space: "m",
+    min: "screen",
+    children: (
+      <>
+        <div data-part="header" style={tile("3rem")} />
+        <Cover.Fill data-part="fill">
+          <div style={tile("150vh")} />
+        </Cover.Fill>
+        <div data-part="footer" style={tile("3rem")} />
+      </>
+    ),
+  },
+  play: async ({ canvasElement }) => {
+    const node = nodeIn(canvasElement);
+    const root = node.getBoundingClientRect();
+    const fill = rectOf(node, '[data-part="fill"]');
+    const footer = rectOf(node, '[data-part="footer"]');
+
+    await expect(root.height).toBeGreaterThan(window.innerHeight);
+    await expect(fill.height).toBeCloseTo(resolvedLength(node, "150vh"), 1);
+    await expect(footer.bottom).toBeCloseTo(root.bottom, 1);
+  },
+};
+
+/**
+ * A cover sized by its parent, as a flex item in a column or in a `1fr` grid
+ * row, shrinks to the space it's given, so its fill does too.
+ */
+export const FillSizedByParent: Story = {
+  args: { space: "m" },
+  render: () => (
+    <>
+      {[
+        { display: "flex", flexDirection: "column" },
+        { display: "grid", gridTemplateRows: "1fr" },
+      ].map((layout) => (
+        <div
+          key={layout.display}
+          data-parent={layout.display}
+          style={{ ...layout, blockSize: "20rem" } as React.CSSProperties}
+        >
+          <Cover.Root space="m" style={{ flexGrow: 1 }}>
+            <div data-part="header" style={tile("3rem")} />
+            <Cover.Fill data-part="fill">
+              <div style={tile("60rem")} />
+            </Cover.Fill>
+            <div data-part="footer" style={tile("3rem")} />
+          </Cover.Root>
+        </div>
+      ))}
+    </>
+  ),
+  play: async ({ canvasElement }) => {
+    for (const display of ["flex", "grid"]) {
+      const parent = nodeIn(canvasElement, `[data-parent="${display}"]`);
+      const box = parent.getBoundingClientRect();
+      const node = nodeIn(parent);
+      const footer = rectOf(node, '[data-part="footer"]');
+
+      await expect(node.getBoundingClientRect().height, display).toBeCloseTo(
+        box.height,
+        1,
+      );
+      await expect(footer.bottom, display).toBeCloseTo(box.bottom, 1);
+    }
+  },
+};
+
+/**
+ * A page shell: the fill is a `Sidebar`, so both columns run the full height
+ * between the header and footer.
+ */
+export const PageShell: Story = {
+  args: {
+    space: "m",
+    min: "screen",
+    children: (
+      <>
+        <div data-part="header" style={tile("3rem")} />
+        <Cover.Fill asChild>
+          <Sidebar.Root space="m" data-part="fill">
+            <Sidebar.Side data-part="side">
+              <div style={tile("2rem")}>Navigation</div>
+            </Sidebar.Side>
+            <Sidebar.Content data-part="content">
+              <div style={tile("4rem")}>Content</div>
+            </Sidebar.Content>
+          </Sidebar.Root>
+        </Cover.Fill>
+        <div data-part="footer" style={tile("3rem")} />
+      </>
+    ),
+  },
+  play: async ({ canvasElement }) => {
+    const node = nodeIn(canvasElement);
+    const fill = rectOf(node, '[data-part="fill"]');
+    const footer = rectOf(node, '[data-part="footer"]');
+
+    await expect(footer.bottom).toBeCloseTo(
+      node.getBoundingClientRect().bottom,
+      1,
+    );
+    for (const part of ["side", "content"]) {
+      await expect(
+        rectOf(node, `[data-part="${part}"]`).height,
+        part,
+      ).toBeCloseTo(fill.height, 1);
+    }
   },
 };
 
@@ -246,7 +451,7 @@ export const Nested: Story = {
  * last, doesn't beat the auto margins.
  */
 export const ConsumerMargin: Story = {
-  args: { space: "m", children: parts },
+  args: { space: "m", min: "screen", children: parts },
   play: async ({ canvasElement }) => {
     const override = document.createElement("style");
     override.textContent = ".el-cover__centered { margin-block: 3rem; }";
@@ -273,7 +478,7 @@ export const Spacing: Story = {
   render: () => (
     <div>
       {spaces.map((step) => (
-        <Cover.Root key={step} space={step} data-step={step} style={knob("0")}>
+        <Cover.Root key={step} space={step} data-step={step}>
           <div style={tile("1rem")} />
           <Cover.Centered style={tile("1rem")} />
         </Cover.Root>

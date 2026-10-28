@@ -2,8 +2,9 @@
 "@timhettler/radix-layout": minor
 ---
 
-Adds `Cover`: a column at least the viewport's height with one child in the
-middle of the space its header and footer leave, growing when its content is
-taller. Its parts are `Cover.Root` and `Cover.Centered`, also exported as
-`CoverRoot` and `CoverCentered`. `--el-cover-min` sets the minimum, `100svh` by
-default. It loads with `styles.css`, or as `cover.css` after `defaults.css`.
+Adds `Cover`: a column whose principal child takes the space its header and
+footer leave, either centred in it (`Cover.Centered`) or grown into it
+(`Cover.Fill`). Its parts are `Cover.Root`, `Cover.Centered` and `Cover.Fill`,
+also exported as `CoverRoot`, `CoverCentered` and `CoverFill`. `min="screen"`
+makes it at least the viewport's height, and `--el-cover-min` sets any other
+minimum. It loads with `styles.css`, or as `cover.css` after `defaults.css`.

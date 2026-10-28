@@ -43,8 +43,13 @@ export { Bleed, BleedBoundary } from "./Bleed";
 export type { BleedBoundaryProps, BleedProps } from "./Bleed";
 
 export * as Cover from "./CoverParts";
-export { CoverCentered, CoverRoot } from "./Cover";
-export type { CoverCenteredProps, CoverRootProps } from "./Cover";
+export { CoverCentered, CoverFill, CoverRoot, coverMins } from "./Cover";
+export type {
+  CoverCenteredProps,
+  CoverFillProps,
+  CoverMin,
+  CoverRootProps,
+} from "./Cover";
 
 export { Frame, frameRatios } from "./Frame";
 export type { FrameProps, FrameRatio } from "./Frame";

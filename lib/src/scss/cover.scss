@@ -2,9 +2,13 @@
 @use "layout";
 @use "space";
 
-// Per cover, so a nested cover can't inherit an outer one's (ADR 0012 § 3).
+// Per cover, so a nested cover can't inherit an outer one's (ADR 0012 § 4).
 @layer el.defaults {
   .el-cover {
+    --el-cover-min: 0;
+  }
+
+  .el-cover[data-min="screen"] {
     --el-cover-min: 100svh;
   }
 }
@@ -16,6 +20,10 @@
 // 0-2-0: beats the reset above and a consumer's 0-1-0 block margin.
 .el-cover > .el-cover__centered {
   @include layout.cover-centered;
+}
+
+.el-cover__fill {
+  @include layout.cover-fill;
 }
 
 @each $step, $_ in space.$spaces {
