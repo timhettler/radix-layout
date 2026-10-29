@@ -1,0 +1,27 @@
+@use "sass:list";
+@use "sass:map";
+@use "layers";
+@use "layout";
+
+$ratio: (
+  "1:1": list.slash(1, 1),
+  "16:9": list.slash(16, 9),
+  "4:5": list.slash(4, 5),
+);
+
+// Unregistered (ADR 0013 § 2). Per frame, so nesting can't inherit.
+@layer el.defaults {
+  .el-frame {
+    --el-frame-ratio: #{map.get($ratio, "16:9")};
+  }
+
+  @each $keyword, $value in $ratio {
+    .el-frame[data-ratio="#{$keyword}"] {
+      --el-frame-ratio: #{$value};
+    }
+  }
+}
+
+.el-frame {
+  @include layout.frame;
+}

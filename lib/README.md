@@ -396,6 +396,50 @@ the fill's height:
 </Cover.Root>
 ```
 
+## Frame
+
+A box of a fixed aspect ratio that crops its content: it fills the inline space
+it's given and takes its height from the ratio.
+
+```tsx
+import { Frame } from "@timhettler/radix-layout";
+
+<Frame ratio="4:5">
+  <img src="…" alt="…" />
+</Frame>;
+```
+
+| Prop      | Values                                          | Default |
+| --------- | ----------------------------------------------- | ------- |
+| `ratio`   | `1:1`, `16:9` or `4:5`, listed in `frameRatios` | `16:9`  |
+| `asChild` | `boolean`                                       | `false` |
+
+A child `img`, `video`, `iframe` or `picture` fills the frame and is cropped by
+`object-fit: cover`. Any other child is centred and clipped where it's taller
+than the frame; give it a `min-inline-size` over `100%` to crop it across. The
+fill is `!important`, so a reset such as `.prose img { height: auto }` can't
+undo it. Set `object-position` on the child to move the focal point, or
+`object-fit: contain` with two classes, such as `.el-frame > .letterbox`, to
+letterbox it.
+
+For any other ratio, or to change it at a breakpoint, set `--el-frame-ratio` on
+your own class:
+
+```css
+.hero-image {
+  --el-frame-ratio: 3 / 2;
+}
+
+@media (orientation: portrait) {
+  .hero-image {
+    --el-frame-ratio: 1 / 1;
+  }
+}
+```
+
+A frame has no width of its own, so give it one in a flex row, such as a
+`Cluster` or another `Frame`, and in a `Stack` aligned other than `stretch`.
+
 ## `asChild`
 
 Renders your element instead of a `div`, merging the layout's class and

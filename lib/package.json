@@ -28,6 +28,7 @@
     "./center.css": "./dist/center.css",
     "./bleed.css": "./dist/bleed.css",
     "./cover.css": "./dist/cover.css",
+    "./frame.css": "./dist/frame.css",
     "./mixins": {
       "sass": "./dist/scss/mixins.scss"
     }

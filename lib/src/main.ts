@@ -50,3 +50,6 @@ export type {
   CoverMin,
   CoverRootProps,
 } from "./Cover";
+
+export { Frame, frameRatios } from "./Frame";
+export type { FrameProps, FrameRatio } from "./Frame";

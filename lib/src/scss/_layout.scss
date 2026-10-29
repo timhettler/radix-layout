@@ -147,3 +147,37 @@
   max-inline-size: none;
   margin-inline: calc(50% - var(--el-bleed-width) / 2);
 }
+
+// Reads --el-frame-ratio, which the including rule assigns.
+//
+// overflow zeroes the automatic minimum, so content crops (ADR 0013 § 1).
+//
+// Root object-fit and the replaced-root rule are for asChild on media (ADR
+// 0013 § 1).
+//
+// The fill is !important against resets (ADR 0013 § 3).
+@mixin frame {
+  aspect-ratio: var(--el-frame-ratio);
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  object-fit: cover;
+
+  &:where(img, video, iframe) {
+    box-sizing: border-box;
+    inline-size: 100%;
+    block-size: auto;
+  }
+
+  > img,
+  > video,
+  > iframe,
+  > picture,
+  > picture > img {
+    box-sizing: border-box;
+    inline-size: 100% !important;
+    block-size: 100% !important;
+    object-fit: cover;
+  }
+}
