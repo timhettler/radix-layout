@@ -55,6 +55,23 @@
   }
 }
 
+// A stack with a minimum height, so the block axis has space to give out.
+@mixin cover($space) {
+  min-block-size: var(--el-cover-min);
+  @include stack($space);
+}
+
+// Include on a selector that outranks `.el-cover > *`, or the reset wins (ADR 0012 § 2).
+@mixin cover-centered {
+  margin-block: auto;
+}
+
+// Without min-block-size: 0 a fixed-height cover's fill pushes the footer out (ADR 0012 § 3).
+@mixin cover-fill {
+  flex-grow: 1;
+  min-block-size: 0;
+}
+
 // Reads --el-switcher-min and --el-switcher-space, which the including rule
 // assigns; gap is left to the [data-space] rule, so a bare gap can't win and
 // fall out of step with the basis (ADR 0004 § 5).

@@ -27,6 +27,7 @@
     "./sidebar.css": "./dist/sidebar.css",
     "./center.css": "./dist/center.css",
     "./bleed.css": "./dist/bleed.css",
+    "./cover.css": "./dist/cover.css",
     "./mixins": {
       "sass": "./dist/scss/mixins.scss"
     }

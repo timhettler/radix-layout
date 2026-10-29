@@ -322,6 +322,80 @@ Without Sass, write what it compiles to:
 }
 ```
 
+## Cover
+
+A column whose principal child takes the space its siblings leave, with an
+optional header above and footer below. `Cover.Centered` sits in the middle of
+that space, as in a hero. `Cover.Fill` grows into it, as the body of a page
+shell, or of a panel whose footer stays at the bottom.
+
+```tsx
+import { Cover } from "@timhettler/radix-layout";
+
+<Cover.Root space="m" min="screen">
+  <header>…</header>
+  <Cover.Centered asChild>
+    <h1>…</h1>
+  </Cover.Centered>
+  <p>…</p>
+</Cover.Root>;
+```
+
+The parts are also exported as `CoverRoot`, `CoverCentered` and `CoverFill`.
+
+| Prop (`Root`) | Values                                   | Default  |
+| ------------- | ---------------------------------------- | -------- |
+| `space`       | a step from [`spaces`](#the-space-scale) | required |
+| `min`         | `screen`                                 | none     |
+| `asChild`     | `boolean`                                | `false`  |
+
+The space comes from a height: `min="screen"` makes the cover at least the
+viewport's (`100svh`, so a footer clears a mobile browser's toolbar), or give
+the root a height of your own. Without one, the cover is its content's height
+and the parts sit together. For any other minimum, set `--el-cover-min` on your
+own class on the root; it wins over `min`:
+
+```css
+.hero {
+  --el-cover-min: calc(100svh - var(--site-header-height));
+  box-sizing: border-box;
+  padding: 2rem;
+}
+```
+
+Use one `Centered` or one `Fill` per cover; both take `asChild`. Content taller
+than the space grows the cover, unless the root has a fixed height, where a
+`Fill` shrinks instead and your `overflow` on it decides whether the rest
+scrolls or is clipped. To fill a parent of fixed height, set `block-size: 100%`
+on the root, not a minimum, which the content would grow past. A block margin
+you set on `Centered` replaces the centring if its selector has more than two
+classes, or two and loads after `cover.css`.
+
+Padding of your own adds to the minimum unless the root is
+`box-sizing: border-box`. Cover centres vertically only: put a `Center` around
+it or inside a part, or set `text-align`.
+
+For a page shell, merge a `Sidebar` onto the fill so both columns run between
+the header and footer. Once the sidebar stacks, the side and the content share
+the fill's height:
+
+```tsx
+<Cover.Root space="m" min="screen">
+  <header>…</header>
+  <Cover.Fill asChild>
+    <Sidebar.Root space="m">
+      <Sidebar.Side asChild>
+        <nav>…</nav>
+      </Sidebar.Side>
+      <Sidebar.Content asChild>
+        <main>…</main>
+      </Sidebar.Content>
+    </Sidebar.Root>
+  </Cover.Fill>
+  <footer>…</footer>
+</Cover.Root>
+```
+
 ## `asChild`
 
 Renders your element instead of a `div`, merging the layout's class and
