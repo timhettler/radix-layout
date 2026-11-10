@@ -20,14 +20,16 @@ ADR 0014 holds the design: `Prose` reverts what resets remove inside
 
 ## Constraints & decisions
 
-- **No type scale, colour or surface.** Headings get only the space above them.
+- **What Prose leaves alone** is ADR 0014 § 2.
 - **A wide table's scroll wrapper is the consumer's.**
 - **`@scope` is in every `.browserslistrc` target**, checked against
   caniuse-lite on 2026-11-10.
-- **Done means:** in a `Prose` under Josh Comeau's reset and under Tailwind's
-  preflight, the stories measure the restored list markers and indents, bold and
-  italic, monospace code, link underlines and the flow spacing, including nested
-  lists and a list inside a blockquote. A `<Cluster asChild><ul>` inside
+- **Done means:** in a `Prose` under Meyer's reset (unlayered, element
+  selectors) and under Tailwind 4's preflight (layered), the stories measure the
+  restored list markers and indents, bold and italic, monospace code, link
+  underlines and the flow spacing, including nested lists and a list inside a
+  blockquote. Each assertion runs under a reset that removes what it measures,
+  so it fails with Prose's rule deleted. A `<Cluster asChild><ul>` inside
   `NotProse` gets none of it, and a `Prose` inside `NotProse` gets it back.
 
 ## Steps
@@ -47,8 +49,8 @@ ADR 0014 holds the design: `Prose` reverts what resets remove inside
       if Sass can emit `@scope` from the including selector. If it can't, the
       README says to wrap the HTML in `Prose`.
 - [ ] **The stories,** asserting computed styles and geometry for done means,
-      each under both resets. Prove each guard by breaking it: a `:where()`
-      selector, the flow inside the scope, a missing step. Include
+      each under the reset that removes it. Prove each guard by breaking it: a
+      `:where()` selector, the flow inside the scope, a missing step. Include
       `<ol type="a">`, `start` and `reversed`, which `revert` may lose, and a
       `Frame` and a `Bleed` inside Prose.
 - [ ] **The README:** what Prose restores and what it leaves, the knobs,
@@ -57,7 +59,3 @@ ADR 0014 holds the design: `Prose` reverts what resets remove inside
 - [ ] A changeset for every consumer-facing change (`yarn changeset`)
 - [ ] Set `Status:` to `complete` in the PR that finishes the work, and archive
       the plan in that same PR if it closes the last open step
-
-## Deferred / follow-ups
-
-- **A scroll wrapper for wide tables.** Out of scope for the first version.

@@ -10,11 +10,7 @@ blocks. A rich-text region, such as CMS output or an editor's HTML, needs that
 styling back, and design rarely specifies every element an editor can produce,
 nested lists inside a blockquote included. Writing the restoration by hand
 misses cases, and a hand-written `.prose p` rule (0-1-1) restyles any component
-placed inside it.
-
-It is not Every Layout's. Tailwind Typography solves a neighbouring problem: it
-ships a typographic look for when design hasn't spoken, where this assumes
-design owns the type and fills the gaps.
+placed inside it. Every Layout has no Prose.
 
 ## Decision
 
@@ -26,9 +22,9 @@ doubles the gap, the first child's margin leaks out of the container, and a
 component placed inside gets restyled.
 
 It is not `Stack`. A flex column blockifies its children, stops margins
-collapsing, and makes a bare text node or inline element at the root an
-anonymous flex item, which CMS HTML produces. Prose stays in flow layout (ADR
-0005).
+collapsing, wraps a bare text node at the root in an anonymous flex item and
+blockifies an inline one, both of which CMS HTML produces. Prose stays in flow
+layout (ADR 0005 § 3).
 
 ### 2. It restores structure with `revert`, and leaves type and surfaces alone
 
@@ -36,9 +32,10 @@ anonymous flex item, which CMS HTML produces. Prose stays in flow layout (ADR
 rule, the reset included. That stylesheet already handles nesting: marker types
 step `disc`, `circle`, `square`, an `ol` inside a `ul` keeps its numbers, and
 `dd` and `blockquote` indent. Prose reverts only the properties resets remove,
-such as `list-style`, `padding-inline-start`, `font-weight` on `strong` and
-`text-decoration` on links, so a consumer's own base rules for other properties,
-such as a link's `color`, still apply.
+such as `list-style`, `padding-inline-start`, `margin-inline` on `blockquote`
+and `dd`, `font-weight` on `strong` and `text-decoration` on links, so a
+consumer's own base rules for other properties, such as a link's `color`, still
+apply.
 
 Where the browser's default is wrong for rich text, Prose writes the value:
 `figure` loses its inline margins, `sub` and `sup` stop moving the line box,
@@ -46,8 +43,7 @@ media is capped at the container's width and `pre` scrolls.
 
 Headings get only the space above them. Sizes, weights, `line-height`, the
 measure and every colour, border and fill are the consumer's: design has a type
-scale, and this library ships no surfaces (ADR 0001 § 3). The browser's defaults
-draw none either.
+scale, and this library ships no surfaces (ADR 0001 § 3).
 
 ### 3. Prose owns the block spacing, on two knobs
 
@@ -73,13 +69,14 @@ themselves stay tight, as the browser draws them.
 Inside the scope every rule keeps its element weight, never `:where()`. A
 reset's `ul { padding: 0 }` ties it on specificity, and scope proximity breaks
 the tie for Prose whatever the load order, while a universal `* { margin: 0 }`
-loses on specificity. Any class beats it, so a component inside Prose keeps its
-own declarations. The rules are unlayered, as ADR 0003 § 2 requires of layout
-declarations, so a reset inside a cascade layer loses too. Prose declares
-nothing in `el.defaults`.
+loses on specificity. Any class beats the scoped rules, so a component inside
+Prose keeps its own declarations. The rules are unlayered, as ADR 0003 § 2
+requires of layout declarations, so a reset inside a cascade layer loses too.
+Prose declares nothing in `el.defaults`.
 
 The gap between direct children sits outside the scope, on `.el-prose`, so an
-excluded child still gets its margin.
+excluded child still gets its margin. A direct child's own `margin-block-start`
+ties with the gap and wins only by load order.
 
 ### 5. `NotProse` ends the scope
 
@@ -94,7 +91,7 @@ in a component renderer, not directly under `Prose`.
 ## Consequences
 
 - **A cascade-layered utility on an element inside Prose loses to the
-  restoration**, as it loses to Stack's child-margin reset. Tailwind's
+  restoration**, as it loses to Stack's child-margin reset. Tailwind 4's
   `list-none` on a `ul` in Prose does nothing; the `ul` needs `NotProse`.
 - **`Frame` and `Bleed` work inside Prose unchanged.** Frame's media fill is
   `!important` (ADR 0013 § 3), and Bleed's `margin-inline` sits on a class.
@@ -107,11 +104,11 @@ in a component renderer, not directly under `Prose`.
 
 ## Alternatives considered
 
-- **A complete hand-written stylesheet, as Tailwind Typography ships.** Every
-  value is a design decision, so it's a theme to fight, and its `em` spacing
-  ignores the scale.
-- **`:where()` on every selector, as Tailwind does.** 0-0-0 loses to any reset
-  that names the element.
+- **A complete hand-written stylesheet, as Tailwind Typography ships.** It's a
+  typographic look for when design hasn't spoken, so every value is a theme to
+  fight, and its `em` spacing ignores the scale.
+- **`:where()` inside the scope.** 0-0-0 loses to any reset that names the
+  element.
 - **`:not(.not-prose *)` on every selector, as Tailwind does.** A `Prose` inside
   the exclusion can't restart.
 - **Ending the scope at layout classes automatically.** A `Stack` holding rich
